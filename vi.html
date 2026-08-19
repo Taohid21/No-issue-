@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>16:9 Full HD Auto-Fit Promo</title>
+    <title>1080p Clean Promo Record</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
@@ -26,9 +26,10 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            user-select: none;
         }
 
-        /* ফিক্সড ১৯২০x১০৮০ ক্যানভাস যা স্ক্রিন অনুযায়ী অটো স্কেল হবে */
+        /* ফিক্সড ১৯২০x১০৮০ ক্যানভাস */
         #canvas {
             width: 1920px;
             height: 1080px;
@@ -287,11 +288,11 @@
             100% { transform: scale(1.04); box-shadow: 0 20px 45px rgba(147, 51, 234, 0.6); }
         }
 
-        /* Start Overlay Screen */
+        /* Start Overlay Screen / Popup */
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(2, 6, 23, 0.95);
+            background: rgba(2, 6, 23, 0.96);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -301,33 +302,51 @@
             transition: opacity 0.4s ease;
         }
 
-        .start-badge {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px 50px;
-            border-radius: 60px;
-            font-size: 26px;
-            font-weight: 700;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            transition: 0.25s;
+        .start-popup-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 40px 60px;
+            border-radius: 35px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            transition: 0.3s;
         }
 
-        .start-badge:hover {
-            transform: scale(1.05);
-            background: rgba(56, 189, 248, 0.15);
+        .start-popup-box:hover {
+            transform: scale(1.03);
             border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .start-popup-icon {
+            font-size: 55px;
+            color: #38bdf8;
+            margin-bottom: 20px;
+        }
+
+        .start-popup-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .start-popup-sub {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-top: 10px;
         }
 
         /* Countdown */
         .countdown {
             font-family: 'Outfit', sans-serif;
-            font-size: 110px;
+            font-size: 140px;
             font-weight: 900;
             color: #38bdf8;
             display: none;
+            text-shadow: 0 0 40px rgba(56, 189, 248, 0.6);
         }
     </style>
 </head>
@@ -446,17 +465,19 @@
             </div>
         </div>
 
-        <!-- Start Overlay Screen -->
+        <!-- Start Overlay Screen (ক্লিন পপআপ) -->
         <div class="overlay" id="startOverlay" onclick="initVideo()">
-            <div class="start-badge" id="startBadge">
-                <i class="fa-solid fa-play"></i> Click Anywhere to Start Video
+            <div class="start-popup-box" id="startPopupBox">
+                <div class="start-popup-icon"><i class="fa-solid fa-circle-play"></i></div>
+                <div class="start-popup-text">Click Anywhere to Start Promo</div>
+                <div class="start-popup-sub">Auto-Fullscreen & Landscape ready for recording</div>
             </div>
             <div class="countdown" id="countdownText">3</div>
         </div>
     </div>
 
     <script>
-        // ================= অটো-স্কেল ইঞ্জিন (স্ক্রিন অনুযায়ী পারফেক্ট সাইজ করবে) =================
+        // ================= অটো-স্কেল ইঞ্জিন =================
         function autoScaleCanvas() {
             const canvas = document.getElementById('canvas');
             const targetWidth = 1920;
@@ -465,15 +486,41 @@
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             
-            // ১৬:৯ অনুপাতে ঠিকঠাক স্কেল মান নির্ধারণ
             const scale = Math.min(windowWidth / targetWidth, windowHeight / targetHeight);
-            
             canvas.style.transform = `scale(${scale})`;
         }
 
         window.addEventListener('resize', autoScaleCanvas);
-        window.addEventListener('DOMContentLoaded', autoScaleCanvas);
-        autoScaleCanvas(); // ইনিশিয়াল রান
+        window.addEventListener('orientationchange', () => setTimeout(autoScaleCanvas, 150));
+        document.addEventListener('DOMContentLoaded', autoScaleCanvas);
+        autoScaleCanvas();
+
+        // ================= ফুল-স্ক্রিন ও রোটেট হ্যান্ডলার =================
+        async function triggerFullscreenAndRotate() {
+            const docEl = document.documentElement;
+
+            try {
+                if (!document.fullscreenElement) {
+                    if (docEl.requestFullscreen) {
+                        await docEl.requestFullscreen();
+                    } else if (docEl.webkitRequestFullscreen) {
+                        await docEl.webkitRequestFullscreen();
+                    } else if (docEl.msRequestFullscreen) {
+                        await docEl.msRequestFullscreen();
+                    }
+                }
+
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape').catch(() => {});
+                }
+            } catch (err) {
+                console.log("Fullscreen auto-triggered:", err);
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            setTimeout(autoScaleCanvas, 100);
+        });
 
         // ================= ভিডিও অ্যানিমেশন ফ্লো =================
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -485,14 +532,17 @@
         }
 
         async function initVideo() {
+            // ১. ফুলস্ক্রিন ও ল্যান্ডস্কেপ চালু
+            await triggerFullscreenAndRotate();
+
             const overlay = document.getElementById('startOverlay');
-            const startBadge = document.getElementById('startBadge');
+            const popupBox = document.getElementById('startPopupBox');
             const countdownText = document.getElementById('countdownText');
 
-            startBadge.style.display = "none";
+            // ২. পপআপ সরিয়ে ৩-২-১ কাউন্টডাউন শুরু
+            popupBox.style.display = "none";
             countdownText.style.display = "block";
 
-            // দ্রুত কাউন্টডাউন (Quick 3-2-1)
             countdownText.innerText = "3";
             await delay(700);
             countdownText.innerText = "2";
@@ -500,16 +550,17 @@
             countdownText.innerText = "1";
             await delay(700);
 
+            // ৩. কাউন্টডাউন শেষ হলে পুরো ওভারলে মুছে ফেলা (একদম ক্লিন স্ক্রিন)
             overlay.style.opacity = "0";
             await delay(300);
             overlay.style.display = "none";
 
-            // ভিডিও সিকোয়েন্স
+            // ৪. অ্যানিমেশন চালানো
             runVideoFlow();
         }
 
         async function runVideoFlow() {
-            // ================= SCENE 1 =================
+            // SCENE 1
             switchScene('scene1');
             await delay(100);
             document.getElementById('s1-badge').classList.add('show');
@@ -517,9 +568,9 @@
             document.getElementById('s1-title').classList.add('show');
             await delay(350);
             document.getElementById('s1-desc').classList.add('show');
-            await delay(3200);
+            await delay(3400);
 
-            // ================= SCENE 2 =================
+            // SCENE 2
             switchScene('scene2');
             await delay(100);
             document.getElementById('s2-badge').classList.add('show');
@@ -531,9 +582,9 @@
             document.getElementById('step2').classList.add('show');
             await delay(300);
             document.getElementById('step3').classList.add('show');
-            await delay(3400);
+            await delay(3500);
 
-            // ================= SCENE 3 =================
+            // SCENE 3
             switchScene('scene3');
             await delay(100);
             document.getElementById('s3-title').classList.add('show');
@@ -547,9 +598,9 @@
             document.getElementById('bento4').classList.add('show');
             await delay(200);
             document.getElementById('bento5').classList.add('show');
-            await delay(3600);
+            await delay(3700);
 
-            // ================= SCENE 4 =================
+            // SCENE 4
             switchScene('scene4');
             await delay(100);
             document.getElementById('s4-stars').classList.add('show');
@@ -557,15 +608,21 @@
             document.getElementById('s4-title').classList.add('show');
             await delay(350);
             document.getElementById('s4-btn').classList.add('show');
-            await delay(3500);
+            await delay(3600);
 
-            // Finish Replay
+            // ভিডিও শেষ হলে পুনরায় পপআপ প্রদর্শন
             const overlay = document.getElementById('startOverlay');
             overlay.style.display = "flex";
             await delay(30);
             overlay.style.opacity = "1";
-            document.getElementById('startBadge').innerHTML = '<i class="fa-solid fa-rotate-right"></i> Click to Replay Video';
-            document.getElementById('startBadge').style.display = "flex";
+            
+            const popupBox = document.getElementById('startPopupBox');
+            popupBox.innerHTML = `
+                <div class="start-popup-icon"><i class="fa-solid fa-rotate-right"></i></div>
+                <div class="start-popup-text">Click to Replay Video</div>
+                <div class="start-popup-sub">Record again anytime</div>
+            `;
+            popupBox.style.display = "block";
             document.getElementById('countdownText').style.display = "none";
         }
     </script>
