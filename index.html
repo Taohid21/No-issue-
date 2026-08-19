@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TIO — Taohid Islam</title>
+  
+  <!-- Modern SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%232563eb'/><text x='50%' y='55%' dominant-baseline='central' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900' font-size='38'>TIO</text></svg>">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #0f172a;
+      background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+      background-size: 28px 28px;
+    }
+    .service-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-card:hover {
+      border-color: #cbd5e1;
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.08);
+    }
+    .skill-chip {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    .skill-chip:hover {
+      border-color: #93c5fd;
+      background: #f0f7ff;
+      transform: translateY(-1px);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .pulse-soft {
+      animation: pulseSoft 2.5s infinite ease-in-out;
+    }
+
+    /* Typing Animation */
+    .typing-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #94a3b8;
+      animation: typing 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white relative">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 h-20">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 h-full flex items-center justify-between">
+      
+      <!-- Minimalist Logo -->
+      <a href="#" class="flex items-center space-x-3.5 select-none group">
+        <div class="w-11 h-11 rounded-xl bg-blue-600 flex items-center justify-center font-extrabold text-white text-lg shadow-sm group-hover:bg-blue-700 transition">
+          TIO
+        </div>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-base tracking-tight text-slate-900 group-hover:text-blue-600 transition leading-tight">TIO</span>
+          <span class="text-xs text-slate-500 font-medium tracking-wide">Taohid Islam</span>
+        </div>
+      </a>
+
+      <!-- Direct Contact & 3-Line Menu -->
+      <div class="flex items-center space-x-3">
+        <a href="https://wa.me/8801704609401" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-sm transition">
+          <i class="fab fa-whatsapp text-sm"></i>
+          <span>Direct WhatsApp</span>
+        </a>
+
+        <!-- 3-Line Hamburger Menu -->
+        <button id="drawerToggleBtn" aria-label="Menu" class="w-11 h-11 rounded-xl flex flex-col items-center justify-center space-y-1.5 bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition">
+          <span class="w-5 h-0.5 bg-current rounded-full"></span>
+          <span class="w-5 h-0.5 bg-current rounded-full"></span>
+          <span class="w-5 h-0.5 bg-current rounded-full"></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== SIDE DRAWER NAVIGATION ==================== -->
+  <div id="sideDrawer" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300">
+    <div id="drawerOverlay" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+    <div id="drawerPanel" class="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-white border-l border-slate-200 p-6 flex flex-col justify-between translate-x-full transition-transform duration-300 shadow-2xl">
+      <div>
+        <div class="flex items-center justify-between pb-5 border-b border-slate-100">
+          <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Navigation</span>
+          <button id="drawerCloseBtn" class="text-slate-400 hover:text-slate-700 p-1">
+            <i class="fas fa-times text-base"></i>
+          </button>
+        </div>
+        <nav class="mt-6 space-y-3">
+          <a href="#servicesSection" class="drawer-nav-item flex items-center space-x-3 text-slate-700 hover:text-blue-600 text-sm font-semibold py-2 transition">
+            <i class="fas fa-layer-group w-5 text-slate-400"></i>
+            <span>Services & Portfolio</span>
+          </a>
+          <button id="drawerOpenAiBtn" class="w-full text-left flex items-center space-x-3 text-slate-700 hover:text-indigo-600 text-sm font-semibold py-2 transition">
+            <i class="fas fa-robot w-5 text-indigo-500"></i>
+            <span>Talk to AI TIO</span>
+          </button>
+          <a href="https://wa.me/8801704609401" target="_blank" rel="noopener noreferrer" class="drawer-nav-item flex items-center space-x-3 text-slate-700 hover:text-emerald-600 text-sm font-semibold py-2 transition">
+            <i class="fab fa-whatsapp w-5 text-emerald-500"></i>
+            <span>Chat on WhatsApp</span>
+          </a>
+        </nav>
+      </div>
+      <div class="border-t border-slate-100 pt-4 text-xs text-slate-500">
+        <p>Founder & Developer: <strong class="text-slate-800">Taohid Islam</strong></p>
+        <p class="mt-0.5">Software Engineering & Web Architecture</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN HERO & DESIGN SHOWCASE ==================== -->
+  <main class="flex-1 max-w-7xl mx-auto px-6 sm:px-10 w-full py-10">
+    
+    <!-- Hero Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+      
+      <!-- Left Column: Bio & Skills -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Heading & Intro -->
+        <div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+            Engineering Modern Web Systems & Scalable Software.
+          </h1>
+          <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+            I am <strong class="text-slate-900">Taohid Islam</strong>, software developer at <strong class="text-blue-600">TIO</strong>. I craft high-performance web applications, interactive software platforms, and cloud integrations.
+          </p>
+        </div>
+
+        <!-- 💻 My Skills Section -->
+        <div class="pt-2">
+          <div class="flex items-center space-x-2 mb-3.5">
+            <span class="text-lg">💻</span>
+            <h2 class="text-xs font-extrabold uppercase tracking-widest text-slate-700">Core Expertise & Skills</h2>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <!-- Systems & Websites -->
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-video text-rose-500 text-[11px]"></i>
+              <span>Live Streaming Website</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-briefcase text-blue-500 text-[11px]"></i>
+              <span>Business Website</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-shopping-cart text-emerald-500 text-[11px]"></i>
+              <span>E-commerce Website</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-users text-indigo-500 text-[11px]"></i>
+              <span>Social Media Website</span>
+            </span>
+
+            <!-- Core Technologies -->
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fab fa-html5 text-orange-500 text-xs"></i>
+              <span>HTML</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fab fa-css3-alt text-blue-600 text-xs"></i>
+              <span>CSS</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fab fa-js text-yellow-500 text-xs"></i>
+              <span>JavaScript</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-fire text-amber-500 text-xs"></i>
+              <span>Firebase Web SDK</span>
+            </span>
+
+            <!-- Cloud, Media & Tools -->
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-cloud text-sky-500 text-xs"></i>
+              <span>Cloudinary</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-images text-cyan-500 text-xs"></i>
+              <span>ImgBB API</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fab fa-git-alt text-red-500 text-xs"></i>
+              <span>Git & GitHub</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-triangle text-slate-900 text-xs"></i>
+              <span>Vercel</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-globe text-teal-600 text-xs"></i>
+              <span>Custom Domain Setup</span>
+            </span>
+
+            <!-- UI & SEO -->
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-mobile-alt text-violet-500 text-xs"></i>
+              <span>Responsive Web Design</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-pen-ruler text-pink-500 text-xs"></i>
+              <span>UI/UX Design</span>
+            </span>
+            <span class="skill-chip px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-800 flex items-center space-x-1.5 shadow-xs">
+              <i class="fas fa-magnifying-glass-chart text-emerald-600 text-xs"></i>
+              <span>Basic SEO</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a href="https://wa.me/8801704609401" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center space-x-2 transition shadow-sm">
+            <i class="fab fa-whatsapp text-base"></i>
+            <span>Order Custom Project</span>
+          </a>
+          <a href="#servicesSection" class="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm transition border border-slate-200">
+            <span>Explore Services</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Visual Design Showcase -->
+      <div class="lg:col-span-5 relative">
+        <div class="relative mx-auto max-w-md lg:max-w-none">
+          
+          <!-- Image 1: Main Web Development Frame -->
+          <div class="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 bg-white p-2">
+            <div class="flex items-center space-x-1.5 px-3 py-2 bg-slate-50 rounded-xl mb-2 border border-slate-100">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <span class="text-[11px] text-slate-400 font-mono ml-2 font-medium">tio-core-engine.sys</span>
+            </div>
+            <img src="https://img.magnific.com/free-photo/web-design-concept-with-drawings_1134-77.jpg?semt=ais_hybrid&w=740&q=80" alt="Custom Web Development" class="w-full h-52 sm:h-60 object-cover rounded-xl" />
+          </div>
+
+          <!-- Image 2: Creative UI/UX Frame Overlay -->
+          <div class="absolute -bottom-6 -left-6 w-3/5 rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white hidden sm:block">
+            <div class="relative">
+              <img src="https://img.magnific.com/free-photo/web-design-concept-with-drawings_1134-77.jpg?semt=ais_hybrid&w=740&q=80" alt="UI Design Concept" class="w-full h-32 object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex items-end p-2.5">
+                <span class="text-[10px] font-bold text-white tracking-wide">UI/UX & Interactive Architecture</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Badge -->
+          <div class="absolute -top-3 -right-3 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-md flex items-center space-x-2">
+            <i class="fas fa-check-circle text-blue-600 text-xs"></i>
+            <span class="text-xs font-bold text-slate-800">Verified Quality</span>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== LIVE SERVICES & PRODUCTS SECTION ==================== -->
+    <section id="servicesSection" class="pt-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-8">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Available Gigs & Services</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Filter by category or inquire directly via WhatsApp</p>
+        </div>
+        <div id="gigCountBadge" class="text-xs text-slate-600 font-bold bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 self-start md:self-auto">
+          Syncing database...
+        </div>
+      </div>
+
+      <!-- Category Filter Pills Bar -->
+      <div id="categoryFilterBar" class="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-4 mb-6">
+        <button data-cat="all" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition whitespace-nowrap shadow-xs">
+          All Services
+        </button>
+      </div>
+
+      <!-- Dynamic Product / Gig Grid -->
+      <div id="gigsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered completely from Firebase Database -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyGigsState" class="hidden text-center py-20 bg-slate-50 rounded-2xl border border-slate-200">
+        <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center mx-auto text-slate-400 text-xl mb-3 shadow-xs">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <h3 class="text-sm font-bold text-slate-800">No Services Available In This Category</h3>
+        <p class="text-xs text-slate-500 mt-1">New gigs and software products are published regularly.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200 bg-white py-8">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+      <p>© 2026 <strong>TIO</strong> — Developed by <span class="text-slate-800 font-semibold">Taohid Islam</span>.</p>
+      <a href="https://wa.me/8801704609401" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-600 transition flex items-center space-x-1.5 font-medium">
+        <i class="fab fa-whatsapp text-emerald-500 text-sm"></i>
+        <span>WhatsApp: +8801704609401</span>
+      </a>
+    </div>
+  </footer>
+
+  <!-- ==================== IN-SITE LIVE DEMO IFRAME MODAL ==================== -->
+  <div id="demoModal" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300 flex flex-col bg-slate-950/80 backdrop-blur-md p-0 sm:p-4 justify-center items-center">
+    <div class="w-full sm:max-w-5xl h-full sm:h-[88vh] bg-white rounded-none sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border border-slate-200">
+      
+      <!-- Mock Browser Header Bar -->
+      <div class="bg-slate-900 text-white px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between border-b border-slate-800 shrink-0 gap-2">
+        <div class="flex items-center space-x-2 min-w-0 flex-1">
+          <div class="flex space-x-1.5 shrink-0">
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500 inline-block"></span>
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 inline-block"></span>
+          </div>
+          <span id="demoModalTitle" class="text-xs font-semibold text-slate-300 truncate">Project Live Demo</span>
+        </div>
+
+        <div class="flex items-center space-x-1.5 shrink-0">
+          <button id="reloadDemoIframeBtn" class="p-1.5 hover:bg-slate-800 rounded-lg text-slate-300 hover:text-white text-xs transition" title="Reload Frame">
+            <i class="fas fa-rotate-right"></i>
+          </button>
+          <button id="closeDemoModalBtn" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1" title="Close Preview">
+            <i class="fas fa-times"></i>
+            <span class="text-[11px]">Close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Iframe Container -->
+      <div class="flex-1 w-full h-full relative bg-slate-100">
+        <div id="iframeLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-white z-10">
+          <i class="fas fa-circle-notch fa-spin text-3xl text-blue-600 mb-2"></i>
+          <p class="text-xs text-slate-500 font-semibold">Loading Live Preview...</p>
+        </div>
+        <iframe id="demoIframe" src="" class="w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FLOATING AI TIO ASSISTANT ==================== -->
+  <div class="fixed bottom-5 right-5 z-40 flex flex-col items-end">
+    
+    <!-- AI Chat Window -->
+    <div id="aiChatWindow" class="hidden mb-3 w-[92vw] sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 h-[520px] max-h-[82vh]">
+      
+      <!-- AI Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-sm font-bold backdrop-blur-sm">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold leading-tight">AI TIO — Intelligent Engine</h3>
+            <p class="text-[10px] text-blue-100">In-house Realtime System & Dev Analyst</p>
+          </div>
+        </div>
+        <button id="closeAiChatBtn" class="text-white/80 hover:text-white p-1 text-sm">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="bg-slate-50 border-b border-slate-100 p-2 overflow-x-auto no-scrollbar flex space-x-1.5 shrink-0">
+        <button class="ai-quick-btn text-[10px] bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-blue-50 hover:text-blue-600 transition">
+          Who is Taohid?
+        </button>
+        <button class="ai-quick-btn text-[10px] bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-blue-50 hover:text-blue-600 transition">
+          All Services & Prices
+        </button>
+        <button class="ai-quick-btn text-[10px] bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-blue-50 hover:text-blue-600 transition">
+          Live Streaming Site
+        </button>
+        <button class="ai-quick-btn text-[10px] bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-full whitespace-nowrap hover:bg-blue-50 hover:text-blue-600 transition">
+          What is Web Development?
+        </button>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="aiMessagesList" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-slate-50/50">
+        <div class="flex items-start space-x-2">
+          <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-slate-700 shadow-xs leading-relaxed max-w-[85%]">
+            Hello! I am <strong>AI TIO</strong>. You can ask me about <strong>Taohid Islam's</strong> software engineering gigs, prices, core technologies, or general web development topics. How can I assist you?
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Field -->
+      <form id="aiChatForm" class="p-2.5 bg-white border-t border-slate-200 flex items-center space-x-2 shrink-0">
+        <input type="text" id="aiUserInput" placeholder="Ask about services, development, pricing..." class="flex-1 px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition" autocomplete="off" />
+        <button type="submit" class="w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center justify-center text-xs transition shrink-0">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Floating Toggle Button -->
+    <button id="floatingAiToggleBtn" class="pulse-soft px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl shadow-xl flex items-center space-x-2.5 text-xs font-bold transition">
+      <i class="fas fa-robot text-sm"></i>
+      <span>AI TIO</span>
+    </button>
+  </div>
+
+  <!-- ==================== FIREBASE & IN-HOUSE AI ENGINE SCRIPT ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
+      measurementId: "G-V6DZ37WSBF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gigsRef = ref(db, "tio_gigs");
+    const categoriesRef = ref(db, "tio_categories");
+
+    const PHONE_NUMBER = "8801704609401";
+
+    let rawGigsData = {};
+    let rawCategoriesData = {};
+    let currentCategoryFilter = "all";
+
+    // DOM Elements
+    const gigsGrid = document.getElementById("gigsGrid");
+    const emptyGigsState = document.getElementById("emptyGigsState");
+    const gigCountBadge = document.getElementById("gigCountBadge");
+    const categoryFilterBar = document.getElementById("categoryFilterBar");
+
+    // Drawer Elements
+    const sideDrawer = document.getElementById("sideDrawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+    const drawerPanel = document.getElementById("drawerPanel");
+    const drawerToggleBtn = document.getElementById("drawerToggleBtn");
+    const drawerCloseBtn = document.getElementById("drawerCloseBtn");
+
+    // Demo Modal Elements
+    const demoModal = document.getElementById("demoModal");
+    const demoIframe = document.getElementById("demoIframe");
+    const demoModalTitle = document.getElementById("demoModalTitle");
+    const closeDemoModalBtn = document.getElementById("closeDemoModalBtn");
+    const reloadDemoIframeBtn = document.getElementById("reloadDemoIframeBtn");
+    const iframeLoader = document.getElementById("iframeLoader");
+
+    // AI Chat Elements
+    const aiChatWindow = document.getElementById("aiChatWindow");
+    const floatingAiToggleBtn = document.getElementById("floatingAiToggleBtn");
+    const closeAiChatBtn = document.getElementById("closeAiChatBtn");
+    const aiChatForm = document.getElementById("aiChatForm");
+    const aiUserInput = document.getElementById("aiUserInput");
+    const aiMessagesList = document.getElementById("aiMessagesList");
+    const drawerOpenAiBtn = document.getElementById("drawerOpenAiBtn");
+
+    // Price formatter helper
+    function formatPrice(val) {
+      if (!val) return "$0";
+      const cleanVal = String(val).trim();
+      return cleanVal.startsWith("$") ? cleanVal : `$${cleanVal}`;
+    }
+
+    // ==================== MOBILE BACK BUTTON NAVIGATION SYSTEM ====================
+    let activeModal = null; // 'drawer' | 'demo' | 'ai' | null
+
+    function setHistoryState(modalName) {
+      if (activeModal !== modalName) {
+        activeModal = modalName;
+        window.history.pushState({ modal: modalName }, "");
+      }
+    }
+
+    window.addEventListener("popstate", () => {
+      if (activeModal === 'drawer') closeDrawer(false);
+      else if (activeModal === 'demo') closeDemo(false);
+      else if (activeModal === 'ai') closeAiChat(false);
+      activeModal = null;
+    });
+
+    // Drawer Controls
+    function openDrawer() {
+      sideDrawer.classList.remove("pointer-events-none");
+      drawerOverlay.classList.remove("opacity-0");
+      drawerPanel.classList.remove("translate-x-full");
+      setHistoryState('drawer');
+    }
+
+    function closeDrawer(shouldBack = true) {
+      sideDrawer.classList.add("pointer-events-none");
+      drawerOverlay.classList.add("opacity-0");
+      drawerPanel.classList.add("translate-x-full");
+      if (shouldBack && activeModal === 'drawer') {
+        activeModal = null;
+        window.history.back();
+      } else {
+        activeModal = null;
+      }
+    }
+
+    drawerToggleBtn.addEventListener("click", openDrawer);
+    drawerCloseBtn.addEventListener("click", () => closeDrawer(true));
+    drawerOverlay.addEventListener("click", () => closeDrawer(true));
+    document.querySelectorAll(".drawer-nav-item").forEach(el => el.addEventListener("click", () => closeDrawer(true)));
+
+    // Demo Modal Controls
+    function openDemo(url, title) {
+      demoModalTitle.innerText = title ? `Preview: ${title}` : "Live Project Preview";
+      iframeLoader.style.display = "flex";
+      demoIframe.src = url;
+      
+      demoIframe.onload = () => {
+        iframeLoader.style.display = "none";
+      };
+
+      demoModal.classList.remove("pointer-events-none", "opacity-0");
+      setHistoryState('demo');
+    }
+
+    function closeDemo(shouldBack = true) {
+      demoModal.classList.add("pointer-events-none", "opacity-0");
+      demoIframe.src = "";
+      if (shouldBack && activeModal === 'demo') {
+        activeModal = null;
+        window.history.back();
+      } else {
+        activeModal = null;
+      }
+    }
+
+    closeDemoModalBtn.addEventListener("click", () => closeDemo(true));
+    reloadDemoIframeBtn.addEventListener("click", () => {
+      if (demoIframe.src) {
+        iframeLoader.style.display = "flex";
+        demoIframe.src = demoIframe.src;
+      }
+    });
+
+    // AI Chat Controls
+    function openAiChat() {
+      aiChatWindow.classList.remove("hidden");
+      aiUserInput.focus();
+      setHistoryState('ai');
+    }
+
+    function closeAiChat(shouldBack = true) {
+      aiChatWindow.classList.add("hidden");
+      if (shouldBack && activeModal === 'ai') {
+        activeModal = null;
+        window.history.back();
+      } else {
+        activeModal = null;
+      }
+    }
+
+    floatingAiToggleBtn.addEventListener("click", () => {
+      if (aiChatWindow.classList.contains("hidden")) openAiChat();
+      else closeAiChat(true);
+    });
+    closeAiChatBtn.addEventListener("click", () => closeAiChat(true));
+    if (drawerOpenAiBtn) drawerOpenAiBtn.addEventListener("click", () => {
+      closeDrawer(false);
+      openAiChat();
+    });
+
+    // ==================== REALTIME CATEGORIES LISTENER ====================
+    onValue(categoriesRef, (snapshot) => {
+      categoryFilterBar.innerHTML = `
+        <button data-cat="all" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold ${currentCategoryFilter === 'all' ? 'bg-slate-900 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'} transition whitespace-nowrap shadow-xs">
+          All Services
+        </button>
+      `;
+
+      if (snapshot.exists()) {
+        rawCategoriesData = snapshot.val();
+        Object.keys(rawCategoriesData).forEach((id) => {
+          const cName = rawCategoriesData[id].name;
+          const pill = document.createElement("button");
+          pill.setAttribute("data-cat", cName);
+          const isActive = currentCategoryFilter === cName;
+          pill.className = `cat-pill px-4 py-2 rounded-xl text-xs font-bold ${isActive ? 'bg-slate-900 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'} transition whitespace-nowrap shadow-xs`;
+          pill.textContent = cName;
+          categoryFilterBar.appendChild(pill);
+        });
+      }
+
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentCategoryFilter = btn.getAttribute("data-cat");
+          document.querySelectorAll(".cat-pill").forEach(p => {
+            p.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition whitespace-nowrap shadow-xs";
+          });
+          btn.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition whitespace-nowrap shadow-xs";
+          renderGigs();
+        });
+      });
+    });
+
+    // ==================== RENDER GIGS ====================
+    function renderGigs() {
+      gigsGrid.innerHTML = "";
+      const keys = Object.keys(rawGigsData).reverse();
+      let visibleCount = 0;
+
+      keys.forEach((key) => {
+        const gig = rawGigsData[key];
+        if (currentCategoryFilter !== "all" && gig.category !== currentCategoryFilter) return;
+
+        visibleCount++;
+
+        const formattedPrice = formatPrice(gig.price);
+        const waMsg = encodeURIComponent(
+          `Hello Taohid Islam,\n\nI want to order / inquire about your service:\n• Service: ${gig.title}\n• Category: ${gig.category}\n• Price: ${formattedPrice}\n\nPlease share further details!`
+        );
+        const waLink = `https://wa.me/${PHONE_NUMBER}?text=${waMsg}`;
+
+        const card = document.createElement("div");
+        card.className = "service-card rounded-2xl overflow-hidden flex flex-col";
+        card.innerHTML = `
+          <div class="relative h-48 w-full bg-slate-100 overflow-hidden">
+            <img src="${gig.imageUrl}" alt="${gig.title}" class="w-full h-full object-cover transition duration-300 hover:scale-105" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600'" />
+            <span class="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-slate-800 text-[10px] font-bold tracking-wide uppercase px-3 py-1 rounded-full border border-slate-200/80 shadow-xs">
+              ${gig.category}
+            </span>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h3 class="font-bold text-slate-900 text-base tracking-tight leading-snug line-clamp-1">${gig.title}</h3>
+                <span class="text-xs font-bold text-emerald-600 whitespace-nowrap bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">${formattedPrice}</span>
+              </div>
+              <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-5">
+                ${gig.description}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center space-x-2">
+              <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2.5 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition shadow-xs">
+                <i class="fab fa-whatsapp text-sm"></i>
+                <span>Order on WhatsApp</span>
+              </a>
+              ${
+                gig.demoUrl
+                  ? `<button data-demo-url="${gig.demoUrl}" data-demo-title="${gig.title}" class="live-demo-trigger p-2.5 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-700 rounded-xl text-xs transition border border-slate-200 flex items-center space-x-1 font-semibold" title="Preview in App">
+                      <i class="fas fa-desktop"></i>
+                      <span class="text-[11px] hidden sm:inline">Preview</span>
+                    </button>`
+                  : ""
+              }
+            </div>
+          </div>
+        `;
+        gigsGrid.appendChild(card);
+      });
+
+      // Attach In-App Live Demo click listeners
+      document.querySelectorAll(".live-demo-trigger").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const url = btn.getAttribute("data-demo-url");
+          const title = btn.getAttribute("data-demo-title");
+          openDemo(url, title);
+        });
+      });
+
+      gigCountBadge.innerText = `${visibleCount} Services Available`;
+      if (visibleCount === 0) {
+        emptyGigsState.classList.remove("hidden");
+      } else {
+        emptyGigsState.classList.add("hidden");
+      }
+    }
+
+    // ==================== REALTIME GIGS LISTENER ====================
+    onValue(gigsRef, (snapshot) => {
+      rawGigsData = snapshot.exists() ? snapshot.val() : {};
+      renderGigs();
+    });
+
+    // ==================== IN-HOUSE STANDALONE AI TIO ENGINE ====================
+    function addAiMessage(text, isUser = false) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `flex items-start space-x-2 ${isUser ? 'justify-end' : ''}`;
+
+      if (isUser) {
+        msgDiv.innerHTML = `
+          <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none text-slate-100 shadow-xs leading-relaxed max-w-[85%]">
+            ${text}
+          </div>
+        `;
+      } else {
+        msgDiv.innerHTML = `
+          <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-slate-700 shadow-xs leading-relaxed max-w-[85%]">
+            ${formatAiMarkdown(text)}
+          </div>
+        `;
+      }
+
+      aiMessagesList.appendChild(msgDiv);
+      aiMessagesList.scrollTop = aiMessagesList.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const typingDiv = document.createElement("div");
+      typingDiv.id = "aiTypingIndicator";
+      typingDiv.className = "flex items-start space-x-2";
+      typingDiv.innerHTML = `
+        <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none text-slate-700 shadow-xs flex items-center space-x-1.5">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      `;
+      aiMessagesList.appendChild(typingDiv);
+      aiMessagesList.scrollTop = aiMessagesList.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const typingDiv = document.getElementById("aiTypingIndicator");
+      if (typingDiv) typingDiv.remove();
+    }
+
+    function formatAiMarkdown(text) {
+      if (!text) return "";
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n\s*-\s*(.*?)/g, '<br>• $1')
+        .replace(/\n/g, '<br>');
+    }
+
+    // Comprehensive In-House NLP Engine for AI TIO
+    function processAiTioQuery(query) {
+      const q = query.toLowerCase().trim();
+      const gigKeys = Object.keys(rawGigsData);
+      const allGigs = gigKeys.map(k => rawGigsData[k]);
+
+      // 1. Greetings & Salutations
+      if (/^(hi|hello|hey|salam|assalamu|hola|kemon|kemn|ki khobor|হেলো|হাই|সালাম)/i.test(q)) {
+        return `Hello! I am **AI TIO**, the intelligent software & portfolio assistant for **Taohid Islam**.\n\nI can analyze our live service database, explain tech architectures, check gig prices, or guide you on ordering custom projects. What would you like to know?`;
+      }
+
+      // 2. Who is Taohid Islam / Developer Bio / Identity
+      if (q.includes("who is") || q.includes("taohid") || q.includes("developer") || q.includes("about") || q.includes("founder") || q.includes("কে") || q.includes("তাওহীদ") || q.includes("পরিচয়")) {
+        return `**Taohid Islam** is a professional **Software Developer & Web Architect** and the founder of **TIO**.\n\n**Core Expertise:**\n• **Platforms:** Live Streaming Websites, High-conversion E-commerce, Social Media Platforms, Corporate Portals.\n• **Tech Stack:** HTML5, CSS3, JavaScript (ES6+), Firebase Web SDK (Realtime DB & Auth), Cloudinary, ImgBB API, Git & GitHub, Vercel.\n• **Specialization:** Real-time synchronization, low-latency media delivery, responsive UI/UX architecture, and technical SEO.\n\nYou can order custom web systems directly via WhatsApp: **+8801704609401**.`;
+      }
+
+      // 3. Database Services, All Gigs & Pricing Analysis
+      if (q.includes("price") || q.includes("service") || q.includes("cost") || q.includes("list") || q.includes("সব") || q.includes("দাম") || q.includes("সার্ভিস") || q.includes("কত") || q.includes("rate") || q.includes("package")) {
+        if (allGigs.length === 0) {
+          return `Our services database is currently synchronizing. Taohid Islam builds custom web systems tailored to your requirements.\n\nDirect WhatsApp Consultation: **+8801704609401**.`;
+        }
+        let listStr = `Here is the real-time breakdown of available services analyzed from our database:\n`;
+        allGigs.forEach((g, idx) => {
+          listStr += `\n${idx + 1}. **${g.title}** (${g.category}) — **${formatPrice(g.price)}**\n   *${g.description}*\n`;
+        });
+        listStr += `\nTo order any project, click the **Order on WhatsApp** button on the gig card or chat directly at **+8801704609401**.`;
+        return listStr;
+      }
+
+      // 4. Live Streaming Websites
+      if (q.includes("streaming") || q.includes("stream") || q.includes("live") || q.includes("ভিডিও") || q.includes("লাইভ") || q.includes("broadcast")) {
+        const streamGig = allGigs.find(g => g.category.toLowerCase().includes("streaming") || g.title.toLowerCase().includes("stream"));
+        let reply = `**Live Streaming Architecture by TIO:**\nTaohid Islam develops ultra-low latency, buffer-free Live Streaming platforms with real-time interactive chat, Firebase SDK integration, token authentication, and multi-resolution video playback pipelines.\n\n`;
+        if (streamGig) {
+          reply += `• **Featured Project:** ${streamGig.title}\n• **Category:** ${streamGig.category}\n• **Price:** ${formatPrice(streamGig.price)}\n• **Description:** ${streamGig.description}\n\n`;
+        }
+        reply += `Want to launch your own custom Live Streaming site? Contact Taohid on WhatsApp: **+8801704609401**.`;
+        return reply;
+      }
+
+      // 5. E-Commerce Websites
+      if (q.includes("ecommerce") || q.includes("e-commerce") || q.includes("shop") || q.includes("store") || q.includes("ইকমার্স") || q.includes("দোকান") || q.includes("cart") || q.includes("product")) {
+        const ecomGig = allGigs.find(g => g.category.toLowerCase().includes("e-commerce") || g.category.toLowerCase().includes("ecommerce") || g.title.toLowerCase().includes("commerce") || g.title.toLowerCase().includes("shop"));
+        let reply = `**E-Commerce Systems by TIO:**\nWe engineer modern online stores featuring fast product filtering, dynamic cart systems, secure checkout workflows, real-time inventory management, and mobile-optimized layouts.\n\n`;
+        if (ecomGig) {
+          reply += `• **Available Gig:** ${ecomGig.title}\n• **Price:** ${formatPrice(ecomGig.price)}\n• **Details:** ${ecomGig.description}\n\n`;
+        }
+        reply += `Order an e-commerce website by contacting Taohid on WhatsApp: **+8801704609401**.`;
+        return reply;
+      }
+
+      // 6. Web Development Concepts (HTML, CSS, JS, Frontend, Backend, Hosting)
+      if (q.includes("html") || q.includes("css") || q.includes("javascript") || q.includes("js") || q.includes("frontend") || q.includes("backend") || q.includes("fullstack") || q.includes("what is web") || q.includes("roadmap") || q.includes("ডেভেলপমেন্ট") || q.includes("শিখব")) {
+        return `**Web Development Core Fundamentals:**\n\n• **HTML5:** The skeletal structure of web pages that organizes text, images, inputs, and multimedia.\n• **CSS3 & Tailwind CSS:** The visual styling, modern grid/flexbox layouts, animations, and responsive breakpoints.\n• **JavaScript (ES6+):** The programming logic that makes web pages interactive, handles APIs, real-time events, and DOM manipulation.\n• **Backend & Cloud (Firebase / Node):** Handles databases, user authentication, security rules, and real-time syncing.\n\nTaohid Islam leverages this stack along with Cloudinary, Git/GitHub, and Vercel to construct enterprise-grade web applications.`;
+      }
+
+      // 7. Firebase & Database Inquiries
+      if (q.includes("firebase") || q.includes("database") || q.includes("ডাটাবেজ") || q.includes("auth") || q.includes("backend")) {
+        return `**Firebase & Backend Architecture at TIO:**\nTaohid Islam integrates **Firebase Web SDK (Realtime Database & Firestore)** to enable instant data synchronization without page reloads, lightning-fast query execution, secure cloud storage rules, and zero-maintenance serverless scalability.`;
+      }
+
+      // 8. SEO & Responsive UI/UX
+      if (q.includes("seo") || q.includes("ui") || q.includes("ux") || q.includes("design") || q.includes("responsive") || q.includes("মোবাইল") || q.includes("ডিজাইন")) {
+        return `**UI/UX & Technical SEO Engineering:**\nEvery platform engineered by TIO is:\n1. **100% Responsive:** Optimized for Mobile, Tablet, Laptop, and 4K screens.\n2. **Fast & Lightweight:** High Google PageSpeed score and clean markup.\n3. **Search Engine Optimized:** Structured metadata, OpenGraph cards, and schema tags for maximum search visibility.`;
+      }
+
+      // 9. How to order / Contact / WhatsApp
+      if (q.includes("order") || q.includes("hire") || q.includes("contact") || q.includes("whatsapp") || q.includes("অর্ডার") || q.includes("যোগাযোগ") || q.includes("নম্বর") || q.includes("number") || q.includes("phone")) {
+        return `**How to Order or Start a Custom Project:**\n\n1. Contact **Taohid Islam** directly on WhatsApp: **+8801704609401**\n2. WhatsApp Link: [Chat on WhatsApp](https://wa.me/8801704609401)\n3. Share your project requirements or select any service from this portfolio.\n4. We provide fast delivery, clean source code, free deployment, and domain setup assistance!`;
+      }
+
+      // 10. Direct Gig Keyword Matching from Database
+      const matchedGig = allGigs.find(g => 
+        q.includes(g.title.toLowerCase()) || 
+        q.includes(g.category.toLowerCase()) ||
+        g.description.toLowerCase().includes(q)
+      );
+
+      if (matchedGig) {
+        return `**Service Found in Database:**\n\n• **Title:** ${matchedGig.title}\n• **Category:** ${matchedGig.category}\n• **Price:** ${formatPrice(matchedGig.price)}\n• **Description:** ${matchedGig.description}\n\nWould you like to order this? You can click the **Order on WhatsApp** button or message Taohid at **+8801704609401**.`;
+      }
+
+      // Default Intelligent Response
+      return `**AI TIO Analysis for:** "*${query}*"\n\nTaohid Islam is specialized in building modern, scalable web platforms (Live Streaming, E-Commerce, Social Platforms, and Custom Web Apps).\n\n• Explore all available gigs in the **Services Section**.\n• Inquire about custom software architecture directly on **WhatsApp (+8801704609401)**.`;
+    }
+
+    aiChatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const val = aiUserInput.value.trim();
+      if (!val) return;
+
+      addAiMessage(val, true);
+      aiUserInput.value = "";
+      showTypingIndicator();
+
+      // Natural conversational typing simulation
+      setTimeout(() => {
+        const reply = processAiTioQuery(val);
+        removeTypingIndicator();
+        addAiMessage(reply, false);
+      }, 300);
+    });
+
+    // Quick Action Chips
+    document.querySelectorAll(".ai-quick-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const queryText = btn.innerText.trim();
+        addAiMessage(queryText, true);
+        showTypingIndicator();
+        setTimeout(() => {
+          const reply = processAiTioQuery(queryText);
+          removeTypingIndicator();
+          addAiMessage(reply, false);
+        }, 250);
+      });
+    });
+  </script>
+</body>
+</html>
