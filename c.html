@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TIO — Admin Control Room</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-900 selection:bg-blue-600 selection:text-white py-10 px-4">
+
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Brand Header -->
+    <div class="flex items-center justify-between pb-6 mb-8 border-b border-slate-200">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-extrabold text-white text-base shadow-sm">
+          TIO
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-tight">Admin Management Hub</h1>
+          <p class="text-xs text-slate-500">Taohid Islam • Production Database Console</p>
+        </div>
+      </div>
+      <a href="index.html" class="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 transition">
+        <i class="fas fa-arrow-left mr-1.5"></i> View Client Site
+      </a>
+    </div>
+
+    <!-- PIN Authentication Box -->
+    <div id="authBox" class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm text-center max-w-md mx-auto my-12">
+      <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 border border-blue-100">
+        <i class="fas fa-lock text-xl"></i>
+      </div>
+      <h2 class="text-base font-bold text-slate-900">Enter Admin PIN</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-5">Protected environment for TIO Services & Gigs</p>
+      
+      <div class="flex space-x-2">
+        <input type="password" id="adminPinInput" placeholder="PIN (1234)" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600 text-center tracking-widest font-bold" />
+        <button id="unlockBtn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition">Unlock</button>
+      </div>
+      <p id="pinError" class="text-rose-600 text-xs font-semibold mt-3 hidden">Incorrect PIN! Try again.</p>
+    </div>
+
+    <!-- Workspace Container (Hidden until unlocked) -->
+    <div id="adminWorkspace" class="hidden space-y-8">
+      
+      <!-- 1. Category Manager -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">1. Manage Categories</h3>
+        </div>
+
+        <form id="createCategoryForm" class="flex gap-2">
+          <input type="text" id="newCategoryName" required placeholder="e.g. Web Applications, SaaS, Mobile Apps" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium" />
+          <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition">Add Category</button>
+        </form>
+
+        <div>
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active Categories:</span>
+          <div id="categoryChips" class="flex flex-wrap gap-2 pt-2">
+            <!-- Dynamic Chips -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Create Product / Gig Form -->
+      <form id="createGigForm" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">2. Publish New Service / Gig</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Gig Title *</label>
+            <input type="text" id="gigTitle" required placeholder="e.g. E-commerce Store Platform" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Category *</label>
+            <select id="gigCategorySelect" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium">
+              <option value="" disabled selected>Select Category</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Pricing / Rate *</label>
+            <input type="text" id="gigPrice" required placeholder="e.g. Starts at $120 or ৳12,000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Live Preview / Demo URL</label>
+            <input type="url" id="gigDemoUrl" placeholder="https://demo-link.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Cover Image URL *</label>
+          <input type="url" id="gigImageUrl" required placeholder="https://..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Description / Deliverables *</label>
+          <textarea id="gigDesc" rows="3" required placeholder="Provide concise features, deliverable list, and technologies used..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600 font-medium"></textarea>
+        </div>
+
+        <button type="submit" id="publishBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 font-bold text-white rounded-xl text-xs transition shadow-sm">
+          Publish to Live Portfolio
+        </button>
+      </form>
+
+      <!-- 3. Existing Gigs Manager -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">3. Live Published Gigs</h3>
+        <div id="adminGigsList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
+      measurementId: "G-V6DZ37WSBF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gigsRef = ref(db, "tio_gigs");
+    const categoriesRef = ref(db, "tio_categories");
+
+    const MASTER_PIN = "1234";
+
+    const authBox = document.getElementById("authBox");
+    const adminWorkspace = document.getElementById("adminWorkspace");
+    const adminPinInput = document.getElementById("adminPinInput");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const pinError = document.getElementById("pinError");
+
+    const createCategoryForm = document.getElementById("createCategoryForm");
+    const newCategoryName = document.getElementById("newCategoryName");
+    const categoryChips = document.getElementById("categoryChips");
+    const gigCategorySelect = document.getElementById("gigCategorySelect");
+
+    const createGigForm = document.getElementById("createGigForm");
+    const publishBtn = document.getElementById("publishBtn");
+    const adminGigsList = document.getElementById("adminGigsList");
+
+    // Unlock PIN
+    unlockBtn.addEventListener("click", () => {
+      if (adminPinInput.value === MASTER_PIN) {
+        authBox.classList.add("hidden");
+        adminWorkspace.classList.remove("hidden");
+        pinError.classList.add("hidden");
+      } else {
+        pinError.classList.remove("hidden");
+      }
+    });
+
+    // Add Category
+    createCategoryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const val = newCategoryName.value.trim();
+      if (!val) return;
+      await push(categoriesRef, { name: val });
+      newCategoryName.value = "";
+    });
+
+    window.deleteCategory = async (catId) => {
+      if (confirm("Delete this category?")) {
+        await remove(ref(db, `tio_categories/${catId}`));
+      }
+    };
+
+    // Category Realtime Sync
+    onValue(categoriesRef, (snapshot) => {
+      categoryChips.innerHTML = "";
+      gigCategorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
+
+      if (snapshot.exists()) {
+        const cats = snapshot.val();
+        Object.keys(cats).forEach((id) => {
+          const name = cats[id].name;
+          
+          const chip = document.createElement("span");
+          chip.className = "inline-flex items-center space-x-1.5 px-3 py-1 bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800";
+          chip.innerHTML = `
+            <span>${name}</span>
+            <button onclick="deleteCategory('${id}')" class="text-rose-500 hover:text-rose-700 ml-1 font-bold">&times;</button>
+          `;
+          categoryChips.appendChild(chip);
+
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          gigCategorySelect.appendChild(opt);
+        });
+      }
+    });
+
+    // Add Gig
+    createGigForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      publishBtn.disabled = true;
+      publishBtn.innerText = "Publishing to Database...";
+
+      const newGig = {
+        title: document.getElementById("gigTitle").value.trim(),
+        category: document.getElementById("gigCategorySelect").value,
+        price: document.getElementById("gigPrice").value.trim(),
+        demoUrl: document.getElementById("gigDemoUrl").value.trim() || "",
+        imageUrl: document.getElementById("gigImageUrl").value.trim(),
+        description: document.getElementById("gigDesc").value.trim(),
+        timestamp: Date.now()
+      };
+
+      try {
+        await push(gigsRef, newGig);
+        createGigForm.reset();
+        alert("Service Gig Published Successfully!");
+      } catch (err) {
+        alert("Publish error: " + err.message);
+      } finally {
+        publishBtn.disabled = false;
+        publishBtn.innerText = "Publish to Live Portfolio";
+      }
+    });
+
+    window.deleteGig = async (id) => {
+      if (confirm("Permanently delete this gig?")) {
+        await remove(ref(db, `tio_gigs/${id}`));
+      }
+    };
+
+    // Gigs Realtime Sync
+    onValue(gigsRef, (snapshot) => {
+      adminGigsList.innerHTML = "";
+      if (!snapshot.exists()) {
+        adminGigsList.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">No active gigs found.</p>';
+        return;
+      }
+
+      const items = snapshot.val();
+      Object.keys(items).reverse().forEach((id) => {
+        const item = items[id];
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs";
+        row.innerHTML = `
+          <div class="flex items-center space-x-3 truncate">
+            <img src="${item.imageUrl}" class="w-10 h-10 rounded-lg object-cover border border-slate-200" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=100'" />
+            <div class="truncate">
+              <p class="font-bold text-slate-900 truncate">${item.title}</p>
+              <p class="text-[11px] text-slate-500">${item.category} • ${item.price}</p>
+            </div>
+          </div>
+          <button onclick="deleteGig('${id}')" class="px-3 py-1.5 text-rose-600 hover:text-white hover:bg-rose-600 rounded-lg border border-rose-200 transition font-bold text-xs">
+            <i class="fas fa-trash-alt mr-1"></i> Delete
+          </button>
+        `;
+        adminGigsList.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
