@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>bKash - Digital Wallet</title>
+  
+  <!-- Google Fonts: Noto Sans Bengali & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- Firebase App & Realtime Database SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --bkash-pink: #e2136e;
+      --bkash-dark: #b80d57;
+      --bkash-light: #fef0f5;
+      --bkash-gray-bg: #f5f6fa;
+      --bkash-card-border: #f0f0f0;
+      --text-dark: #222222;
+      --text-muted: #737373;
+      --text-light: #9e9e9e;
+      --white: #ffffff;
+      --success: #00875a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: #e9ecf2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-dark);
+    }
+
+    .bkash-app {
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 900px;
+      background: var(--bkash-gray-bg);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    @media (max-width: 480px) {
+      body { background: var(--bkash-gray-bg); }
+      .bkash-app {
+        max-height: 100vh;
+        height: 100vh;
+        box-shadow: none;
+      }
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--bkash-gray-bg);
+      padding-bottom: 70px;
+    }
+
+    .screen.active { display: flex; }
+    .screen::-webkit-scrollbar { display: none; }
+
+    /* ================= AUTH SCREENS (REGISTER & PIN LOGIN) ================= */
+    .auth-wrap {
+      background: var(--white);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 35px 24px 24px 24px;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+
+    .auth-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .bkash-logo-svg {
+      width: 75px;
+      height: 75px;
+      fill: var(--bkash-pink);
+      margin-bottom: 12px;
+    }
+
+    .auth-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--bkash-pink);
+    }
+
+    .auth-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .auth-avatar-holder {
+      margin: 18px 0 10px 0;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .auth-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--bkash-pink);
+      object-fit: cover;
+      background: #f0f0f0;
+    }
+
+    .auth-avatar-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: var(--bkash-pink);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      border: 2px solid white;
+    }
+
+    .form-box {
+      width: 100%;
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 48px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: #fafafa;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .field-input:focus {
+      border-color: var(--bkash-pink);
+      background: white;
+    }
+
+    .btn-pink {
+      width: 100%;
+      height: 48px;
+      background: var(--bkash-pink);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(226, 19, 110, 0.3);
+      transition: transform 0.1s, background 0.2s;
+      margin-top: 18px;
+    }
+
+    .btn-pink:active {
+      transform: scale(0.98);
+      background: var(--bkash-dark);
+    }
+
+    .auth-switch-link {
+      margin-top: 15px;
+      font-size: 13px;
+      color: var(--bkash-pink);
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* ================= MAIN DASHBOARD ================= */
+    .bkash-header {
+      background: var(--bkash-pink);
+      color: white;
+      padding: 16px 18px 22px 18px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+      background: white;
+    }
+
+    .user-meta h3 {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .balance-capsule {
+      background: white;
+      color: var(--bkash-pink);
+      display: inline-flex;
+      align-items: center;
+      height: 30px;
+      border-radius: 15px;
+      padding: 2px 14px 2px 4px;
+      margin-top: 5px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .balance-circle {
+      width: 22px;
+      height: 22px;
+      background: var(--bkash-pink);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .balance-text {
+      font-size: 12.5px;
+      font-weight: 700;
+      transition: opacity 0.2s ease;
+    }
+
+    .header-right-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-icon-btn {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* Services Grid */
+    .services-container {
+      margin: -10px 14px 12px 14px;
+      background: white;
+      border-radius: 16px;
+      padding: 16px 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px 6px;
+    }
+
+    .service-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .service-btn:active { transform: scale(0.94); }
+
+    .service-icon-box {
+      width: 48px;
+      height: 48px;
+      background: #fafafa;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--bkash-pink);
+      border: 1px solid #f0f0f0;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .service-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #333333;
+      line-height: 1.2;
+    }
+
+    .section-card {
+      margin: 0 14px 14px 14px;
+      background: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .sec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .sec-head h4 { font-size: 13.5px; font-weight: 700; color: var(--text-dark); }
+    .sec-head span { font-size: 12px; font-weight: 600; color: var(--bkash-pink); cursor: pointer; }
+
+    .banner-promo {
+      background: linear-gradient(125deg, #e2136e, #ff4081);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .banner-promo h5 { font-size: 14px; font-weight: 700; }
+    .banner-promo p { font-size: 11.5px; opacity: 0.9; margin-top: 2px; }
+    .banner-btn {
+      background: #ffeb3b;
+      color: #111;
+      border: none;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 16px;
+      cursor: pointer;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: white;
+      border-top: 1px solid #eaeaea;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-light);
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active { color: var(--bkash-pink); }
+    .nav-item i { font-size: 18px; }
+
+    /* Statement Item */
+    .statement-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .statement-item:last-child { border-bottom: none; }
+
+    .st-left { display: flex; align-items: center; gap: 12px; }
+    .st-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bkash-light);
+      color: var(--bkash-pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .st-title { font-size: 13px; font-weight: 700; color: #333; }
+    .st-sub { font-size: 11px; color: #888; }
+    .st-amount { font-size: 14px; font-weight: 700; }
+    .st-amount.debit { color: #d63031; }
+    .st-amount.credit { color: #00875a; }
+
+    /* Modal & Hold to Confirm */
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+      display: none;
+      justify-content: flex-end;
+      flex-direction: column;
+    }
+
+    .modal-sheet {
+      background: white;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 22px 20px 30px 20px;
+      animation: sheetUp 0.25s ease-out;
+    }
+
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .modal-head h3 { font-size: 16px; font-weight: 700; color: var(--bkash-pink); }
+    .close-btn { font-size: 18px; color: #888; cursor: pointer; }
+
+    .hold-confirm-bar {
+      margin-top: 22px;
+      position: relative;
+      height: 52px;
+      background: var(--bkash-light);
+      border: 1.5px solid #ffccd9;
+      border-radius: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .hold-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--bkash-pink);
+      transition: width 0.05s linear;
+      z-index: 1;
+    }
+
+    .hold-label {
+      position: relative;
+      z-index: 2;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bkash-pink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .holding .hold-label { color: white; }
+
+    /* Success Screen */
+    .success-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .success-badge {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #e6f7ef;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin-bottom: 16px;
+    }
+
+    .receipt-card {
+      width: 100%;
+      background: #fafafa;
+      border-radius: 12px;
+      border: 1px solid #ebebeb;
+      padding: 16px;
+      margin: 20px 0;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    /* Loader Overlay */
+    .loader-overlay {
+      position: absolute;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(255,255,255,0.88);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f0f0f0;
+      border-top: 4px solid var(--bkash-pink);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="bkash-app">
+
+    <!-- Global Loader -->
+    <div class="loader-overlay" id="app-loader">
+      <div class="spinner"></div>
+      <span style="font-size:13px; font-weight:700; color:var(--bkash-pink); margin-top:10px;" id="loader-msg">অপেক্ষা করুন...</span>
+    </div>
+
+    <!-- ================= 1. REGISTRATION SCREEN ================= -->
+    <div class="screen active" id="screen-register">
+      <div class="auth-wrap">
+        <div class="auth-top">
+          <svg class="bkash-logo-svg" viewBox="0 0 100 100">
+            <polygon points="50,15 15,45 35,85 50,60 65,85 85,45" />
+            <polygon points="50,15 65,40 50,60" fill="#b80d57" />
+          </svg>
+          <div class="auth-title">বিকাশ রেজিস্ট্রেশন</div>
+          <div class="auth-sub">নতুন বিকাশ একাউন্ট খুলতে তথ্য দিন</div>
+
+          <!-- Avatar Select -->
+          <label class="auth-avatar-holder" for="reg-avatar-input">
+            <img id="reg-avatar-preview" class="auth-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=newbKashUser" alt="Avatar">
+            <div class="auth-avatar-badge"><i class="fa-solid fa-camera"></i></div>
+          </label>
+          <input type="file" id="reg-avatar-input" accept="image/*" style="display:none;">
+
+          <div class="form-box">
+            <label class="field-label">আপনার পূর্ণ নাম</label>
+            <input type="text" id="reg-name" class="field-input" placeholder="আপনার নাম লিখুন">
+          </div>
+
+          <div class="form-box">
+            <label class="field-label">১১ সংখ্যার বিকাশ মোবাইল নম্বর</label>
+            <input type="tel" id="reg-phone" class="field-input" placeholder="01XXXXXXXXX" maxlength="11">
+          </div>
+
+          <div class="form-box">
+            <label class="field-label">৫ সংখ্যার নতুন পিন (PIN)</label>
+            <input type="password" id="reg-pin" class="field-input" placeholder="•••••" maxlength="5" inputmode="numeric" style="letter-spacing:4px; font-size:18px;">
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-pink" onclick="handleRegister()">
+            একাউন্ট তৈরি করুন <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <div class="auth-switch-link" onclick="showScreen('screen-login')">
+            ইতিমধ্যে একাউন্ট আছে? লগইন করুন
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 2. PIN LOGIN SCREEN (bKash Lock Screen) ================= -->
+    <div class="screen" id="screen-login">
+      <div class="auth-wrap">
+        <div class="auth-top">
+          <svg class="bkash-logo-svg" viewBox="0 0 100 100">
+            <polygon points="50,15 15,45 35,85 50,60 65,85 85,45" />
+            <polygon points="50,15 65,40 50,60" fill="#b80d57" />
+          </svg>
+          
+          <img id="login-avatar-display" class="auth-avatar" style="margin: 10px 0;" src="" alt="Avatar">
+          <h3 id="login-user-name" style="font-size:17px; font-weight:700;">নাম লোড হচ্ছে...</h3>
+          <p id="login-user-phone" style="font-size:13px; color:var(--text-muted);">01XXXXXXXXX</p>
+
+          <div class="form-box" style="margin-top:25px;">
+            <label class="field-label" style="text-align:center;">৫ সংখ্যার বিকাশ পিন দিন</label>
+            <input type="password" id="login-pin" class="field-input" placeholder="•••••" maxlength="5" inputmode="numeric" style="text-align:center; letter-spacing:6px; font-size:22px;">
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-pink" onclick="handleLogin()">
+            প্রবেশ করুন <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          </button>
+          <div class="auth-switch-link" onclick="switchAccount()">
+            অন্য একাউন্ট দিয়ে লগইন / রেজিস্ট্রেশন করুন
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 3. DASHBOARD HOME SCREEN ================= -->
+    <div class="screen" id="screen-home">
+      <div class="bkash-header">
+        <div class="header-nav">
+          <div class="user-info-wrap">
+            <img id="dash-avatar" class="user-img" src="" alt="User">
+            <div class="user-meta">
+              <h3 id="dash-name">User Name</h3>
+              <!-- Tap for Balance -->
+              <div class="balance-capsule" onclick="revealBalance()">
+                <div class="balance-circle">৳</div>
+                <span class="balance-text" id="dash-balance-text">ট্যাপ করে ব্যালেন্স দেখুন</span>
+              </div>
+            </div>
+          </div>
+          <div class="header-right-icons">
+            <div class="header-icon-btn" onclick="logoutApp()"><i class="fa-solid fa-power-off"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-container">
+        <div class="services-grid">
+          <div class="service-btn" onclick="openModal('send_money')">
+            <div class="service-icon-box"><i class="fa-regular fa-paper-plane"></i></div>
+            <span class="service-title">সেন্ড মানি</span>
+          </div>
+          <div class="service-btn" onclick="openModal('recharge')">
+            <div class="service-icon-box"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <span class="service-title">মোবাইল রিচার্জ</span>
+          </div>
+          <div class="service-btn" onclick="openModal('cash_out')">
+            <div class="service-icon-box"><i class="fa-solid fa-money-bill-transfer"></i></div>
+            <span class="service-title">ক্যাশ আউট</span>
+          </div>
+          <div class="service-btn" onclick="openModal('payment')">
+            <div class="service-icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
+            <span class="service-title">পেমেন্ট</span>
+          </div>
+          <div class="service-btn" onclick="openModal('add_money')">
+            <div class="service-icon-box"><i class="fa-solid fa-wallet"></i></div>
+            <span class="service-title">অ্যাড মানি</span>
+          </div>
+          <div class="service-btn" onclick="openModal('pay_bill')">
+            <div class="service-icon-box"><i class="fa-regular fa-lightbulb"></i></div>
+            <span class="service-title">পে বিল</span>
+          </div>
+          <div class="service-btn" onclick="openModal('savings')">
+            <div class="service-icon-box"><i class="fa-solid fa-piggy-bank"></i></div>
+            <span class="service-title">সেভিংস</span>
+          </div>
+          <div class="service-btn" onclick="openModal('loan')">
+            <div class="service-icon-box"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <span class="service-title">লোন</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promo Banner -->
+      <div class="section-card" style="padding:0; background:transparent;">
+        <div class="banner-promo">
+          <div>
+            <h5>বিকাশ ইনস্ট্যান্ট লোন</h5>
+            <p>জরুরী প্রয়োজনে ঘরে বসেই লোন নিন</p>
+          </div>
+          <button class="banner-btn" onclick="openModal('loan')">আবেদন</button>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="section-card">
+        <div class="sec-head">
+          <h4>সাম্প্রতিক লেনদেন</h4>
+          <span onclick="switchTab('statement')">বিস্তারিত</span>
+        </div>
+        <div id="home-tx-list"></div>
+      </div>
+    </div>
+
+    <!-- ================= 4. STATEMENT SCREEN ================= -->
+    <div class="screen" id="screen-statement">
+      <div class="bkash-header" style="border-radius:0 0 16px 16px;">
+        <h3 style="font-size:16px;">লেনদেন বিবরণী (Statement)</h3>
+      </div>
+      <div class="section-card" style="margin-top:14px;">
+        <div id="full-statement-list"></div>
+      </div>
+    </div>
+
+    <!-- ================= 5. OFFERS SCREEN ================= -->
+    <div class="screen" id="screen-offers">
+      <div class="bkash-header" style="border-radius:0 0 16px 16px;">
+        <h3 style="font-size:16px;">দারুণ সব অফার</h3>
+      </div>
+      <div class="section-card" style="margin-top:14px;">
+        <div class="banner-promo" style="margin-bottom:12px; background:linear-gradient(125deg, #00875a, #00b894);">
+          <div>
+            <h5>মোবাইল রিচার্জে ক্যাশব্যাক</h5>
+            <p>যেকোনো নম্বরে ১০০ টাকা রিচার্জে ২০ টাকা ফেরত</p>
+          </div>
+          <button class="banner-btn" onclick="openModal('recharge')">রিচার্জ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+    <div class="bottom-nav" id="bottom-bar" style="display:none;">
+      <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+        <i class="fa-solid fa-house"></i>
+        <span>হোম</span>
+      </div>
+      <div class="nav-item" id="nav-statement" onclick="switchTab('statement')">
+        <i class="fa-solid fa-list-ul"></i>
+        <span>স্টেটমেন্ট</span>
+      </div>
+      <div class="nav-item" id="nav-offers" onclick="switchTab('offers')">
+        <i class="fa-solid fa-tag"></i>
+        <span>অফার</span>
+      </div>
+    </div>
+
+    <!-- ================= TRANSACTION MODAL SHEET ================= -->
+    <div class="modal-backdrop" id="tx-modal">
+      <div class="modal-sheet">
+        <div class="modal-head">
+          <h3 id="modal-service-title">সার্ভিস</h3>
+          <div class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+
+        <div id="recipient-field" class="form-box">
+          <label class="field-label" id="recipient-label">প্রাপকের নম্বর</label>
+          <input type="tel" id="tx-recipient" class="field-input" placeholder="01XXXXXXXXX" maxlength="11">
+        </div>
+
+        <div class="form-box">
+          <label class="field-label">টাকার পরিমাণ</label>
+          <input type="number" id="tx-amount" class="field-input" placeholder="৳ ০.০০">
+        </div>
+
+        <div id="pin-field" class="form-box">
+          <label class="field-label">আপনার বিকাশ পিন (PIN)</label>
+          <input type="password" id="tx-pin" class="field-input" placeholder="•••••" maxlength="5" inputmode="numeric" style="letter-spacing:4px;">
+        </div>
+
+        <!-- HOLD BUTTON -->
+        <div class="hold-confirm-bar" id="hold-action-btn">
+          <div class="hold-fill" id="hold-fill-bar"></div>
+          <div class="hold-label">
+            <i class="fa-solid fa-fingerprint" style="font-size:18px;"></i>
+            <span>ট্যাপ করে ধরে রাখুন</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SUCCESS RECEIPT SCREEN ================= -->
+    <div class="success-view" id="success-receipt">
+      <div class="success-badge"><i class="fa-solid fa-check"></i></div>
+      <h2 style="font-size:18px; color:var(--text-dark);" id="rc-title">লেনদেন সফল হয়েছে!</h2>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:2px;">আপনার বিকাশ লেনদেনটি সম্পন্ন হয়েছে</p>
+
+      <div class="receipt-card">
+        <div class="receipt-row">
+          <span style="color:#777;">TrxID:</span>
+          <b style="color:var(--bkash-pink);" id="rc-trxid">BL9284JDS</b>
+        </div>
+        <div class="receipt-row">
+          <span style="color:#777;">মোট পরিমাণ:</span>
+          <b id="rc-amount">৳ ০.০০</b>
+        </div>
+        <div class="receipt-row">
+          <span style="color:#777;">নতুন ব্যালেন্স:</span>
+          <b id="rc-new-bal">৳ ০.০০</b>
+        </div>
+      </div>
+
+      <button class="btn-pink" onclick="closeSuccess()">হোমে ফিরে যান</button>
+    </div>
+
+  </div>
+
+  <script>
+    // --- 1. FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
+      measurementId: "G-V6DZ37WSBF"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    // --- App States ---
+    let currentUser = null;
+    let regAvatarBase64 = "https://api.dicebear.com/7.x/bottts/svg?seed=newbKashUser";
+    let activeService = null;
+    let holdInterval = null;
+    let holdProgress = 0;
+    let balanceTimer = null;
+
+    // --- Audio Synthesis for bKash Chime ---
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      } catch(e) {}
+    }
+
+    // --- Loader Functions ---
+    function showLoader(text = "লোড হচ্ছে...") {
+      document.getElementById('loader-msg').innerText = text;
+      document.getElementById('app-loader').style.display = 'flex';
+    }
+    function hideLoader() {
+      document.getElementById('app-loader').style.display = 'none';
+    }
+
+    // --- Navigation Screens ---
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // --- Check Saved Account on Startup ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedPhone = localStorage.getItem('bkash_saved_phone');
+      if (savedPhone) {
+        showLoader("একাউন্ট যাচাই করা হচ্ছে...");
+        db.ref('users/' + savedPhone).once('value', snapshot => {
+          hideLoader();
+          if (snapshot.exists()) {
+            currentUser = snapshot.val();
+            document.getElementById('login-user-name').innerText = currentUser.name;
+            document.getElementById('login-user-phone').innerText = currentUser.phone;
+            document.getElementById('login-avatar-display').src = currentUser.avatar;
+            document.getElementById('login-pin').value = '';
+            showScreen('screen-login');
+          } else {
+            showScreen('screen-register');
+          }
+        }).catch(() => {
+          hideLoader();
+          showScreen('screen-register');
+        });
+      } else {
+        showScreen('screen-register');
+      }
+    });
+
+    // --- Avatar Image Conversion ---
+    document.getElementById('reg-avatar-input').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          regAvatarBase64 = evt.target.result;
+          document.getElementById('reg-avatar-preview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // --- Register Handler ---
+    function handleRegister() {
+      const name = document.getElementById('reg-name').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const pin = document.getElementById('reg-pin').value.trim();
+
+      if (!name) return alert("অনুগ্রহ করে আপনার নাম লিখুন!");
+      if (phone.length !== 11 || !phone.startsWith("01")) return alert("সঠিক ১১ সংখ্যার বিকাশ মোবাইল নম্বর দিন!");
+      if (pin.length !== 5 || isNaN(pin)) return alert("পিন অবশ্যই ৫ সংখ্যার হতে হবে!");
+
+      showLoader("একাউন্ট তৈরি হচ্ছে...");
+
+      db.ref('users/' + phone).once('value', snapshot => {
+        if (snapshot.exists()) {
+          hideLoader();
+          alert("এই নম্বরে ইতিমধ্যে একটি বিকাশ একাউন্ট রয়েছে! দয়া করে পিন দিয়ে লগইন করুন।");
+          localStorage.setItem('bkash_saved_phone', phone);
+          location.reload();
+        } else {
+          const newUser = {
+            name: name,
+            phone: phone,
+            pin: pin,
+            avatar: regAvatarBase64,
+            balance: 500.00, // Welcome bonus
+            transactions: [
+              { type: "অ্যাড মানি", sub: "স্বাগতম বোনাস", amount: 500, date: "আজকে", isCredit: true }
+            ]
+          };
+
+          db.ref('users/' + phone).set(newUser, error => {
+            hideLoader();
+            if (error) {
+              alert("ডাটাবেসে একাউন্ট সেভ করতে সমস্যা হয়েছে: " + error.message);
+            } else {
+              localStorage.setItem('bkash_saved_phone', phone);
+              currentUser = newUser;
+              alert("বিকাশ একাউন্ট সফলভাবে তৈরি হয়েছে এবং ৫০০ টাকা বোনাস যোগ হয়েছে!");
+              
+              // Move to login screen
+              document.getElementById('login-user-name').innerText = currentUser.name;
+              document.getElementById('login-user-phone').innerText = currentUser.phone;
+              document.getElementById('login-avatar-display').src = currentUser.avatar;
+              document.getElementById('login-pin').value = '';
+              showScreen('screen-login');
+            }
+          });
+        }
+      });
+    }
+
+    // --- Login Handler (PIN Check) ---
+    function handleLogin() {
+      const pin = document.getElementById('login-pin').value.trim();
+      if (pin.length !== 5) {
+        alert("৫ সংখ্যার সঠিক পিন নম্বর লিখুন!");
+        return;
+      }
+
+      if (pin === currentUser.pin) {
+        document.getElementById('dash-name').innerText = currentUser.name;
+        document.getElementById('dash-avatar').src = currentUser.avatar;
+        document.getElementById('login-pin').value = '';
+        
+        showScreen('screen-home');
+        document.getElementById('bottom-bar').style.display = 'flex';
+        renderTransactions();
+
+        // Listen for Realtime Balance Updates from Firebase
+        db.ref('users/' + currentUser.phone).on('value', snapshot => {
+          if (snapshot.exists()) {
+            currentUser = snapshot.val();
+            renderTransactions();
+          }
+        });
+      } else {
+        alert("ভুল পিন নম্বর! আবার চেষ্টা করুন।");
+      }
+    }
+
+    // --- Switch Account ---
+    function switchAccount() {
+      localStorage.removeItem('bkash_saved_phone');
+      document.getElementById('reg-name').value = '';
+      document.getElementById('reg-phone').value = '';
+      document.getElementById('reg-pin').value = '';
+      showScreen('screen-register');
+    }
+
+    function logoutApp() {
+      if (confirm("আপনি কি বিকাশ থেকে লগআউট করতে চান?")) {
+        document.getElementById('bottom-bar').style.display = 'none';
+        document.getElementById('login-pin').value = '';
+        showScreen('screen-login');
+      }
+    }
+
+    // --- Tab Switcher ---
+    function switchTab(tab) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      document.getElementById(`screen-${tab}`).classList.add('active');
+      document.getElementById(`nav-${tab}`).classList.add('active');
+
+      if (tab === 'statement') renderFullStatement();
+    }
+
+    // --- Tap for Balance Feature ---
+    let isBalanceShowing = false;
+    function revealBalance() {
+      if (isBalanceShowing) return;
+      isBalanceShowing = true;
+      const textEl = document.getElementById('dash-balance-text');
+      
+      textEl.style.opacity = '0';
+      setTimeout(() => {
+        textEl.innerText = `৳ ${parseFloat(currentUser.balance).toFixed(2)}`;
+        textEl.style.opacity = '1';
+      }, 150);
+
+      clearTimeout(balanceTimer);
+      balanceTimer = setTimeout(() => {
+        textEl.style.opacity = '0';
+        setTimeout(() => {
+          textEl.innerText = 'ট্যাপ করে ব্যালেন্স দেখুন';
+          textEl.style.opacity = '1';
+          isBalanceShowing = false;
+        }, 150);
+      }, 3500);
+    }
+
+    // --- Open Service Modal ---
+    function openModal(service) {
+      activeService = service;
+      const modal = document.getElementById('tx-modal');
+      const title = document.getElementById('modal-service-title');
+      const recField = document.getElementById('recipient-field');
+      const recLabel = document.getElementById('recipient-label');
+
+      document.getElementById('tx-recipient').value = '';
+      document.getElementById('tx-amount').value = '';
+      document.getElementById('tx-pin').value = '';
+
+      recField.style.display = 'block';
+
+      if (service === 'send_money') {
+        title.innerText = 'সেন্ড মানি';
+        recLabel.innerText = 'প্রাপকের বিকাশ নম্বর';
+      } else if (service === 'recharge') {
+        title.innerText = 'মোবাইল রিচার্জ';
+        recLabel.innerText = 'রিচার্জ নম্বর';
+      } else if (service === 'cash_out') {
+        title.innerText = 'ক্যাশ আউট';
+        recLabel.innerText = 'এজেন্ট নম্বর';
+      } else if (service === 'payment') {
+        title.innerText = 'পেমেন্ট';
+        recLabel.innerText = 'মার্চেন্ট নম্বর';
+      } else if (service === 'loan') {
+        title.innerText = 'বিকাশ ইনস্ট্যান্ট লোন';
+        recField.style.display = 'none';
+      } else if (service === 'add_money') {
+        title.innerText = 'ব্যাংক/কার্ড থেকে অ্যাড মানি';
+        recField.style.display = 'none';
+      } else {
+        title.innerText = 'পে বিল';
+        recLabel.innerText = 'মিটার/বিল নম্বর';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('tx-modal').style.display = 'none';
+      cancelHold();
+    }
+
+    // --- Hold to Confirm Bar ---
+    const holdBtn = document.getElementById('hold-action-btn');
+    const holdFill = document.getElementById('hold-fill-bar');
+
+    function startHold(e) {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById('tx-amount').value);
+      const pin = document.getElementById('tx-pin').value;
+
+      if (!amount || amount <= 0) return alert("সঠিক পরিমাণ লিখুন!");
+      if (pin !== currentUser.pin) return alert("ভুল পিন নম্বর দিয়েছেন!");
+      if (['send_money', 'cash_out', 'payment', 'recharge'].includes(activeService) && currentUser.balance < amount) {
+        return alert("পর্যাপ্ত ব্যালেন্স নেই!");
+      }
+
+      holdBtn.classList.add('holding');
+      holdProgress = 0;
+
+      holdInterval = setInterval(() => {
+        holdProgress += 5;
+        holdFill.style.width = holdProgress + '%';
+
+        if (holdProgress >= 100) {
+          clearInterval(holdInterval);
+          processTransaction(amount);
+        }
+      }, 45);
+    }
+
+    function cancelHold() {
+      clearInterval(holdInterval);
+      holdProgress = 0;
+      holdFill.style.width = '0%';
+      holdBtn.classList.remove('holding');
+    }
+
+    holdBtn.addEventListener('mousedown', startHold);
+    holdBtn.addEventListener('mouseup', cancelHold);
+    holdBtn.addEventListener('mouseleave', cancelHold);
+    holdBtn.addEventListener('touchstart', startHold);
+    holdBtn.addEventListener('touchend', cancelHold);
+
+    // --- Process Transaction & Sync With Firebase ---
+    function processTransaction(amount) {
+      closeModal();
+      showLoader("লেনদেন সম্পন্ন হচ্ছে...");
+
+      let serviceName = "লেনদেন";
+      let isCredit = false;
+      const recipient = document.getElementById('tx-recipient').value || "অনলাইন ট্রান্সফার";
+
+      let newBalance = parseFloat(currentUser.balance);
+
+      if (activeService === 'send_money') {
+        newBalance -= amount;
+        serviceName = "সেন্ড মানি";
+      } else if (activeService === 'recharge') {
+        newBalance -= amount;
+        serviceName = "মোবাইল রিচার্জ";
+      } else if (activeService === 'cash_out') {
+        newBalance -= (amount + (amount * 0.015)); // Fee
+        serviceName = "ক্যাশ আউট";
+      } else if (activeService === 'loan' || activeService === 'add_money') {
+        newBalance += amount;
+        serviceName = activeService === 'loan' ? "লোন গ্রহণ" : "অ্যাড মানি";
+        isCredit = true;
+      } else {
+        newBalance -= amount;
+        serviceName = "পেমেন্ট";
+      }
+
+      const trxId = 'TRX' + Math.random().toString(36).substring(2, 9).toUpperCase();
+      const newTx = {
+        type: serviceName,
+        sub: recipient,
+        amount: amount,
+        date: "এইমাত্র",
+        isCredit: isCredit
+      };
+
+      if (!currentUser.transactions) currentUser.transactions = [];
+      currentUser.transactions.unshift(newTx);
+      currentUser.balance = newBalance;
+
+      // Update to Firebase Realtime Database
+      db.ref('users/' + currentUser.phone).set(currentUser, error => {
+        hideLoader();
+        if (error) {
+          alert("ডাটাবেসে আপডেট ব্যর্থ হয়েছে!");
+        } else {
+          playBeep();
+          // Receipt Popup
+          document.getElementById('rc-title').innerText = `${serviceName} সফল হয়েছে!`;
+          document.getElementById('rc-trxid').innerText = trxId;
+          document.getElementById('rc-amount').innerText = `৳ ${amount.toFixed(2)}`;
+          document.getElementById('rc-new-bal').innerText = `৳ ${newBalance.toFixed(2)}`;
+          document.getElementById('success-receipt').style.display = 'flex';
+          renderTransactions();
+        }
+      });
+    }
+
+    function closeSuccess() {
+      document.getElementById('success-receipt').style.display = 'none';
+    }
+
+    // --- Render Transaction Lists ---
+    function renderTransactions() {
+      const container = document.getElementById('home-tx-list');
+      container.innerHTML = '';
+      if (!currentUser.transactions || currentUser.transactions.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#999; font-size:12px; padding:10px;">কোনো লেনদেন নেই</p>';
+        return;
+      }
+
+      currentUser.transactions.slice(0, 3).forEach(tx => {
+        container.innerHTML += `
+          <div class="statement-item">
+            <div class="st-left">
+              <div class="st-icon"><i class="fa-solid ${tx.isCredit ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}"></i></div>
+              <div>
+                <div class="st-title">${tx.type}</div>
+                <div class="st-sub">${tx.sub} • ${tx.date}</div>
+              </div>
+            </div>
+            <div class="st-amount ${tx.isCredit ? 'credit' : 'debit'}">
+              ${tx.isCredit ? '+' : '-'}৳ ${parseFloat(tx.amount).toFixed(2)}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderFullStatement() {
+      const container = document.getElementById('full-statement-list');
+      container.innerHTML = '';
+      if (!currentUser.transactions || currentUser.transactions.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#999; font-size:12px; padding:10px;">কোনো স্টেটমেন্ট পাওয়া যায়নি</p>';
+        return;
+      }
+
+      currentUser.transactions.forEach(tx => {
+        container.innerHTML += `
+          <div class="statement-item">
+            <div class="st-left">
+              <div class="st-icon"><i class="fa-solid ${tx.isCredit ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}"></i></div>
+              <div>
+                <div class="st-title">${tx.type}</div>
+                <div class="st-sub">${tx.sub} • ${tx.date}</div>
+              </div>
+            </div>
+            <div class="st-amount ${tx.isCredit ? 'credit' : 'debit'}">
+              ${tx.isCredit ? '+' : '-'}৳ ${parseFloat(tx.amount).toFixed(2)}
+            </div>
+          </div>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>
