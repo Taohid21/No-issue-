@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>tioDisk • Pro Admin Panel</title>
+
+  <!-- Google Fonts (Plus Jakarta Sans + Hind Siliguri) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 9999px;
+    }
+    .tab-view {
+      display: none;
+    }
+    .tab-view.active {
+      display: block;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-[#09090b] text-zinc-100 antialiased min-h-screen selection:bg-indigo-500/20 selection:text-indigo-400">
+
+  <!-- Toast Notification System -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-[999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <div class="flex min-h-screen">
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-64 border-r border-zinc-800/80 bg-[#121215] p-5 justify-between shrink-0">
+      <div class="space-y-7">
+        <!-- Logo -->
+        <div class="flex items-center gap-2.5 px-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-base shadow-lg shadow-indigo-500/20">t</div>
+          <div>
+            <div class="font-extrabold tracking-tight text-white leading-none text-base">tio<span class="text-indigo-400">Disk</span></div>
+            <span class="text-[10px] text-zinc-400 font-semibold tracking-wider uppercase">Enterprise Admin</span>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="space-y-1.5 font-medium text-xs">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition active-tab">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>ড্যাশবোর্ড</span>
+          </button>
+          <button onclick="switchTab('products')" id="nav-products" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition">
+            <i data-lucide="package" class="w-4 h-4"></i>
+            <span>প্রোডাক্টস ইনভেন্টরি</span>
+          </button>
+          <button onclick="switchTab('categories')" id="nav-categories" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition">
+            <i data-lucide="shapes" class="w-4 h-4"></i>
+            <span>ক্যাটাগরি সমূহ</span>
+          </button>
+          <button onclick="switchTab('marketing')" id="nav-marketing" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/60 transition">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>ব্যানার ও ক্যাম্পেইন</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Quick Store Link -->
+      <div class="border-t border-zinc-800/80 pt-4">
+        <a href="index.html" target="_blank" class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white transition">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>লাইভ শপ দেখুন</span>
+          </div>
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-zinc-500"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-1 flex flex-col min-w-0 pb-24 md:pb-8">
+
+      <!-- TOP BAR -->
+      <header class="h-16 border-b border-zinc-800/80 bg-[#121215]/80 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+        <div class="flex items-center gap-3">
+          <div class="md:hidden w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">t</div>
+          <h1 id="pageTitle" class="text-sm sm:text-base font-bold text-white tracking-tight">ড্যাশবোর্ড ওভারভিউ</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="index.html" target="_blank" class="md:hidden bg-zinc-800 text-zinc-300 p-2 rounded-lg border border-zinc-700">
+            <i data-lucide="external-link" class="w-4 h-4"></i>
+          </a>
+          <div class="flex items-center gap-2 bg-zinc-900 border border-zinc-800 py-1.5 px-3 rounded-full text-[11px] text-zinc-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>Firebase Connected</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <section id="tab-dashboard" class="tab-view active p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+            <p class="text-xs font-medium text-zinc-400">মোট প্রোডাক্ট</p>
+            <h3 id="statTotalProducts" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</h3>
+            <div class="absolute -bottom-2 -right-2 text-zinc-800/40 opacity-20">
+              <i data-lucide="package" class="w-16 h-16"></i>
+            </div>
+          </div>
+          <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+            <p class="text-xs font-medium text-zinc-400">মোট ক্যাটাগরি</p>
+            <h3 id="statTotalCategories" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</h3>
+            <div class="absolute -bottom-2 -right-2 text-zinc-800/40 opacity-20">
+              <i data-lucide="shapes" class="w-16 h-16"></i>
+            </div>
+          </div>
+          <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+            <p class="text-xs font-medium text-zinc-400">মেইন ব্যানার</p>
+            <h3 id="statTotalBanners" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</h3>
+            <div class="absolute -bottom-2 -right-2 text-zinc-800/40 opacity-20">
+              <i data-lucide="image" class="w-16 h-16"></i>
+            </div>
+          </div>
+          <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
+            <p class="text-xs font-medium text-zinc-400">প্রমো অ্যাডস</p>
+            <h3 id="statTotalAds" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</h3>
+            <div class="absolute -bottom-2 -right-2 text-zinc-800/40 opacity-20">
+              <i data-lucide="sparkles" class="w-16 h-16"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marquee Notice Setting -->
+        <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                <i data-lucide="megaphone" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">টপ নোটিশ / Announcement বার</h3>
+                <p class="text-[11px] text-zinc-400">গ্রাহকদের কাছে যে অফার বা বিজ্ঞপ্তি স্ক্রল হবে</p>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <input type="text" id="announcementInput" placeholder="যেমন: ঈদ স্পেশাল ফ্ল্যাশ সেল! ডেলিভারি চার্জ সম্পূর্ণ ফ্রি।" class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition">
+            <button onclick="saveAnnouncement()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shrink-0">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span>সংরক্ষণ করুন</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Launch Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div onclick="switchTab('products')" class="cursor-pointer bg-[#121215] border border-zinc-800/80 hover:border-zinc-700 p-5 rounded-2xl flex items-center justify-between group transition">
+            <div class="space-y-1">
+              <span class="text-xs text-indigo-400 font-semibold">ম্যানেজমেন্ট</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-indigo-400 transition">নতুন প্রোডাক্ট যোগ বা এডিট করুন</h4>
+              <p class="text-xs text-zinc-400">সাইজ, কালার, স্টক এবং ডিসকাউন্ট প্রাইস সেট করুন</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div onclick="switchTab('marketing')" class="cursor-pointer bg-[#121215] border border-zinc-800/80 hover:border-zinc-700 p-5 rounded-2xl flex items-center justify-between group transition">
+            <div class="space-y-1">
+              <span class="text-xs text-purple-400 font-semibold">মার্কেটিং</span>
+              <h4 class="text-sm font-bold text-white group-hover:text-purple-400 transition">স্লাইডার ও অ্যাড ব্যানার আপডেট</h4>
+              <p class="text-xs text-zinc-400">ওয়েবসাইটের প্রচারণামূলক ছবি নিয়ন্ত্রণ করুন</p>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: PRODUCTS -->
+      <section id="tab-products" class="tab-view p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <!-- New Product Form Card -->
+        <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 sm:p-7 space-y-5">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold text-white">নতুন প্রোডাক্ট যোগ করুন</h3>
+                <p class="text-[11px] text-zinc-400">প্রয়োজনীয় প্রতিটি ফিল্ড সঠিকভাবে পূরণ করুন</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">প্রোডাক্টের নাম *</label>
+              <input type="text" id="prodName" placeholder="যেমন: Premium Oversized T-Shirt" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">ক্যাটাগরি নির্ধারণ *</label>
+              <select id="prodCategory" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+                <option value="">ক্যাটাগরি লোড হচ্ছে...</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">ছবির ডিরেক্ট URL *</label>
+              <input type="text" id="prodImageUrl" placeholder="https://..." class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">রেগুলার মূল্য (BDT) *</label>
+              <input type="number" id="prodRegularPrice" placeholder="1200" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">ডিসকাউন্ট অফার মূল্য (BDT)</label>
+              <input type="number" id="prodDiscountPrice" placeholder="850" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">ইনভেন্টরি স্টক সংখ্যা</label>
+              <input type="number" id="prodStock" placeholder="50" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">সাইজসমূহ (কমা দিয়ে লিখুন)</label>
+              <input type="text" id="prodSizes" placeholder="M, L, XL, XXL" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-zinc-400 mb-1.5">কালারসমূহ (কমা দিয়ে লিখুন)</label>
+              <input type="text" id="prodColors" placeholder="Black, Olive, Beige" class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-3.5 py-2.5 text-xs outline-none transition">
+            </div>
+
+            <div class="flex items-center gap-3 pt-6">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="prodFreeDelivery" class="sr-only peer">
+                <div class="w-9 h-5 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                <span class="ml-2.5 text-xs font-semibold text-zinc-300">ফ্রি ডেলিভারি প্রযোজ্য</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-2 flex justify-end">
+            <button onclick="addProduct()" class="w-full sm:w-auto bg-white hover:bg-zinc-200 text-zinc-950 font-bold px-7 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-md">
+              <i data-lucide="package-plus" class="w-4 h-4"></i>
+              <span>প্রোডাক্ট পাবলিশ করুন</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product List Header & Search -->
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-white">ইনভেন্টরি তালিকা</h3>
+              <p class="text-xs text-zinc-400">বর্তমানে ওয়েবসাইটে প্রদর্শিত সকল প্রোডাক্ট</p>
+            </div>
+            <div class="w-full sm:w-64 relative">
+              <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="productSearchInput" oninput="filterProducts()" placeholder="প্রোডাক্ট খুঁজুন..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white outline-none focus:border-zinc-700">
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <div id="adminProductsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CATEGORIES -->
+      <section id="tab-categories" class="tab-view p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <!-- Add Category Box -->
+        <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <i data-lucide="folder-plus" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">নতুন ক্যাটাগরি সংযুক্ত করুন</h3>
+              <p class="text-[11px] text-zinc-400">ক্যাটাগরির শিরোনাম এবং ব্যাকগ্রাউন্ড ইমেজ দিন</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input type="text" id="catName" placeholder="ক্যাটাগরির নাম (যেমন: Hoodies, Premium Polo)" class="bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition">
+            <input type="text" id="catImageUrl" placeholder="ক্যাটাগরি থাম্বনেইল Image URL" class="bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition">
+          </div>
+
+          <div class="flex justify-end">
+            <button onclick="addCategory()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>ক্যাটাগরি সেভ করুন</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Existing Categories -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-zinc-400 tracking-wider uppercase">বিদ্যমান ক্যাটাগরি কার্ডসমূহ</h3>
+          <div id="categoriesList" class="grid grid-cols-2 sm:grid-cols-4 gap-3.5"></div>
+        </div>
+      </section>
+
+      <!-- TAB 4: MARKETING (BANNERS & PROMO ADS) -->
+      <section id="tab-marketing" class="tab-view p-4 sm:p-8 space-y-8 max-w-7xl mx-auto w-full">
+        <!-- 1. Hero Sliders -->
+        <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+              <i data-lucide="image" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">হোম পেজ মেইন স্লাইডার ব্যানার</h3>
+              <p class="text-[11px] text-zinc-400">ব্যবহারকারীদের নজর কাড়তে সেরা হাই-রেজোলিউশন ব্যানার লিঙ্ক যুক্ত করুন</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <input type="text" id="bannerImgUrl" placeholder="ব্যানার ইমেজের ডিরেক্ট URL দিন" class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition">
+            <button onclick="addBanner()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shrink-0">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>ব্যানার যোগ করুন</span>
+            </button>
+          </div>
+
+          <div id="bannersList" class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2"></div>
+        </div>
+
+        <!-- 2. Middle In-Between Promotional Ads -->
+        <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 sm:p-6 space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">ক্যাটাগরির মধ্যবর্তী প্রমোশনাল ব্যানার</h3>
+              <p class="text-[11px] text-zinc-400">প্রোডাক্ট বা ক্যাটাগরির মাঝে নজরকাড়া ডিসকাউন্ট অ্যাডভার্টাইজমেন্ট</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <input type="text" id="adImgUrl" placeholder="বিজ্ঞাপন ব্যানার ইমেজের URL দিন" class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition">
+            <button onclick="addAdBanner()" class="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shrink-0">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>প্রমো অ্যাড যোগ করুন</span>
+            </button>
+          </div>
+
+          <div id="adsList" class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MOBILE BOTTOM NAVIGATION (Smooth UX on phones) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#121215]/95 backdrop-blur-xl border-t border-zinc-800/90 px-3 py-2 flex items-center justify-around">
+    <button onclick="switchTab('dashboard')" id="mob-dashboard" class="mob-item flex flex-col items-center gap-1 text-indigo-400 transition">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] font-semibold">ড্যাশবোর্ড</span>
+    </button>
+    <button onclick="switchTab('products')" id="mob-products" class="mob-item flex flex-col items-center gap-1 text-zinc-400 transition">
+      <i data-lucide="package" class="w-5 h-5"></i>
+      <span class="text-[10px] font-semibold">প্রোডাক্টস</span>
+    </button>
+    <button onclick="switchTab('categories')" id="mob-categories" class="mob-item flex flex-col items-center gap-1 text-zinc-400 transition">
+      <i data-lucide="shapes" class="w-5 h-5"></i>
+      <span class="text-[10px] font-semibold">ক্যাটাগরি</span>
+    </button>
+    <button onclick="switchTab('marketing')" id="mob-marketing" class="mob-item flex flex-col items-center gap-1 text-zinc-400 transition">
+      <i data-lucide="sparkles" class="w-5 h-5"></i>
+      <span class="text-[10px] font-semibold">ক্যাম্পেইন</span>
+    </button>
+  </nav>
+
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
+      measurementId: "G-V6DZ37WSBF"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const PATHS = {
+      announcement: 'tiodisk_announcement',
+      banners: 'tiodisk_banners',
+      categories: 'tiodisk_categories',
+      products: 'tiodisk_products',
+      ads: 'tiodisk_ads'
+    };
+
+    let cachedProducts = {};
+
+    // Toast Alert
+    function showToast(text, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-xs font-semibold shadow-2xl transition-all duration-300 transform translate-y-2 ${
+        isSuccess ? 'bg-zinc-900 border-emerald-500/30 text-emerald-400' : 'bg-zinc-900 border-rose-500/30 text-rose-400'
+      }`;
+      toast.innerHTML = `<i data-lucide="${isSuccess ? 'check-circle' : 'alert-circle'}" class="w-4 h-4"></i> <span>${text}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Tab Navigation Logic
+    const titles = {
+      dashboard: 'ড্যাশবোর্ড ওভারভিউ',
+      products: 'প্রোডাক্টস ইনভেন্টরি',
+      categories: 'ক্যাটাগরি ম্যানেজমেন্ট',
+      marketing: 'ব্যানার ও প্রমোশনাল ক্যাম্পেইন'
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      const activeSection = document.getElementById(`tab-${tabId}`);
+      if (activeSection) activeSection.classList.add('active');
+
+      document.getElementById('pageTitle').innerText = titles[tabId] || 'অ্যাডমিন প্যানেল';
+
+      // Desktop nav active styling
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.remove('bg-zinc-800', 'text-white');
+        btn.classList.add('text-zinc-400');
+      });
+      const dBtn = document.getElementById(`nav-${tabId}`);
+      if (dBtn) {
+        dBtn.classList.add('bg-zinc-800', 'text-white');
+        dBtn.classList.remove('text-zinc-400');
+      }
+
+      // Mobile nav active styling
+      document.querySelectorAll('.mob-item').forEach(btn => {
+        btn.classList.remove('text-indigo-400');
+        btn.classList.add('text-zinc-400');
+      });
+      const mBtn = document.getElementById(`mob-${tabId}`);
+      if (mBtn) {
+        mBtn.classList.add('text-indigo-400');
+        mBtn.classList.remove('text-zinc-400');
+      }
+
+      lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 1. Notice / Announcement
+    db.ref(PATHS.announcement).on('value', snap => {
+      if (snap.val()) document.getElementById('announcementInput').value = snap.val();
+    });
+    function saveAnnouncement() {
+      const val = document.getElementById('announcementInput').value.trim();
+      db.ref(PATHS.announcement).set(val);
+      showToast('অ্যানাউন্সমেন্ট সফলভাবে আপডেট হয়েছে!');
+    }
+
+    // 2. Banners
+    db.ref(PATHS.banners).on('value', snap => {
+      const data = snap.val() || {};
+      const list = document.getElementById('bannersList');
+      const keys = Object.keys(data);
+      document.getElementById('statTotalBanners').innerText = keys.length;
+      list.innerHTML = '';
+      if (keys.length === 0) {
+        list.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-zinc-500">কোনো ব্যানার যুক্ত করা নেই</div>`;
+        return;
+      }
+      keys.forEach(key => {
+        const b = data[key];
+        list.innerHTML += `
+          <div class="relative rounded-xl overflow-hidden border border-zinc-800 aspect-video group bg-zinc-900">
+            <img src="${b.imageUrl}" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/600x300?text=Invalid+Image'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent opacity-0 group-hover:opacity-100 transition p-2 flex items-end justify-end">
+              <button onclick="deleteItem('${PATHS.banners}/${key}')" class="bg-rose-600 hover:bg-rose-500 p-2 rounded-lg text-white shadow-md">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    });
+
+    function addBanner() {
+      const url = document.getElementById('bannerImgUrl').value.trim();
+      if (!url) return showToast('দয়া করে ব্যানার ছবির URL দিন!', 'error');
+      db.ref(PATHS.banners).push({ imageUrl: url });
+      document.getElementById('bannerImgUrl').value = '';
+      showToast('ব্যানার সফলভাবে পাবলিশ হয়েছে!');
+    }
+
+    // 3. Promotional Ads
+    db.ref(PATHS.ads).on('value', snap => {
+      const data = snap.val() || {};
+      const list = document.getElementById('adsList');
+      const keys = Object.keys(data);
+      document.getElementById('statTotalAds').innerText = keys.length;
+      list.innerHTML = '';
+      if (keys.length === 0) {
+        list.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-zinc-500">কোনো প্রমো ব্যানার নেই</div>`;
+        return;
+      }
+      keys.forEach(key => {
+        const ad = data[key];
+        list.innerHTML += `
+          <div class="relative rounded-xl overflow-hidden border border-zinc-800 h-32 group bg-zinc-900">
+            <img src="${ad.imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/600x200?text=Invalid+Ad'">
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <button onclick="deleteItem('${PATHS.ads}/${key}')" class="bg-rose-600 hover:bg-rose-500 px-3 py-1.5 rounded-lg text-white text-xs font-semibold flex items-center gap-1.5">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> ডিলিট
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    });
+
+    function addAdBanner() {
+      const url = document.getElementById('adImgUrl').value.trim();
+      if (!url) return showToast('বিজ্ঞাপন ইমেজের URL প্রয়োজন!', 'error');
+      db.ref(PATHS.ads).push({ imageUrl: url });
+      document.getElementById('adImgUrl').value = '';
+      showToast('প্রমো ব্যানার যুক্ত হয়েছে!');
+    }
+
+    // 4. Categories
+    db.ref(PATHS.categories).on('value', snap => {
+      const data = snap.val() || {};
+      const list = document.getElementById('categoriesList');
+      const select = document.getElementById('prodCategory');
+      const keys = Object.keys(data);
+      document.getElementById('statTotalCategories').innerText = keys.length;
+      list.innerHTML = '';
+      select.innerHTML = '<option value="">ক্যাটাগরি বেছে নিন</option>';
+
+      if (keys.length === 0) {
+        list.innerHTML = `<div class="col-span-full py-8 text-center text-xs text-zinc-500">কোনো ক্যাটাগরি তৈরি করা হয়নি</div>`;
+        return;
+      }
+
+      keys.forEach(key => {
+        const cat = data[key];
+        select.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+        list.innerHTML += `
+          <div class="relative rounded-2xl overflow-hidden border border-zinc-800 aspect-[4/3] group bg-zinc-900">
+            <img src="${cat.imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent p-3 flex flex-col justify-between">
+              <div class="flex justify-end">
+                <button onclick="deleteItem('${PATHS.categories}/${key}')" class="bg-black/60 hover:bg-rose-600 text-zinc-300 hover:text-white p-1.5 rounded-lg backdrop-blur-md transition">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+              <p class="font-bold text-xs text-white truncate">${cat.name}</p>
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    });
+
+    function addCategory() {
+      const name = document.getElementById('catName').value.trim();
+      const imageUrl = document.getElementById('catImageUrl').value.trim();
+      if (!name || !imageUrl) return showToast('নাম ও ছবি উভয়ই পূরণ করুন!', 'error');
+      db.ref(PATHS.categories).push({ name, imageUrl });
+      document.getElementById('catName').value = '';
+      document.getElementById('catImageUrl').value = '';
+      showToast('ক্যাটাগরি সফলভাবে তৈরি করা হয়েছে!');
+    }
+
+    // 5. Products
+    db.ref(PATHS.products).on('value', snap => {
+      cachedProducts = snap.val() || {};
+      document.getElementById('statTotalProducts').innerText = Object.keys(cachedProducts).length;
+      renderProducts(cachedProducts);
+    });
+
+    function renderProducts(data) {
+      const list = document.getElementById('adminProductsList');
+      list.innerHTML = '';
+      const keys = Object.keys(data);
+
+      if (keys.length === 0) {
+        list.innerHTML = `<div class="col-span-full py-12 text-center text-xs text-zinc-500">কোনো প্রোডাক্ট পাওয়া যায়নি</div>`;
+        return;
+      }
+
+      keys.forEach(key => {
+        const p = data[key];
+        list.innerHTML += `
+          <div class="bg-[#121215] border border-zinc-800/80 rounded-2xl p-3.5 flex gap-3.5 items-center group hover:border-zinc-700 transition">
+            <img src="${p.imageUrl}" class="w-20 h-20 rounded-xl object-cover bg-zinc-900 shrink-0" onerror="this.src='https://via.placeholder.com/150?text=No+Img'">
+            <div class="flex-1 min-w-0 space-y-1">
+              <span class="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">${p.category || 'General'}</span>
+              <h4 class="text-xs font-bold text-white truncate group-hover:text-indigo-300 transition">${p.name}</h4>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="font-bold text-white">৳${p.discountPrice || p.regularPrice}</span>
+                ${p.discountPrice ? `<span class="text-[11px] text-zinc-500 line-through">৳${p.regularPrice}</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2 pt-0.5">
+                <span class="text-[10px] text-zinc-400">স্টক: <b class="text-zinc-200">${p.stock || 0}</b></span>
+                ${p.isFreeDelivery ? '<span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/20 font-semibold">Free Delivery</span>' : ''}
+              </div>
+            </div>
+            <button onclick="deleteItem('${PATHS.products}/${key}')" class="p-2 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition shrink-0">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function filterProducts() {
+      const q = document.getElementById('productSearchInput').value.toLowerCase();
+      const filtered = {};
+      Object.entries(cachedProducts).forEach(([k, p]) => {
+        if (p.name.toLowerCase().includes(q) || (p.category && p.category.toLowerCase().includes(q))) {
+          filtered[k] = p;
+        }
+      });
+      renderProducts(filtered);
+    }
+
+    function addProduct() {
+      const name = document.getElementById('prodName').value.trim();
+      const category = document.getElementById('prodCategory').value;
+      const imageUrl = document.getElementById('prodImageUrl').value.trim();
+      const regularPrice = document.getElementById('prodRegularPrice').value;
+      const discountPrice = document.getElementById('prodDiscountPrice').value;
+      const stock = document.getElementById('prodStock').value;
+      const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim()).filter(Boolean);
+      const colors = document.getElementById('prodColors').value.split(',').map(s => s.trim()).filter(Boolean);
+      const isFreeDelivery = document.getElementById('prodFreeDelivery').checked;
+
+      if (!name || !category || !imageUrl || !regularPrice) {
+        return showToast('তারকাযুক্ত গুরুত্বপূর্ণ ফিল্ডগুলো পূরণ করুন!', 'error');
+      }
+
+      db.ref(PATHS.products).push({
+        name, category, imageUrl,
+        regularPrice: Number(regularPrice),
+        discountPrice: discountPrice ? Number(discountPrice) : null,
+        stock: stock ? Number(stock) : 0,
+        sizes, colors, isFreeDelivery,
+        createdAt: Date.now()
+      });
+
+      showToast('প্রোডাক্ট সফলভাবে যুক্ত হয়েছে!');
+      document.getElementById('prodName').value = '';
+      document.getElementById('prodImageUrl').value = '';
+      document.getElementById('prodRegularPrice').value = '';
+      document.getElementById('prodDiscountPrice').value = '';
+      document.getElementById('prodSizes').value = '';
+      document.getElementById('prodColors').value = '';
+    }
+
+    function deleteItem(path) {
+      if (confirm('আপনি কি নিশ্চিত এটি স্থায়ীভাবে মুছে ফেলতে চান?')) {
+        db.ref(path).remove();
+        showToast('আইটেমটি সফলভাবে মুছে ফেলা হয়েছে!');
+      }
+    }
+
+    // Default initialization
+    switchTab('dashboard');
+    lucide.createIcons();
+  </script>
+</body>
+</html>
