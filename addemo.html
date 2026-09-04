@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>tioDisk • Admin Console</title>
+  <title>tioDisk • Pro Admin Console</title>
 
-  <!-- Google Fonts: Inter (Industry Standard UI Font) -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,25 +24,14 @@
       font-family: 'Inter', sans-serif;
       letter-spacing: -0.015em;
     }
-    .tab-view {
-      display: none;
-    }
-    .tab-view.active {
-      display: block;
-      animation: fadeIn 0.2s ease-in-out;
-    }
+    .tab-view { display: none; }
+    .tab-view.active { display: block; animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .custom-scroll::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    .custom-scroll::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
-      border-radius: 999px;
-    }
+    .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
   </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-900 antialiased min-h-screen">
@@ -50,7 +39,13 @@
   <!-- Floating Toast Notification -->
   <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- Slide-out Drawer for Mobile (Triggered by 3-line menu) -->
+  <!-- Global Loading Indicator -->
+  <div id="globalLoader" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-[10000] hidden flex-col items-center justify-center gap-3">
+    <div class="w-10 h-10 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
+    <span id="loaderText" class="text-xs font-semibold text-white bg-slate-900 px-3.5 py-1.5 rounded-full shadow-lg">Uploading media to Cloudinary...</span>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
   <div id="mobileDrawerOverlay" onclick="toggleDrawer(false)" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 hidden transition-opacity"></div>
   <aside id="mobileDrawer" class="fixed top-0 right-0 w-72 h-full bg-white z-50 shadow-2xl p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out">
     <div>
@@ -127,24 +122,20 @@
     <!-- Main Container -->
     <div class="flex-1 flex flex-col min-w-0 pb-28 lg:pb-10">
 
-      <!-- Clean Minimal Header -->
+      <!-- Minimal Header -->
       <header class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
-        <!-- Left: Logo & Title -->
         <div class="flex items-center gap-3">
           <div class="lg:hidden w-7 h-7 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm">t</div>
           <span class="lg:hidden font-bold text-sm tracking-tight text-slate-900">tio<span class="text-slate-400 font-normal">Disk</span></span>
           <span class="hidden lg:block text-xs font-semibold text-slate-400 uppercase tracking-wider" id="headerBreadcrumb">Overview</span>
         </div>
 
-        <!-- Right: Actions & 3-Line Menu -->
         <div class="flex items-center gap-2.5">
           <a href="index.html" target="_blank" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 text-xs font-semibold transition">
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
             <span>Live Store</span>
           </a>
-
-          <!-- Modern 3-Line Menu (Hamburger) -->
-          <button onclick="toggleDrawer(true)" class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition active:scale-95" aria-label="Toggle Menu">
+          <button onclick="toggleDrawer(true)" class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition active:scale-95">
             <i data-lucide="menu" class="w-4 h-4"></i>
           </button>
         </div>
@@ -152,7 +143,6 @@
 
       <!-- TAB 1: DASHBOARD -->
       <main id="tab-dashboard" class="tab-view active p-4 sm:p-8 max-w-6xl mx-auto w-full space-y-6">
-        <!-- Overview Metrics -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
             <span class="text-xs font-medium text-slate-400">Total Products</span>
@@ -172,55 +162,50 @@
           </div>
         </div>
 
-        <!-- Announcement Bar Configuration -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3">
           <div>
             <h3 class="text-sm font-semibold text-slate-900">Header Announcement Bar</h3>
-            <p class="text-xs text-slate-400 mt-0.5">Top ticker text displayed on your store.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Top notification banner for promotions and alerts.</p>
           </div>
           <div class="flex gap-2.5">
-            <input type="text" id="announcementInput" placeholder="e.g. Free shipping on all orders over BDT 2000!" class="flex-1 bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white text-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
+            <input type="text" id="announcementInput" placeholder="e.g. Special Offer: 20% OFF on all items today!" class="flex-1 bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white text-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
             <button onclick="saveAnnouncement()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
               <i data-lucide="check" class="w-3.5 h-3.5"></i> Save
             </button>
           </div>
         </div>
 
-        <!-- Quick Action Shortcuts -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <button onclick="openProductModal()" class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 text-left transition space-y-1 group">
             <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 group-hover:bg-slate-900 group-hover:text-white transition">
               <i data-lucide="plus" class="w-4 h-4"></i>
             </div>
             <h4 class="text-xs font-bold text-slate-900 pt-2">Add New Product</h4>
-            <p class="text-[11px] text-slate-400">Create item with sizes, price & colors</p>
+            <p class="text-[11px] text-slate-400">Color-based multi-image gallery upload</p>
           </button>
-
           <button onclick="switchTab('categories')" class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 text-left transition space-y-1 group">
             <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 group-hover:bg-slate-900 group-hover:text-white transition">
               <i data-lucide="layers" class="w-4 h-4"></i>
             </div>
             <h4 class="text-xs font-bold text-slate-900 pt-2">Manage Categories</h4>
-            <p class="text-[11px] text-slate-400">Update collection cover and links</p>
+            <p class="text-[11px] text-slate-400">Direct photo upload for collections</p>
           </button>
-
           <button onclick="switchTab('marketing')" class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 text-left transition space-y-1 group">
             <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 group-hover:bg-slate-900 group-hover:text-white transition">
               <i data-lucide="image" class="w-4 h-4"></i>
             </div>
-            <h4 class="text-xs font-bold text-slate-900 pt-2">Update Visual Banners</h4>
-            <p class="text-[11px] text-slate-400">Manage slider slides and in-between ads</p>
+            <h4 class="text-xs font-bold text-slate-900 pt-2">Banners & Ads</h4>
+            <p class="text-[11px] text-slate-400">Upload slider & promotional banners</p>
           </button>
         </div>
       </main>
 
       <!-- TAB 2: PRODUCTS -->
       <main id="tab-products" class="tab-view p-4 sm:p-8 max-w-6xl mx-auto w-full space-y-6">
-        <!-- Header & Action Bar -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 class="text-base font-bold text-slate-900">Products</h2>
-            <p class="text-xs text-slate-400">Manage your catalog, stock and pricing.</p>
+            <h2 class="text-base font-bold text-slate-900">Products Inventory</h2>
+            <p class="text-xs text-slate-400">Multi-variant color catalog and stock.</p>
           </div>
           <div class="flex items-center gap-2.5 w-full sm:w-auto">
             <div class="relative flex-1 sm:w-60">
@@ -233,27 +218,41 @@
           </div>
         </div>
 
-        <!-- Product Cards Grid -->
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </main>
 
       <!-- TAB 3: CATEGORIES -->
       <main id="tab-categories" class="tab-view p-4 sm:p-8 max-w-6xl mx-auto w-full space-y-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-base font-bold text-slate-900">Categories</h2>
-            <p class="text-xs text-slate-400">Group items into store collections.</p>
-          </div>
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Product Categories</h2>
+          <p class="text-xs text-slate-400">Organize store items with thumbnail covers.</p>
         </div>
 
-        <!-- Inline Add Category Card -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input type="text" id="catName" placeholder="Category Name (e.g. Hoodies, Polo)" class="bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
-            <input type="text" id="catImageUrl" placeholder="Category Thumbnail Image URL" class="bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
+        <!-- Add Category Form with Direct Upload -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Category Title *</label>
+              <input type="text" id="catName" placeholder="e.g. Hoodies, Summer Drops" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Category Cover Photo *</label>
+              <div class="flex items-center gap-3">
+                <label class="flex-1 flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-800 bg-slate-50 hover:bg-slate-100/60 rounded-xl py-2 px-3 cursor-pointer transition">
+                  <i data-lucide="upload" class="w-4 h-4 text-slate-500"></i>
+                  <span id="catUploadLabel" class="text-xs font-medium text-slate-600">Select Image File</span>
+                  <input type="file" id="catFileInput" accept="image/*" class="hidden" onchange="previewCategoryFile(this)">
+                </label>
+                <div id="catPreviewBox" class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden hidden shrink-0">
+                  <img id="catPreviewImg" class="w-full h-full object-cover">
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex justify-end">
-            <button onclick="addCategory()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+
+          <div class="flex justify-end pt-1">
+            <button onclick="addCategory()" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i> Save Category
             </button>
           </div>
@@ -262,34 +261,46 @@
         <div id="categoriesGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
       </main>
 
-      <!-- TAB 4: MARKETING (BANNERS & ADS) -->
+      <!-- TAB 4: MARKETING (DIRECT CLOUDINARY UPLOADS) -->
       <main id="tab-marketing" class="tab-view p-4 sm:p-8 max-w-6xl mx-auto w-full space-y-8">
         <div>
-          <h2 class="text-base font-bold text-slate-900">Marketing & Banners</h2>
-          <p class="text-xs text-slate-400">Manage hero slider images and promotional ads.</p>
+          <h2 class="text-base font-bold text-slate-900">Marketing & Visual Assets</h2>
+          <p class="text-xs text-slate-400">Upload slider graphics and middle promotional ad banners.</p>
         </div>
 
         <!-- 1. Hero Sliders -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Main Hero Slider Banners</h3>
-          <div class="flex gap-2.5">
-            <input type="text" id="bannerImgUrl" placeholder="Direct Image URL (1920x800 recommended)" class="flex-1 bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
-            <button onclick="addBanner()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Banner
-            </button>
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Main Hero Slider Banners</h3>
+            <span class="text-[11px] text-slate-400 font-medium">Recommended: 1920x800</span>
           </div>
+
+          <div class="flex items-center gap-3">
+            <label class="flex-1 flex items-center justify-center gap-2 border-2 border-dashed border-slate-200 hover:border-slate-800 bg-slate-50/60 hover:bg-slate-50 rounded-xl py-3 cursor-pointer transition">
+              <i data-lucide="upload-cloud" class="w-4 h-4 text-slate-500"></i>
+              <span id="bannerUploadLabel" class="text-xs font-semibold text-slate-600">Select Banner File to Upload</span>
+              <input type="file" id="bannerFileInput" accept="image/*" class="hidden" onchange="uploadBannerDirect(this)">
+            </label>
+          </div>
+
           <div id="bannersGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2"></div>
         </div>
 
-        <!-- 2. Promotional Ads -->
+        <!-- 2. Middle Promo Ads -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">In-Between Promo Cards</h3>
-          <div class="flex gap-2.5">
-            <input type="text" id="adImgUrl" placeholder="Ad Banner Image URL" class="flex-1 bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none transition">
-            <button onclick="addAdBanner()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Promo Ad
-            </button>
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">In-Between Promo Ad Cards</h3>
+            <span class="text-[11px] text-slate-400 font-medium">Horizontal Banners</span>
           </div>
+
+          <div class="flex items-center gap-3">
+            <label class="flex-1 flex items-center justify-center gap-2 border-2 border-dashed border-slate-200 hover:border-slate-800 bg-slate-50/60 hover:bg-slate-50 rounded-xl py-3 cursor-pointer transition">
+              <i data-lucide="upload-cloud" class="w-4 h-4 text-slate-500"></i>
+              <span id="adUploadLabel" class="text-xs font-semibold text-slate-600">Select Promo Card File to Upload</span>
+              <input type="file" id="adFileInput" accept="image/*" class="hidden" onchange="uploadAdDirect(this)">
+            </label>
+          </div>
+
           <div id="adsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2"></div>
         </div>
       </main>
@@ -297,7 +308,7 @@
     </div>
   </div>
 
-  <!-- FLOATING MINIMALIST BOTTOM NAV (Mobile Only) -->
+  <!-- FLOATING MOBILE BOTTOM NAV -->
   <nav class="lg:hidden fixed bottom-4 left-4 right-4 z-40 bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-lg rounded-2xl px-2 py-2 flex items-center justify-around">
     <button onclick="switchTab('dashboard')" id="mob-dashboard" class="mob-item flex flex-col items-center gap-0.5 text-slate-900 p-1.5">
       <i data-lucide="layout-grid" class="w-4 h-4"></i>
@@ -317,85 +328,126 @@
     </button>
   </nav>
 
-  <!-- ADD PRODUCT MODAL / SLIDE-OVER (Keeps main view clean) -->
-  <div id="productModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
-      <!-- Header -->
+  <!-- ADD PRODUCT MODAL (Color Variants + Multi-Image Cloudinary Uploader) -->
+  <div id="productModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[92vh]">
+      <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
         <div>
           <h3 class="text-sm font-bold text-slate-900">New Product Entry</h3>
-          <p class="text-[11px] text-slate-400">Fill in product information and inventory.</p>
+          <p class="text-[11px] text-slate-400">Configure details and color-wise multi-image galleries.</p>
         </div>
         <button onclick="closeProductModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <!-- Form Body -->
-      <div class="p-6 space-y-4 overflow-y-auto custom-scroll flex-1">
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Product Title *</label>
-          <input type="text" id="prodName" placeholder="Classic Oversized Tee" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
-        </div>
+      <!-- Modal Body -->
+      <div class="p-6 space-y-5 overflow-y-auto custom-scroll flex-1">
+        <!-- Basic Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Product Title *</label>
+            <input type="text" id="prodName" placeholder="e.g. Classic Oversized Heavyweight Tee" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
+          </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Category *</label>
             <select id="prodCategory" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
               <option value="">Select Category</option>
             </select>
           </div>
+
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Quantity</label>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Total Stock Quantity</label>
             <input type="number" id="prodStock" placeholder="50" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
           </div>
-        </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Regular Price (BDT) *</label>
             <input type="number" id="prodRegularPrice" placeholder="1200" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
           </div>
+
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Discounted Price (BDT)</label>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Discount Price (BDT)</label>
             <input type="number" id="prodDiscountPrice" placeholder="850" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
           </div>
-        </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-700 mb-1">Image URL *</label>
-          <input type="text" id="prodImageUrl" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Available Sizes (Comma separated)</label>
-            <input type="text" id="prodSizes" placeholder="S, M, L, XL" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Colors (Comma separated)</label>
-            <input type="text" id="prodColors" placeholder="Black, Olive, Grey" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sizes (Comma separated)</label>
+            <input type="text" id="prodSizes" placeholder="M, L, XL, XXL" class="w-full bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
           </div>
         </div>
 
-        <div class="pt-2">
+        <!-- COLOR VARIANTS & MULTI-IMAGE SYSTEM -->
+        <div class="pt-2 border-t border-slate-100 space-y-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-900">Color Variants & Photo Galleries</h4>
+                <p class="text-[11px] text-slate-400">Add product colors and upload multiple images for each color.</p>
+              </div>
+            </div>
+
+            <!-- Color Addition Input -->
+            <div class="flex gap-2 mt-3">
+              <input type="text" id="newColorInput" placeholder="Enter color name (e.g. Olive Green, Jet Black)" class="flex-1 bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 rounded-xl px-3.5 py-2 text-xs outline-none">
+              <button type="button" onclick="addColorGroup()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 transition">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Color
+              </button>
+            </div>
+          </div>
+
+          <!-- Color Groups Container -->
+          <div id="colorGalleriesContainer" class="space-y-4">
+            <!-- Default / All-colors fallback section -->
+            <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 space-y-3" id="colorGroup-default">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                  <span class="text-xs font-bold text-slate-800">General / Default Product Images</span>
+                </div>
+              </div>
+
+              <!-- Upload Dropzone -->
+              <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-slate-900 bg-white rounded-xl p-3.5 cursor-pointer transition text-center">
+                <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400"></i>
+                <span class="text-xs font-semibold text-slate-600 mt-1">Select multiple images</span>
+                <span class="text-[10px] text-slate-400">JPG, PNG, WebP (Cloudinary Direct)</span>
+                <input type="file" multiple accept="image/*" class="hidden" onchange="uploadColorPhotos(this, 'General')">
+              </label>
+
+              <!-- Image Thumbnails Grid -->
+              <div id="thumbs-General" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Free Delivery Check -->
+        <div class="pt-2 border-t border-slate-100">
           <label class="inline-flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="prodFreeDelivery" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-0">
-            <span class="text-xs font-semibold text-slate-700">Free Delivery Included</span>
+            <span class="text-xs font-semibold text-slate-700">Free Delivery Available for this item</span>
           </label>
         </div>
       </div>
 
-      <!-- Footer Buttons -->
+      <!-- Modal Footer -->
       <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
         <button onclick="closeProductModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition">Cancel</button>
-        <button onclick="addProduct()" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-semibold transition">Publish Product</button>
+        <button onclick="addProduct()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+          <i data-lucide="check" class="w-3.5 h-3.5"></i> Save & Publish
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-    // Firebase Initialization
+    // Cloudinary Credentials
+    const CLOUDINARY_CLOUD_NAME = 'dwgvvzbvn';
+    const CLOUDINARY_UPLOAD_PRESET = 'storyapp';
+
+    // Firebase Credentials
     const firebaseConfig = {
       apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
       authDomain: "new-all-f99f7.firebaseapp.com",
@@ -418,9 +470,41 @@
       ads: 'tiodisk_ads'
     };
 
+    // State
     let cachedProducts = {};
+    let activeColorGalleries = {
+      'General': [] // Array of uploaded Cloudinary image URLs
+    };
+    let pendingCategoryImg = '';
 
-    // Toast Alerts
+    // Loader Controller
+    function showLoader(msg = 'Uploading to Cloudinary...') {
+      document.getElementById('loaderText').innerText = msg;
+      document.getElementById('globalLoader').classList.remove('hidden');
+      document.getElementById('globalLoader').classList.add('flex');
+    }
+    function hideLoader() {
+      document.getElementById('globalLoader').classList.add('hidden');
+      document.getElementById('globalLoader').classList.remove('flex');
+    }
+
+    // Direct Cloudinary Upload Function
+    async function uploadFileToCloudinary(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) throw new Error('Cloudinary Upload Failed');
+      const data = await res.json();
+      return data.secure_url;
+    }
+
+    // Toast Alert
     function showToast(message, isError = false) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
@@ -441,9 +525,9 @@
     // Tab Navigation
     const tabTitles = {
       dashboard: 'Overview',
-      products: 'Products Catalog',
+      products: 'Products Inventory',
       categories: 'Categories',
-      marketing: 'Marketing & Ads'
+      marketing: 'Marketing & Media'
     };
 
     function switchTab(tabId) {
@@ -479,7 +563,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Mobile Drawer Handlers
     function toggleDrawer(open) {
       const drawer = document.getElementById('mobileDrawer');
       const overlay = document.getElementById('mobileDrawerOverlay');
@@ -492,7 +575,7 @@
       }
     }
 
-    // Modal Handlers
+    // Modal Control
     function openProductModal() {
       document.getElementById('productModal').classList.remove('hidden');
     }
@@ -500,27 +583,147 @@
       document.getElementById('productModal').classList.add('hidden');
     }
 
-    // 1. Announcement
+    // COLOR VARIANTS & MULTI-IMAGE LOGIC
+    function addColorGroup() {
+      const input = document.getElementById('newColorInput');
+      const colorName = input.value.trim();
+
+      if (!colorName) {
+        return showToast('Please enter a color name', true);
+      }
+      if (activeColorGalleries[colorName]) {
+        return showToast('Color already exists!', true);
+      }
+
+      activeColorGalleries[colorName] = [];
+      renderColorGroupDOM(colorName);
+      input.value = '';
+      lucide.createIcons();
+    }
+
+    function renderColorGroupDOM(colorName) {
+      const container = document.getElementById('colorGalleriesContainer');
+      const div = document.createElement('div');
+      const safeId = colorName.replace(/\s+/g, '-');
+      div.id = `colorGroup-${safeId}`;
+      div.className = 'bg-slate-50/80 border border-slate-200/80 rounded-2xl p-4 space-y-3';
+
+      div.innerHTML = `
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-slate-900"></span>
+            <span class="text-xs font-bold text-slate-900">${colorName}</span>
+          </div>
+          <button type="button" onclick="removeColorGroup('${colorName}')" class="text-slate-400 hover:text-rose-600 text-xs font-semibold flex items-center gap-1">
+            <i data-lucide="trash" class="w-3.5 h-3.5"></i> Remove
+          </button>
+        </div>
+
+        <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 hover:border-slate-900 bg-white rounded-xl p-3.5 cursor-pointer transition text-center">
+          <i data-lucide="upload-cloud" class="w-5 h-5 text-slate-400"></i>
+          <span class="text-xs font-semibold text-slate-600 mt-1">Upload photos for ${colorName}</span>
+          <span class="text-[10px] text-slate-400">Select multiple files at once</span>
+          <input type="file" multiple accept="image/*" class="hidden" onchange="uploadColorPhotos(this, '${colorName}')">
+        </label>
+
+        <div id="thumbs-${safeId}" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
+      `;
+      container.appendChild(div);
+      lucide.createIcons();
+    }
+
+    function removeColorGroup(colorName) {
+      delete activeColorGalleries[colorName];
+      const safeId = colorName.replace(/\s+/g, '-');
+      const el = document.getElementById(`colorGroup-${safeId}`);
+      if (el) el.remove();
+    }
+
+    async function uploadColorPhotos(input, colorName) {
+      const files = Array.from(input.files);
+      if (!files.length) return;
+
+      showLoader(`Uploading ${files.length} images for ${colorName}...`);
+      try {
+        for (const file of files) {
+          const url = await uploadFileToCloudinary(file);
+          activeColorGalleries[colorName].push(url);
+        }
+        renderColorThumbnails(colorName);
+        showToast(`${files.length} image(s) uploaded successfully!`);
+      } catch (err) {
+        console.error(err);
+        showToast('Upload failed! Please check connection.', true);
+      } finally {
+        hideLoader();
+        input.value = '';
+      }
+    }
+
+    function renderColorThumbnails(colorName) {
+      const safeId = colorName.replace(/\s+/g, '-');
+      const grid = document.getElementById(`thumbs-${safeId}`);
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      activeColorGalleries[colorName].forEach((url, idx) => {
+        grid.innerHTML += `
+          <div class="relative rounded-xl overflow-hidden border border-slate-200 aspect-square group bg-white shadow-sm">
+            <img src="${url}" class="w-full h-full object-cover">
+            <button type="button" onclick="deleteColorPhoto('${colorName}', ${idx})" class="absolute top-1 right-1 bg-rose-600/90 hover:bg-rose-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition shadow">
+              <i data-lucide="x" class="w-3 h-3"></i>
+            </button>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function deleteColorPhoto(colorName, index) {
+      activeColorGalleries[colorName].splice(index, 1);
+      renderColorThumbnails(colorName);
+    }
+
+    // 1. Announcements
     db.ref(PATHS.announcement).on('value', snap => {
       if (snap.val()) document.getElementById('announcementInput').value = snap.val();
     });
     function saveAnnouncement() {
       const val = document.getElementById('announcementInput').value.trim();
       db.ref(PATHS.announcement).set(val);
-      showToast('Announcement updated successfully');
+      showToast('Announcement updated');
     }
 
-    // 2. Banners
+    // 2. Direct Cloudinary Hero Banners
+    async function uploadBannerDirect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      showLoader('Uploading Hero Banner...');
+      try {
+        const url = await uploadFileToCloudinary(file);
+        await db.ref(PATHS.banners).push({ imageUrl: url, createdAt: Date.now() });
+        showToast('Hero Banner uploaded successfully!');
+      } catch (err) {
+        showToast('Banner upload failed', true);
+      } finally {
+        hideLoader();
+        input.value = '';
+      }
+    }
+
     db.ref(PATHS.banners).on('value', snap => {
       const data = snap.val() || {};
       const grid = document.getElementById('bannersGrid');
       const keys = Object.keys(data);
       document.getElementById('statBanners').innerText = keys.length;
       grid.innerHTML = '';
+
       if (keys.length === 0) {
         grid.innerHTML = '<div class="col-span-full py-6 text-center text-xs text-slate-400">No banners uploaded</div>';
         return;
       }
+
       keys.forEach(key => {
         const b = data[key];
         grid.innerHTML += `
@@ -536,25 +739,37 @@
       });
       lucide.createIcons();
     });
-    function addBanner() {
-      const url = document.getElementById('bannerImgUrl').value.trim();
-      if (!url) return showToast('Please enter an image URL', true);
-      db.ref(PATHS.banners).push({ imageUrl: url });
-      document.getElementById('bannerImgUrl').value = '';
-      showToast('Banner published');
+
+    // 3. Direct Cloudinary Promo Ads
+    async function uploadAdDirect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      showLoader('Uploading Promotional Ad...');
+      try {
+        const url = await uploadFileToCloudinary(file);
+        await db.ref(PATHS.ads).push({ imageUrl: url, createdAt: Date.now() });
+        showToast('Promo banner published!');
+      } catch (err) {
+        showToast('Ad upload failed', true);
+      } finally {
+        hideLoader();
+        input.value = '';
+      }
     }
 
-    // 3. Ads
     db.ref(PATHS.ads).on('value', snap => {
       const data = snap.val() || {};
       const grid = document.getElementById('adsGrid');
       const keys = Object.keys(data);
       document.getElementById('statAds').innerText = keys.length;
       grid.innerHTML = '';
+
       if (keys.length === 0) {
         grid.innerHTML = '<div class="col-span-full py-6 text-center text-xs text-slate-400">No promo ads added</div>';
         return;
       }
+
       keys.forEach(key => {
         const ad = data[key];
         grid.innerHTML += `
@@ -570,15 +785,40 @@
       });
       lucide.createIcons();
     });
-    function addAdBanner() {
-      const url = document.getElementById('adImgUrl').value.trim();
-      if (!url) return showToast('Please enter an ad image URL', true);
-      db.ref(PATHS.ads).push({ imageUrl: url });
-      document.getElementById('adImgUrl').value = '';
-      showToast('Promo banner published');
+
+    // 4. Categories with Cloudinary Cover
+    async function previewCategoryFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      showLoader('Uploading Category Cover...');
+      try {
+        pendingCategoryImg = await uploadFileToCloudinary(file);
+        document.getElementById('catPreviewImg').src = pendingCategoryImg;
+        document.getElementById('catPreviewBox').classList.remove('hidden');
+        document.getElementById('catUploadLabel').innerText = 'Change Image';
+        showToast('Category image ready!');
+      } catch (err) {
+        showToast('Category upload failed', true);
+      } finally {
+        hideLoader();
+      }
     }
 
-    // 4. Categories
+    function addCategory() {
+      const name = document.getElementById('catName').value.trim();
+      if (!name || !pendingCategoryImg) {
+        return showToast('Category title and cover photo are required', true);
+      }
+
+      db.ref(PATHS.categories).push({ name, imageUrl: pendingCategoryImg });
+      document.getElementById('catName').value = '';
+      pendingCategoryImg = '';
+      document.getElementById('catPreviewBox').classList.add('hidden');
+      document.getElementById('catUploadLabel').innerText = 'Select Image File';
+      showToast('Category created successfully');
+    }
+
     db.ref(PATHS.categories).on('value', snap => {
       const data = snap.val() || {};
       const grid = document.getElementById('categoriesGrid');
@@ -612,17 +852,8 @@
       });
       lucide.createIcons();
     });
-    function addCategory() {
-      const name = document.getElementById('catName').value.trim();
-      const imageUrl = document.getElementById('catImageUrl').value.trim();
-      if (!name || !imageUrl) return showToast('Category name & image required', true);
-      db.ref(PATHS.categories).push({ name, imageUrl });
-      document.getElementById('catName').value = '';
-      document.getElementById('catImageUrl').value = '';
-      showToast('Category created');
-    }
 
-    // 5. Products
+    // 5. Products Database Logic
     db.ref(PATHS.products).on('value', snap => {
       cachedProducts = snap.val() || {};
       document.getElementById('statProducts').innerText = Object.keys(cachedProducts).length;
@@ -633,6 +864,7 @@
       const grid = document.getElementById('productsGrid');
       grid.innerHTML = '';
       const keys = Object.keys(data);
+
       if (keys.length === 0) {
         grid.innerHTML = '<div class="col-span-full py-12 text-center text-xs text-slate-400">No products found</div>';
         return;
@@ -640,9 +872,19 @@
 
       keys.forEach(key => {
         const p = data[key];
+        // Calculate total photos
+        let totalPhotos = 0;
+        if (p.gallery) totalPhotos = p.gallery.length;
+
+        // Color badge list
+        const colorTags = p.colors && p.colors.length ? p.colors.join(', ') : 'Standard';
+
         grid.innerHTML += `
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 flex gap-3.5 items-center hover:border-slate-300 transition group">
-            <img src="${p.imageUrl}" class="w-16 h-16 rounded-xl object-cover bg-slate-50 border border-slate-100 shrink-0" onerror="this.src='https://via.placeholder.com/150'">
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-4 flex gap-3.5 items-center hover:border-slate-300 transition group">
+            <div class="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-100 shrink-0">
+              <img src="${p.imageUrl}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
+              ${totalPhotos > 1 ? `<span class="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1 rounded">${totalPhotos}</span>` : ''}
+            </div>
             <div class="flex-1 min-w-0">
               <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${p.category || 'General'}</span>
               <h4 class="text-xs font-bold text-slate-900 truncate">${p.name}</h4>
@@ -651,11 +893,11 @@
                 ${p.discountPrice ? `<span class="text-[11px] text-slate-400 line-through">৳${p.regularPrice}</span>` : ''}
               </div>
               <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-500">
-                <span>Stock: <b>${p.stock || 0}</b></span>
-                ${p.isFreeDelivery ? '<span class="text-emerald-600 font-semibold">• Free Ship</span>' : ''}
+                <span class="truncate">Colors: <b>${colorTags}</b></span>
+                <span>• Stock: <b>${p.stock || 0}</b></span>
               </div>
             </div>
-            <button onclick="deleteItem('${PATHS.products}/${key}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition">
+            <button onclick="deleteItem('${PATHS.products}/${key}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition shrink-0">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
@@ -678,48 +920,76 @@
     function addProduct() {
       const name = document.getElementById('prodName').value.trim();
       const category = document.getElementById('prodCategory').value;
-      const imageUrl = document.getElementById('prodImageUrl').value.trim();
       const regularPrice = document.getElementById('prodRegularPrice').value;
       const discountPrice = document.getElementById('prodDiscountPrice').value;
       const stock = document.getElementById('prodStock').value;
       const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim()).filter(Boolean);
-      const colors = document.getElementById('prodColors').value.split(',').map(s => s.trim()).filter(Boolean);
       const isFreeDelivery = document.getElementById('prodFreeDelivery').checked;
 
-      if (!name || !category || !imageUrl || !regularPrice) {
-        return showToast('Please fill all required fields', true);
+      // Extract all gallery photos across all color groups
+      let allImages = [];
+      const colorImagesMap = {};
+      const activeColorsList = [];
+
+      Object.entries(activeColorGalleries).forEach(([color, urls]) => {
+        if (urls && urls.length > 0) {
+          colorImagesMap[color] = urls;
+          allImages.push(...urls);
+          if (color !== 'General') activeColorsList.push(color);
+        }
+      });
+
+      if (!name || !category || !regularPrice) {
+        return showToast('Product title, category, and price are required', true);
+      }
+      if (allImages.length === 0) {
+        return showToast('Please upload at least one product photo', true);
       }
 
+      // First image as default display thumbnail
+      const primaryImageUrl = allImages[0];
+
       db.ref(PATHS.products).push({
-        name, category, imageUrl,
+        name,
+        category,
         regularPrice: Number(regularPrice),
         discountPrice: discountPrice ? Number(discountPrice) : null,
         stock: stock ? Number(stock) : 0,
-        sizes, colors, isFreeDelivery,
+        sizes,
+        colors: activeColorsList,
+        colorImages: colorImagesMap,
+        imageUrl: primaryImageUrl, // Backwards-compatible primary thumbnail
+        gallery: allImages,         // Array of all variant images
+        isFreeDelivery,
         createdAt: Date.now()
       });
 
-      showToast('Product published successfully');
+      showToast('Product published with all image variants!');
       closeProductModal();
 
-      // Clear fields
+      // Reset Modal Form
       document.getElementById('prodName').value = '';
-      document.getElementById('prodImageUrl').value = '';
       document.getElementById('prodRegularPrice').value = '';
       document.getElementById('prodDiscountPrice').value = '';
       document.getElementById('prodStock').value = '';
       document.getElementById('prodSizes').value = '';
-      document.getElementById('prodColors').value = '';
+      document.getElementById('prodFreeDelivery').checked = false;
+
+      // Reset Color Galleries
+      activeColorGalleries = { 'General': [] };
+      document.getElementById('thumbs-General').innerHTML = '';
+      const customGroups = document.querySelectorAll("[id^='colorGroup-']:not(#colorGroup-default)");
+      customGroups.forEach(el => el.remove());
     }
 
     function deleteItem(path) {
-      if (confirm('Delete this record permanently?')) {
+      if (confirm('Permanently delete this record?')) {
         db.ref(path).remove();
         showToast('Record deleted');
       }
     }
 
-    // Initialize
+    // Init App
     switchTab('dashboard');
     lucide.createIcons();
   </script>
