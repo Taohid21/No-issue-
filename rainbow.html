@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rainbow - রংধনু</title>
+  <title>Rainbow - রংধনু | Modern Fashion & Essentials</title>
 
   <!-- Favicon & SEO Image -->
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg">
-  <meta property="og:title" content="Rainbow - রংধনু | সেরা অনলাইন শপিং">
-  <meta property="og:description" content="রংধনু - সেরা দামে সেরা শপিং অভিজ্ঞতা। দারাজের মতো আধুনিক ও প্রিমিয়াম কালেকশন।">
+  <meta property="og:title" content="Rainbow - রংধনু | Modern Fashion & Essentials">
+  <meta property="og:description" content="Step Into Style with Rainbow. Premium minimalist fashion and lifestyle collections.">
   <meta property="og:image" content="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg">
   <meta property="og:type" content="website">
 
-  <!-- Google Fonts (Hind Siliguri & Inter) -->
+  <!-- Google Fonts (Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -34,16 +34,8 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: {
-            daraz: {
-              DEFAULT: '#f85606',
-              hover: '#d94700',
-              light: '#fff1eb',
-              bg: '#eff0f5'
-            }
-          },
           fontFamily: {
-            sans: ['"Hind Siliguri"', '"Inter"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif'],
           }
         }
       }
@@ -52,18 +44,18 @@
 
   <style>
     body {
-      background-color: #eff0f5;
-      color: #212121;
-      font-family: 'Hind Siliguri', 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #0f172a;
+      font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
     
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* Daraz Minimalist Skeleton */
+    /* Minimalist Skeleton */
     .skeleton-box {
-      background: #e2e8f0;
+      background: #f8fafc;
       position: relative;
       overflow: hidden;
     }
@@ -71,7 +63,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
       animation: shimmer 1.5s infinite;
     }
     @keyframes shimmer {
@@ -79,17 +71,17 @@
       100% { transform: translateX(100%); }
     }
 
-    /* Slider Pagination */
+    /* Minimal Slider Pagination */
     .swiper-pagination-bullet {
       width: 7px;
       height: 7px;
-      background: rgba(255, 255, 255, 0.7) !important;
+      background: rgba(0, 0, 0, 0.3) !important;
       opacity: 1 !important;
       border-radius: 9999px;
       transition: all 0.3s ease;
     }
     .swiper-pagination-bullet-active {
-      background: #f85606 !important;
+      background: #000000 !important;
       width: 22px !important;
     }
 
@@ -102,98 +94,72 @@
     .door-opened #doorCenterBadge { opacity: 0; transform: scale(0.9); transition: all 0.5s ease; }
     .door-hidden { display: none !important; }
 
-    /* New Arrivals Spotlight */
+    /* New Arrivals Zoom Spotlight Animation */
     .new-arrivals-swiper {
-      padding: 15px 0 25px 0 !important;
+      padding: 24px 0 35px 0 !important;
     }
     .new-arrivals-swiper .swiper-slide {
-      transition: transform 0.4s ease, opacity 0.4s ease;
-      transform: scale(0.92);
-      opacity: 0.7;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+      transform: scale(0.90);
+      opacity: 0.65;
     }
     .new-arrivals-swiper .swiper-slide-active {
-      transform: scale(1.02) !important;
+      transform: scale(1.05) !important;
       opacity: 1 !important;
       z-index: 10;
-      box-shadow: 0 10px 25px -5px rgba(248, 86, 6, 0.15);
+      box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Auto Play Video without controls */
-    .promo-video-wrapper video {
+    /* Continuous video without any controls */
+    .seamless-video {
       pointer-events: none;
       user-select: none;
       object-fit: cover;
     }
   </style>
 </head>
-<body class="antialiased selection:bg-[#f85606] selection:text-white">
+<body class="antialiased selection:bg-black selection:text-white">
 
   <!-- ==================== SHOP DOOR OPENING ANIMATION ==================== -->
   <div id="shopDoorOverlay" class="fixed inset-0 z-50 flex pointer-events-none">
-    <div id="doorCurtainLeft" class="w-1/2 h-full bg-[#1e2229] border-r border-neutral-700 shadow-2xl flex items-center justify-end"></div>
-    <div id="doorCurtainRight" class="w-1/2 h-full bg-[#1e2229] border-l border-neutral-700 shadow-2xl flex items-center justify-start"></div>
+    <div id="doorCurtainLeft" class="w-1/2 h-full bg-[#0a0a0a] border-r border-neutral-800 shadow-2xl flex items-center justify-end"></div>
+    <div id="doorCurtainRight" class="w-1/2 h-full bg-[#0a0a0a] border-l border-neutral-800 shadow-2xl flex items-center justify-start"></div>
     
     <div id="doorCenterBadge" class="absolute inset-0 flex flex-col items-center justify-center text-white z-10 pointer-events-none">
-      <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow - রংধনু" class="w-20 h-20 rounded-2xl border-2 border-[#f85606] object-cover shadow-2xl mb-3 animate-pulse">
-      <h2 class="text-xl font-extrabold tracking-wide uppercase text-white flex items-center gap-1.5">
-        <span>Rainbow</span>
-        <span class="text-[#f85606] font-bold">• রংধনু</span>
-      </h2>
-      <p class="text-[12px] text-neutral-300 tracking-wider mt-1 font-medium">শপ লোড হচ্ছে...</p>
+      <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow" class="w-20 h-20 rounded-2xl border border-neutral-700 object-cover shadow-2xl mb-3">
+      <h2 class="text-xl font-extrabold tracking-widest uppercase">Rainbow</h2>
+      <p class="text-[11px] text-neutral-400 tracking-wider mt-1 font-medium">Entering Store...</p>
     </div>
   </div>
 
-  <!-- 1. Daraz Style Top Announcement Bar -->
-  <div class="bg-[#f85606] text-white text-xs py-1.5 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
-    <i data-lucide="zap" class="w-3.5 h-3.5 fill-current"></i>
-    <span id="announcementText">Rainbow - রংধনু-তে আপনাকে স্বাগতম! সেরা ডিল এবং দ্রুত ডেলিভারি উপভোগ করুন।</span>
+  <!-- 1. Top Notice Bar -->
+  <div class="bg-black text-white text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
+    <span id="announcementText">Step Into Style with Rainbow • Premium Collection Just Dropped!</span>
   </div>
 
-  <!-- 2. Header (Daraz Inspired) -->
-  <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+  <!-- 2. Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
       
-      <!-- Menu Button & Brand Logo -->
-      <div class="flex items-center gap-2 sm:gap-4">
-        <button onclick="toggleMenu()" class="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-700 transition">
-          <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
+      <!-- Menu Button -->
+      <button onclick="toggleMenu()" class="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-800 transition">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
 
-        <a href="javascript:void(0)" onclick="navigateTo('home')" class="flex items-center gap-2 sm:gap-3 group">
-          <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow রংধনু" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl object-cover shadow-sm group-hover:scale-105 transition">
-          <div class="flex flex-col">
-            <span class="text-lg sm:text-2xl font-black text-gray-900 tracking-tight leading-none flex items-center gap-1">
-              Rainbow <span class="text-[#f85606] font-bold text-sm sm:text-base">রংধনু</span>
-            </span>
-            <span class="text-[10px] text-gray-400 font-semibold tracking-wider uppercase hidden sm:block">Daraz Quality Lifestyle</span>
-          </div>
-        </a>
-      </div>
-
-      <!-- Daraz Style Quick Search Bar -->
-      <div class="flex-1 max-w-lg mx-2 hidden md:block">
-        <div class="relative flex items-center">
-          <input 
-            type="text" 
-            placeholder="রংধনু-তে প্রডাক্ট বা ক্যাটাগরি খুঁজুন..." 
-            onkeydown="if(event.key === 'Enter') { navigateTo('search', this.value); }"
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-sm rounded-lg pl-4 pr-11 py-2 text-gray-800 outline-none transition"
-          >
-          <button onclick="navigateTo('search', this.previousElementSibling.value)" class="absolute right-1 w-8 h-8 rounded-md bg-[#f85606] text-white flex items-center justify-center hover:bg-[#d94700] transition">
-            <i data-lucide="search" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
+      <!-- Brand Logo -->
+      <a href="javascript:void(0)" onclick="navigateTo('home')" class="flex items-center gap-2.5">
+        <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-cover shadow-sm">
+        <span class="tracking-wider font-black text-xl sm:text-2xl text-black">Rainbow<span class="text-neutral-500 font-semibold ml-1.5 text-sm sm:text-base">রংধনু</span></span>
+      </a>
 
       <!-- Action Icons -->
-      <div class="flex items-center gap-1 sm:gap-2">
-        <button onclick="navigateTo('search')" class="md:hidden w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-700 transition">
+      <div class="flex items-center gap-1">
+        <button onclick="navigateTo('search')" class="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-800 transition">
           <i data-lucide="search" class="w-5 h-5"></i>
         </button>
-
-        <a href="cart.html" class="w-10 h-10 rounded-lg hover:bg-orange-50 flex items-center justify-center text-gray-800 transition relative group">
-          <i data-lucide="shopping-cart" class="w-5 h-5 group-hover:text-[#f85606] transition"></i>
-          <span id="headerCartBadge" class="absolute top-1 right-1 min-w-[18px] h-[18px] bg-[#f85606] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 shadow">0</span>
+        <a href="cart.html" class="w-10 h-10 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-800 transition relative">
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span id="headerCartBadge" class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">0</span>
         </a>
       </div>
     </div>
@@ -203,290 +169,215 @@
   <div id="sideMenuBackdrop" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-50 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
   <aside id="sideMenu" class="fixed top-0 left-0 bottom-0 w-4/5 max-w-xs bg-white border-r border-gray-100 z-50 shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col justify-between overflow-y-auto">
     <div>
-      <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-orange-50/50">
+      <div class="p-5 border-b border-gray-100 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow রংধনু" class="w-8 h-8 rounded-lg object-cover shadow-sm">
-          <span class="tracking-wide font-extrabold text-base text-gray-900">Rainbow - রংধনু</span>
+          <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow" class="w-8 h-8 rounded-lg object-cover shadow-sm">
+          <span class="tracking-wider font-extrabold text-lg text-black">Rainbow</span>
         </div>
-        <button onclick="toggleMenu()" class="w-8 h-8 rounded-lg hover:bg-white flex items-center justify-center text-gray-500 hover:text-black">
+        <button onclick="toggleMenu()" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-500 hover:text-black">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <div class="p-4 space-y-5">
+      <div class="p-5 space-y-6">
         <div>
-          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">মেনু ও নেভিগেশন</h4>
+          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Navigation</h4>
           <ul class="space-y-1 text-sm font-medium text-gray-700">
             <li>
-              <a href="javascript:void(0)" onclick="navigateTo('home'); toggleMenu();" class="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 hover:text-[#f85606] transition">
+              <a href="javascript:void(0)" onclick="navigateTo('home'); toggleMenu();" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition">
                 <i data-lucide="home" class="w-4 h-4 text-gray-500"></i>
-                <span>হোম (Home)</span>
+                <span>Home</span>
               </a>
             </li>
             <li>
-              <a href="cart.html" class="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 hover:text-[#f85606] transition">
+              <a href="cart.html" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition">
                 <i data-lucide="shopping-bag" class="w-4 h-4 text-gray-500"></i>
-                <span>মাই কার্ট (Cart)</span>
+                <span>Cart</span>
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)" onclick="navigateTo('catalog', 'New Arrivals'); toggleMenu();" class="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 hover:text-[#f85606] transition">
-                <i data-lucide="sparkles" class="w-4 h-4 text-[#f85606]"></i>
-                <span class="text-[#f85606] font-semibold">নতুন কালেকশন (New Arrivals)</span>
+              <a href="javascript:void(0)" onclick="navigateTo('catalog', 'New Arrivals'); toggleMenu();" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition">
+                <i data-lucide="sparkles" class="w-4 h-4 text-gray-500"></i>
+                <span>New Arrivals</span>
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)" onclick="navigateTo('collections'); toggleMenu();" class="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 hover:text-[#f85606] transition">
+              <a href="javascript:void(0)" onclick="navigateTo('collections'); toggleMenu();" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition">
                 <i data-lucide="grid" class="w-4 h-4 text-gray-500"></i>
-                <span>সব ক্যাটাগরি (Categories)</span>
+                <span>Collections</span>
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)" onclick="navigateTo('search'); toggleMenu();" class="flex items-center gap-3 p-2 rounded-lg hover:bg-orange-50 hover:text-[#f85606] transition">
+              <a href="javascript:void(0)" onclick="navigateTo('search'); toggleMenu();" class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition">
                 <i data-lucide="search" class="w-4 h-4 text-gray-500"></i>
-                <span>প্রোডাক্ট সার্চ (Search)</span>
+                <span>Search</span>
               </a>
             </li>
           </ul>
         </div>
 
-        <div class="border-t border-gray-100 pt-3">
-          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">ক্যাটাগরি সমূহ</h4>
+        <div class="border-t border-gray-100 pt-4">
+          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Categories</h4>
           <div id="drawerCategories" class="space-y-1">
-            <div class="text-xs text-gray-400 p-2">লোড হচ্ছে...</div>
+            <div class="text-xs text-gray-400 p-2">Loading...</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="p-4 border-t border-gray-100 bg-gray-50">
-      <a href="tel:01704609401" class="w-full bg-[#f85606] hover:bg-[#d94700] text-white py-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
-        <i data-lucide="phone-call" class="w-4 h-4"></i>
-        <span>হটলাইন: +8801704609401</span>
+    <div class="p-5 border-t border-gray-100 bg-gray-50">
+      <a href="tel:01704609401" class="w-full bg-black hover:bg-gray-800 text-white py-3 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+        <i data-lucide="phone" class="w-4 h-4"></i>
+        <span>Call: +8801704609401</span>
       </a>
     </div>
   </aside>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
+  <!-- ==================== MAIN VIEWS ==================== -->
   <main id="appContent" class="min-h-screen">
 
     <!-- VIEW 1: HOME VIEW -->
     <section id="view-home" class="spa-view block">
       
-      <!-- Daraz Style Top Slider & Highlights -->
-      <div class="w-full max-w-7xl mx-auto px-3 sm:px-4 mt-3">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-          
-          <!-- Main Hero Banner (Span 3 on Desktop) -->
-          <div class="lg:col-span-3">
-            <div class="swiper myHeroSwiper rounded-xl overflow-hidden bg-gray-200 h-44 sm:h-80 md:h-[390px] shadow-sm relative">
-              <div class="swiper-wrapper" id="bannerSliderWrapper">
-                <div class="swiper-slide skeleton-box w-full h-full flex items-center justify-center">
-                  <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-16 h-16 opacity-30 rounded-xl animate-pulse">
-                </div>
-              </div>
-              <div class="swiper-pagination !bottom-3"></div>
+      <!-- 1. Hero Banner Slider -->
+      <div class="w-full max-w-7xl mx-auto px-4 mt-4">
+        <div class="swiper myHeroSwiper rounded-xl sm:rounded-2xl overflow-hidden bg-gray-100 h-44 sm:h-80 md:h-[460px] border border-gray-100 shadow-sm relative">
+          <div class="swiper-wrapper" id="bannerSliderWrapper">
+            <div class="swiper-slide skeleton-box w-full h-full flex items-center justify-center">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-16 h-16 opacity-25 object-cover rounded-xl animate-pulse">
             </div>
           </div>
-
-          <!-- Feature Promo Card with Daraz Vibe (1 Column on Desktop) -->
-          <div class="hidden lg:flex flex-col justify-between bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-            <div>
-              <div class="flex items-center gap-2 mb-3">
-                <span class="w-2.5 h-2.5 rounded-full bg-[#f85606]"></span>
-                <h3 class="font-bold text-gray-900 text-sm">Rainbow গ্যারান্টি</h3>
-              </div>
-              <div class="space-y-3 text-xs text-gray-600">
-                <div class="flex items-center gap-2.5 p-2 rounded-lg bg-[#eff0f5]">
-                  <i data-lucide="truck" class="w-4 h-4 text-[#f85606]"></i>
-                  <span>সারা বাংলাদেশে ফাস্ট ক্যাশ অন ডেলিভারি</span>
-                </div>
-                <div class="flex items-center gap-2.5 p-2 rounded-lg bg-[#eff0f5]">
-                  <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
-                  <span>১০০% অথেনটিক এবং অরিজিনাল প্রডাক্ট</span>
-                </div>
-                <div class="flex items-center gap-2.5 p-2 rounded-lg bg-[#eff0f5]">
-                  <i data-lucide="rotate-ccw" class="w-4 h-4 text-blue-600"></i>
-                  <span>সহজ রিটার্ন পলিসি ও ইনস্ট্যান্ট সাপোর্ট</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-gray-100">
-              <button onclick="navigateTo('catalog', 'All Products')" class="w-full bg-[#f85606] hover:bg-[#d94700] text-white font-bold py-2.5 rounded-lg text-xs transition shadow flex items-center justify-center gap-1.5">
-                <span>সব প্রোডাক্ট দেখুন</span>
-                <i data-lucide="chevron-right" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </div>
-
+          <div class="swiper-pagination !bottom-3 sm:!bottom-4"></div>
         </div>
       </div>
 
-      <!-- ==================== CONTINUOUS VIDEO BANNER (NO CONTROLS) ==================== -->
-      <div class="max-w-7xl mx-auto px-3 sm:px-4 mt-5">
-        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-orange-100 p-2 sm:p-3">
-          <div class="flex items-center justify-between px-2 py-1 mb-2">
-            <div class="flex items-center gap-2">
-              <span class="flex h-2.5 w-2.5 relative">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f85606] opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#f85606]"></span>
-              </span>
-              <h2 class="text-sm sm:text-base font-bold text-gray-900">Featured Video Spotlight</h2>
-            </div>
-            <span class="text-[11px] bg-orange-100 text-[#f85606] font-semibold px-2 py-0.5 rounded-full">LIVE PREVIEW</span>
-          </div>
-
-          <!-- Video Component: Strictly No Controls, Continuous Loop, Autoplay, Muted -->
-          <div class="relative w-full h-40 sm:h-72 md:h-96 rounded-xl overflow-hidden bg-black promo-video-wrapper">
-            <video 
-              id="brandPromoVideo"
-              autoplay 
-              muted 
-              loop 
-              playsinline 
-              preload="auto"
-              disablepictureinpicture
-              class="w-full h-full object-cover pointer-events-none select-none"
-            >
-              <!-- High Quality Fast Fashion/Ecommerce Promo Loop -->
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-fashion-model-showing-off-her-jacket-in-a-studio-34440-large.mp4" type="video/mp4">
-              আপনার ব্রাউজারে ভিডিও সাপোর্ট করছে না।
-            </video>
-
-            <!-- Video Overlay Gradient & Brand Mark -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none flex flex-col justify-end p-4 sm:p-6 text-white">
-              <span class="text-xs sm:text-sm font-semibold text-orange-300">Rainbow - রংধনু কালেকশন</span>
-              <h3 class="text-sm sm:text-xl font-bold tracking-wide">এক্সক্লুসিভ ট্রেন্ডি ডিজাইন ও কোয়ালিটি নিশ্চয়তা</h3>
-            </div>
-          </div>
+      <!-- 2. Clean Autoplaying Video (No Controls, Continuously Running) -->
+      <div class="w-full max-w-7xl mx-auto px-4 mt-6 sm:mt-8">
+        <div class="w-full h-44 sm:h-80 md:h-[420px] rounded-xl sm:rounded-2xl overflow-hidden bg-black relative shadow-sm border border-gray-100">
+          <video 
+            id="storeAutoplayVideo" 
+            autoplay 
+            muted 
+            loop 
+            playsinline 
+            preload="auto"
+            disablepictureinpicture
+            class="w-full h-full seamless-video"
+          >
+            <!-- Default High Quality Continuous Video Stream -->
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-fashion-model-showing-off-her-jacket-in-a-studio-34440-large.mp4" type="video/mp4">
+          </video>
         </div>
       </div>
 
-      <!-- Section: Collections Carousel (Daraz Style Circular/Card Layout) -->
-      <div class="max-w-7xl mx-auto px-3 sm:px-4 pt-6 pb-2">
-        <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-          <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
-            <div class="flex items-center gap-2">
-              <i data-lucide="layout-grid" class="w-5 h-5 text-[#f85606]"></i>
-              <h2 class="text-base sm:text-lg font-bold text-gray-900">ক্যাটাগরি সমূহ (Collections)</h2>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="catPrev" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-[#f85606] hover:text-white transition">
+      <!-- 3. Section: Collections Carousel -->
+      <div class="max-w-7xl mx-auto px-4 pt-10 pb-4">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg sm:text-2xl font-bold tracking-tight text-black">Collections</h2>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5">
+              <button id="catPrev" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
               </button>
-              <button id="catNext" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-[#f85606] hover:text-white transition">
+              <button id="catNext" class="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition">
                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
               </button>
-              <button onclick="navigateTo('collections')" class="text-xs font-bold text-[#f85606] hover:underline ml-2">
-                সবগুলো
-              </button>
             </div>
-          </div>
-
-          <div class="swiper myCategorySwiper overflow-hidden">
-            <div class="swiper-wrapper" id="homeCategorySliderWrapper">
-              <div class="swiper-slide !w-32 sm:!w-44 skeleton-box h-36 sm:h-48 rounded-xl flex items-center justify-center">
-                <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-8 h-8 opacity-20 animate-pulse">
-              </div>
-              <div class="swiper-slide !w-32 sm:!w-44 skeleton-box h-36 sm:h-48 rounded-xl flex items-center justify-center">
-                <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-8 h-8 opacity-20 animate-pulse">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section: New Arrivals / Flash Sale (Daraz Spotlight Style) -->
-      <div class="max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-2" id="newArrivalsContainer">
-        <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-          <div class="flex items-center justify-between mb-2 border-b border-gray-100 pb-2">
-            <div class="flex items-center gap-2">
-              <span class="bg-[#f85606] text-white p-1 rounded-md">
-                <i data-lucide="flame" class="w-4 h-4"></i>
-              </span>
-              <div>
-                <h2 class="text-base sm:text-lg font-bold text-gray-900 leading-tight">নতুন কালেকশন (New Arrivals)</h2>
-                <span class="text-[11px] text-gray-400">সীমিত সময়ের জন্য বিশেষ ছাড়</span>
-              </div>
-            </div>
-            <button onclick="navigateTo('catalog', 'New Arrivals')" class="text-xs font-bold text-[#f85606] hover:underline flex items-center gap-1">
-              <span>সব দেখুন</span>
+            <button onclick="navigateTo('collections')" class="text-xs sm:text-sm font-semibold text-gray-600 hover:text-black flex items-center gap-1">
+              <span>View All</span>
               <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
           </div>
+        </div>
 
-          <!-- Spotlight Auto Swiper -->
-          <div class="swiper myNewArrivalsSwiper new-arrivals-swiper overflow-hidden">
-            <div class="swiper-wrapper" id="newArrivalsSliderWrapper">
-              <div class="swiper-slide !w-48 sm:!w-60 skeleton-box h-80 rounded-xl flex flex-col items-center justify-center">
-                <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-12 h-12 opacity-30 animate-pulse">
-              </div>
+        <div class="swiper myCategorySwiper overflow-hidden">
+          <div class="swiper-wrapper" id="homeCategorySliderWrapper">
+            <div class="swiper-slide !w-44 sm:!w-60 skeleton-box h-44 sm:h-64 rounded-xl flex items-center justify-center">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-10 h-10 opacity-20 rounded-lg animate-pulse">
+            </div>
+            <div class="swiper-slide !w-44 sm:!w-60 skeleton-box h-44 sm:h-64 rounded-xl flex items-center justify-center">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-10 h-10 opacity-20 rounded-lg animate-pulse">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Dynamic Category Sections -->
-      <div id="dynamicSectionsContainer" class="space-y-6 max-w-7xl mx-auto px-3 sm:px-4 pt-4 pb-8"></div>
+      <!-- 4. Section: New Arrivals (Zoom Spotlight Slider) -->
+      <div class="max-w-7xl mx-auto px-4 pt-4 pb-2" id="newArrivalsContainer">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <h2 class="text-lg sm:text-2xl font-bold tracking-tight text-black">New Arrivals</h2>
+          </div>
+          <button onclick="navigateTo('catalog', 'New Arrivals')" class="text-xs sm:text-sm font-semibold text-gray-600 hover:text-black flex items-center gap-1">
+            <span>View All</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
 
-      <!-- Daraz Style Clean Footer -->
-      <footer class="bg-white border-t border-gray-200 pt-12 pb-6 mt-12 text-gray-600">
-        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-8">
+        <!-- Spotlight Auto Swiper -->
+        <div class="swiper myNewArrivalsSwiper new-arrivals-swiper overflow-hidden">
+          <div class="swiper-wrapper" id="newArrivalsSliderWrapper">
+            <div class="swiper-slide !w-60 sm:!w-72 skeleton-box h-96 rounded-2xl flex flex-col items-center justify-center">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-14 h-14 opacity-25 rounded-xl animate-pulse">
+            </div>
+            <div class="swiper-slide !w-60 sm:!w-72 skeleton-box h-96 rounded-2xl flex flex-col items-center justify-center">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" class="w-14 h-14 opacity-25 rounded-xl animate-pulse">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Dynamic Category Sections -->
+      <div id="dynamicSectionsContainer" class="space-y-10 pb-10"></div>
+
+      <!-- Footer -->
+      <footer class="bg-gray-50 border-t border-gray-100 pt-14 pb-6 mt-16 text-gray-600">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 pb-10">
           
           <div class="space-y-3">
-            <div class="flex items-center gap-2.5">
-              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow - রংধনু" class="w-9 h-9 rounded-xl object-cover shadow-sm">
-              <span class="tracking-tight font-black text-xl text-gray-900">Rainbow <span class="text-[#f85606]">রংধনু</span></span>
+            <div class="flex items-center gap-2.5 text-2xl font-black text-black">
+              <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow" class="w-8 h-8 rounded-lg object-cover">
+              <span class="tracking-wider font-black">Rainbow<span class="text-neutral-500 font-semibold ml-1 text-base">রংধনু</span></span>
             </div>
-            <p class="text-xs leading-relaxed text-gray-500">
-              আধুনিক ফ্যাশন, গ্যাজেট ও লাইফস্টাইল প্রডাক্টের বিশ্বস্ত অনলাইন প্ল্যাটফর্ম। সারাদেশে ক্যাশ অন ডেলিভারি দেওয়া হয়।
+            <p class="text-xs sm:text-sm leading-relaxed text-gray-500 max-w-sm">
+              Premium minimalist fashion and lifestyle collections delivered nationwide across Bangladesh.
             </p>
           </div>
 
           <div>
-            <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">কাস্টমার কেয়ার</h3>
-            <ul class="space-y-2 text-xs">
-              <li><a href="javascript:void(0)" onclick="navigateTo('catalog', 'All Products')" class="hover:text-[#f85606] transition">সব প্রোডাক্ট</a></li>
-              <li><a href="javascript:void(0)" onclick="navigateTo('collections')" class="hover:text-[#f85606] transition">ক্যাটাগরি গ্যালারি</a></li>
-              <li><a href="cart.html" class="hover:text-[#f85606] transition">শপিং ব্যাগ / কার্ট</a></li>
-              <li><a href="https://wa.me/8801704609401" target="_blank" class="hover:text-[#f85606] transition text-emerald-600 font-semibold">হোয়াটসঅ্যাপ চ্যাট</a></li>
+            <h3 class="text-xs font-bold text-black uppercase tracking-wider mb-3">Links</h3>
+            <ul class="space-y-2 text-xs sm:text-sm">
+              <li><a href="javascript:void(0)" onclick="navigateTo('catalog', 'All Products')" class="hover:text-black transition">All Products</a></li>
+              <li><a href="javascript:void(0)" onclick="navigateTo('collections')" class="hover:text-black transition">Collections</a></li>
+              <li><a href="cart.html" class="hover:text-black transition">Shopping Cart</a></li>
+              <li><a href="https://wa.me/8801704609401" target="_blank" class="hover:text-black transition">WhatsApp Support</a></li>
             </ul>
           </div>
 
-          <div>
-            <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">পেমেন্ট মেথড</h3>
-            <p class="text-xs text-gray-500 mb-2">ক্যাশ অন ডেলিভারি, বিকাশ, নগদ ও রকেট এর মাধ্যমে নিরাপদে পেমেন্ট করুন।</p>
-            <div class="flex items-center gap-2 flex-wrap text-xs font-bold text-gray-700">
-              <span class="bg-gray-100 px-2 py-1 rounded border">Cash on Delivery</span>
-              <span class="bg-pink-50 text-pink-600 px-2 py-1 rounded border border-pink-200">bKash</span>
-              <span class="bg-orange-50 text-[#f85606] px-2 py-1 rounded border border-orange-200">Nagad</span>
-            </div>
-          </div>
-
           <div class="space-y-2.5">
-            <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3">যোগাযোগের ঠিকানা</h3>
-            <div class="flex items-center gap-2 text-xs text-gray-500">
-              <i data-lucide="map-pin" class="w-4 h-4 text-[#f85606] shrink-0"></i>
-              <span>বাউফল, পটুয়াখালী, বরিশাল</span>
+            <h3 class="text-xs font-bold text-black uppercase tracking-wider mb-3">Contact</h3>
+            <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-500">
+              <i data-lucide="map-pin" class="w-4 h-4 text-black shrink-0"></i>
+              <span>Bauphal, Patuakhali, Barishal</span>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-              <i data-lucide="phone" class="w-4 h-4 text-[#f85606] shrink-0"></i>
-              <a href="tel:01704609401" class="text-gray-700 hover:text-[#f85606] font-semibold">+8801704609401</a>
+            <div class="flex items-center gap-2 text-xs sm:text-sm">
+              <i data-lucide="phone" class="w-4 h-4 text-black shrink-0"></i>
+              <a href="tel:01704609401" class="text-gray-700 hover:text-black">+8801704609401</a>
             </div>
-            <div class="flex items-center gap-2 text-xs">
-              <i data-lucide="mail" class="w-4 h-4 text-[#f85606] shrink-0"></i>
-              <a href="mailto:tiodisk7890@gmail.com" class="text-gray-700 hover:text-[#f85606]">tiodisk7890@gmail.com</a>
+            <div class="flex items-center gap-2 text-xs sm:text-sm">
+              <i data-lucide="mail" class="w-4 h-4 text-black shrink-0"></i>
+              <a href="mailto:tiodisk7890@gmail.com" class="text-gray-700 hover:text-black">tiodisk7890@gmail.com</a>
             </div>
           </div>
 
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-          <div>© 2026 Rainbow - রংধনু। সর্বস্বত্ব সংরক্ষিত।</div>
+        <div class="max-w-7xl mx-auto px-6 border-t border-gray-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
+          <div>© 2026 Rainbow - রংধনু. All rights reserved.</div>
           <div>
-            ডেভেলপার: 
-            <a href="https://tiodisk.top" target="_blank" class="text-[#f85606] font-semibold hover:underline">tioDisk</a>
+            Developed by 
+            <a href="https://tiodisk.top" target="_blank" class="text-black font-semibold hover:underline">tioDisk</a>
           </div>
         </div>
       </footer>
@@ -494,55 +385,55 @@
     </section>
 
     <!-- VIEW 2: ALL COLLECTIONS PAGE -->
-    <section id="view-collections" class="spa-view hidden max-w-7xl mx-auto px-3 sm:px-4 py-6">
-      <div class="flex items-center gap-3 mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+    <section id="view-collections" class="spa-view hidden max-w-7xl mx-auto px-4 py-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
         <button onclick="goBack()" class="w-9 h-9 rounded-lg hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-black transition">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-gray-900">সব ক্যাটাগরি (All Collections)</h1>
-          <p class="text-xs text-gray-500">পছন্দের ক্যাটাগরি সিলেক্ট করে পণ্য দেখুন</p>
+          <h1 class="text-lg sm:text-xl font-bold text-black">All Collections</h1>
+          <p class="text-xs text-gray-500">Select a category to explore items</p>
         </div>
       </div>
 
-      <div id="allCollectionsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+      <div id="allCollectionsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
     </section>
 
     <!-- VIEW 3: DEDICATED CATALOG / ALL PRODUCTS VIEW -->
-    <section id="view-catalog" class="spa-view hidden max-w-7xl mx-auto px-3 sm:px-4 py-6">
-      <div class="flex items-center justify-between gap-3 mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+    <section id="view-catalog" class="spa-view hidden max-w-7xl mx-auto px-4 py-6">
+      <div class="flex items-center justify-between gap-3 mb-6 border-b border-gray-100 pb-4">
         <div class="flex items-center gap-3">
           <button onclick="goBack()" class="w-9 h-9 rounded-lg hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-black transition">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
           </button>
           <div>
-            <h1 class="text-base sm:text-lg font-bold text-gray-900" id="catalogViewTitle">নতুন কালেকশন</h1>
-            <p class="text-xs text-gray-500" id="catalogViewSubtitle">সকল প্রোডাক্ট তালিকা</p>
+            <h1 class="text-lg sm:text-xl font-bold text-black" id="catalogViewTitle">New Arrivals</h1>
+            <p class="text-xs text-gray-500" id="catalogViewSubtitle">Showing all available products</p>
           </div>
         </div>
       </div>
 
-      <div id="catalogProductGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+      <div id="catalogProductGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"></div>
     </section>
 
     <!-- VIEW 4: CATEGORY PRODUCTS VIEW -->
-    <section id="view-category" class="spa-view hidden max-w-7xl mx-auto px-3 sm:px-4 py-6">
-      <div class="flex items-center gap-3 mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+    <section id="view-category" class="spa-view hidden max-w-7xl mx-auto px-4 py-6">
+      <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
         <button onclick="goBack()" class="w-9 h-9 rounded-lg hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-black transition">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
         <div>
-          <h1 class="text-base sm:text-lg font-bold text-gray-900" id="categoryViewTitle">ক্যাটাগরি</h1>
-          <p class="text-xs text-gray-500" id="categoryViewSubtitle">প্রোডাক্ট তালিকা</p>
+          <h1 class="text-lg sm:text-xl font-bold text-black" id="categoryViewTitle">Category</h1>
+          <p class="text-xs text-gray-500" id="categoryViewSubtitle">Products list</p>
         </div>
       </div>
 
-      <div id="categoryProductGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+      <div id="categoryProductGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"></div>
     </section>
 
     <!-- VIEW 5: SEARCH PAGE -->
-    <section id="view-search" class="spa-view hidden max-w-7xl mx-auto px-3 sm:px-4 py-6 min-h-[80vh]">
-      <div class="flex items-center gap-2 mb-6 bg-white p-3 sm:p-4 rounded-xl border border-gray-100 shadow-sm">
+    <section id="view-search" class="spa-view hidden max-w-7xl mx-auto px-4 py-6 min-h-[80vh]">
+      <div class="flex items-center gap-3 mb-6 border-b border-gray-100 pb-4">
         <button onclick="goBack()" class="w-9 h-9 rounded-lg hover:bg-gray-100 border border-gray-200 flex items-center justify-center text-black transition shrink-0">
           <i data-lucide="arrow-left" class="w-4 h-4"></i>
         </button>
@@ -552,9 +443,9 @@
           <input 
             type="text" 
             id="searchInput" 
-            placeholder="প্রডাক্টের নাম বা ধরন লিখুন..." 
+            placeholder="Search products..." 
             oninput="handleSearchInput(event)"
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 placeholder-gray-400 rounded-lg py-2.5 pl-10 pr-10 text-sm outline-none transition"
+            class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white text-black placeholder-gray-400 rounded-lg py-2.5 pl-10 pr-10 text-sm outline-none transition"
             autocomplete="off"
             autofocus
           >
@@ -565,25 +456,24 @@
       </div>
 
       <div class="flex items-center justify-between mb-4 px-1">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-600" id="searchResultSummary">সব পণ্য</h3>
-        <span class="text-xs text-[#f85606] font-bold" id="searchResultCount">0 টি আইটেম</span>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500" id="searchResultSummary">All Products</h3>
+        <span class="text-xs text-gray-500 font-medium" id="searchResultCount">0 items</span>
       </div>
 
-      <div id="searchProductGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+      <div id="searchProductGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"></div>
     </section>
 
   </main>
 
   <!-- Floating WhatsApp Contact -->
   <div class="fixed bottom-5 right-4 z-40 flex flex-col gap-2.5">
-    <a href="https://wa.me/8801704609401?text=Hello%20Rainbow,%20I%20want%20to%20order" target="_blank" class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg hover:bg-emerald-600 transition hover:scale-105" title="WhatsApp Support">
-      <i data-lucide="message-circle" class="w-6 h-6"></i>
+    <a href="https://wa.me/8801704609401?text=Hello%20Rainbow,%20I%20want%20to%20order" target="_blank" class="w-11 h-11 rounded-full bg-black text-white flex items-center justify-center shadow-lg hover:bg-gray-800 transition hover:scale-105">
+      <i data-lucide="message-circle" class="w-5 h-5"></i>
     </a>
   </div>
 
   <!-- Application Logic -->
   <script>
-    // New Logo for Rainbow - রংধনু
     const LOGO_PLACEHOLDER = "https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg";
 
     // Shop Door Opening Animation
@@ -615,7 +505,7 @@
     }
     const db = firebase.database();
 
-    // BRAND NEW FRESH Database Paths for Rainbow - রংধনু (Old We Zone data isolated)
+    // Isolated Clean Database Paths for Rainbow - রংধনু
     const PATHS = {
       announcement: 'rainbow_announcement',
       banners: 'rainbow_banners',
@@ -633,7 +523,7 @@
     let categorySwiper = null;
     let newArrivalsSwiper = null;
 
-    // Cart Helper (isolated storage: rainbow_cart)
+    // Cart Helper (rainbow_cart)
     function updateCartBadge() {
       const cart = JSON.parse(localStorage.getItem('rainbow_cart') || '[]');
       const count = cart.reduce((acc, it) => acc + (it.quantity || 1), 0);
@@ -669,7 +559,7 @@
 
       localStorage.setItem('rainbow_cart', JSON.stringify(cart));
       updateCartBadge();
-      alert('পণ্যটি কার্ট-এ যুক্ত হয়েছে!');
+      alert('Added to cart!');
     }
 
     function buyNowDirect(productId, e) {
@@ -677,7 +567,7 @@
       window.location.href = `checkout.html?id=${productId}`;
     }
 
-    // Router
+    // Navigation Router
     function navigateTo(viewName, param = null, pushState = true) {
       document.querySelectorAll('.spa-view').forEach(el => el.classList.add('hidden'));
 
@@ -739,11 +629,11 @@
       if (snap.val()) document.getElementById('announcementText').innerText = snap.val();
     });
 
-    // Optional dynamic video URL support from Firebase (keeps auto-loop and no controls)
+    // 2. Video Player Logic (Autoplay continuously, no controls, falls back safely)
     db.ref(PATHS.video).on('value', snap => {
       const url = snap.val();
       if (url) {
-        const vid = document.getElementById('brandPromoVideo');
+        const vid = document.getElementById('storeAutoplayVideo');
         if (vid) {
           vid.src = url;
           vid.play().catch(() => {});
@@ -751,7 +641,7 @@
       }
     });
 
-    // 2. Banner Slider (Fresh Rainbow Banners)
+    // 3. Banner Slider
     db.ref(PATHS.banners).on('value', snap => {
       const data = snap.val();
       const wrapper = document.getElementById('bannerSliderWrapper');
@@ -760,12 +650,7 @@
       if (!data) {
         wrapper.innerHTML = `
           <div class="swiper-slide w-full h-full relative">
-            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1600&auto=format&fit=crop" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex flex-col justify-center px-6 sm:px-12 text-white">
-              <span class="bg-[#f85606] text-white text-[11px] font-bold px-2 py-0.5 rounded w-max mb-2">MEGA SALE</span>
-              <h2 class="text-xl sm:text-3xl font-extrabold">রংধনু স্পেশাল অফার</h2>
-              <p class="text-xs sm:text-sm text-gray-200 mt-1">সেরা মানের কালেকশনে আকর্ষণীয় ডিসকাউন্ট!</p>
-            </div>
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1600&auto=format&fit=crop" class="w-full h-full object-cover">
           </div>
         `;
       } else {
@@ -792,14 +677,14 @@
       lucide.createIcons();
     });
 
-    // 3. Middle Ads
+    // 4. Middle Ads
     db.ref(PATHS.ads).on('value', snap => {
       const data = snap.val();
       allAds = data ? Object.values(data) : [];
       buildHomeSections();
     });
 
-    // 4. Categories (Carousel)
+    // 5. Categories (Carousel)
     db.ref(PATHS.categories).on('value', snap => {
       const data = snap.val();
       const sliderWrapper = document.getElementById('homeCategorySliderWrapper');
@@ -812,38 +697,38 @@
       allCategories = [];
 
       if (!data) {
-        sliderWrapper.innerHTML = '<div class="text-xs text-gray-400 py-4 px-2">কোনো ক্যাটাগরি পাওয়া যায়নি।</div>';
+        sliderWrapper.innerHTML = '<div class="text-xs text-gray-400 py-6 px-4">No collections found.</div>';
         return;
       }
 
       Object.entries(data).forEach(([key, cat]) => {
         allCategories.push(cat);
 
-        // Slide
+        // Category slide
         const slide = document.createElement('div');
-        slide.className = "swiper-slide !w-32 sm:!w-44 relative h-36 sm:h-48 rounded-xl overflow-hidden cursor-pointer group bg-white border border-gray-100 shadow-sm transition";
+        slide.className = "swiper-slide !w-44 sm:!w-60 relative h-44 sm:h-64 rounded-xl overflow-hidden cursor-pointer group bg-gray-100 border border-gray-100 select-none";
         slide.onclick = () => navigateTo('category', cat.name);
         slide.innerHTML = `
-          <div class="absolute inset-0 bg-gray-50 flex items-center justify-center">
-            <img src="${LOGO_PLACEHOLDER}" class="w-8 h-8 opacity-20 animate-pulse">
+          <div class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+            <img src="${LOGO_PLACEHOLDER}" class="w-10 h-10 opacity-20 rounded-lg animate-pulse">
           </div>
           <img src="${cat.imageUrl}" alt="${cat.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-10" onload="this.previousElementSibling.style.display='none'">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-2.5 z-20">
-            <h3 class="text-white font-bold text-xs sm:text-sm text-center leading-tight drop-shadow">${cat.name}</h3>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3 sm:p-4 z-20">
+            <h3 class="text-white font-bold text-xs sm:text-sm tracking-wide">${cat.name}</h3>
           </div>
         `;
         sliderWrapper.appendChild(slide);
 
         // Collections Grid card
         const gridCard = slide.cloneNode(true);
-        gridCard.className = "relative h-36 sm:h-48 rounded-xl overflow-hidden cursor-pointer group bg-white border border-gray-100 shadow-sm transition";
+        gridCard.className = "relative h-44 sm:h-64 rounded-xl overflow-hidden cursor-pointer group bg-gray-100 border border-gray-100 transition";
         gridCard.onclick = () => navigateTo('category', cat.name);
         allGrid.appendChild(gridCard);
 
         // Drawer link
         const drawerItem = document.createElement('a');
         drawerItem.href = "javascript:void(0)";
-        drawerItem.className = "block p-2 text-xs text-gray-700 hover:text-[#f85606] hover:bg-orange-50 rounded font-medium transition";
+        drawerItem.className = "block p-2 text-xs text-gray-600 hover:text-black hover:bg-gray-50 rounded transition";
         drawerItem.innerText = cat.name;
         drawerItem.onclick = () => {
           toggleMenu();
@@ -855,7 +740,7 @@
       if (categorySwiper) categorySwiper.destroy(true, true);
       categorySwiper = new Swiper('.myCategorySwiper', {
         slidesPerView: 'auto',
-        spaceBetween: 12,
+        spaceBetween: 14,
         navigation: {
           nextEl: '#catNext',
           prevEl: '#catPrev',
@@ -866,7 +751,7 @@
       lucide.createIcons();
     });
 
-    // 5. Products
+    // 6. Products
     db.ref(PATHS.products).on('value', snap => {
       const data = snap.val();
       allProducts = [];
@@ -877,7 +762,7 @@
       buildHomeSections();
     });
 
-    // Daraz Style Product Card Component
+    // Product Card Component with Brand Logo Skeleton
     function createProductCard(p) {
       const hasDiscount = p.discountPrice && Number(p.discountPrice) < Number(p.regularPrice);
       const discountPercent = hasDiscount 
@@ -885,70 +770,65 @@
         : (p.discountPercent || null);
 
       const card = document.createElement('div');
-      card.className = "flex flex-col bg-white border border-gray-200/90 rounded-xl overflow-hidden group hover:shadow-lg hover:border-[#f85606]/40 transition duration-300";
+      card.className = "flex flex-col bg-white border border-gray-200/80 rounded-2xl overflow-hidden group hover:border-gray-400 transition shadow-sm";
 
       let badgesHtml = '';
       if (p.isFreeDelivery) {
-        badgesHtml += `<span class="bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">ফ্রি ডেলিভারি</span>`;
+        badgesHtml += `<span class="bg-black text-white text-[9px] font-semibold px-2 py-0.5 rounded shadow">Free Delivery</span>`;
       }
       if (discountPercent) {
-        badgesHtml += `<span class="bg-[#f85606] text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded shadow">-${discountPercent}%</span>`;
+        badgesHtml += `<span class="bg-gray-100 text-black border border-gray-300 text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">-${discountPercent}%</span>`;
       }
 
       let sizesHtml = '';
       if (p.sizes && Array.isArray(p.sizes) && p.sizes.length > 0) {
-        sizesHtml = `<div class="flex gap-1 mt-1 flex-wrap">
-          ${p.sizes.slice(0, 3).map(s => `<span class="text-[9px] px-1 bg-gray-100 text-gray-600 rounded font-medium">${typeof s === 'object' ? s.size : s}</span>`).join('')}
+        sizesHtml = `<div class="flex gap-1 mt-1.5 flex-wrap">
+          ${p.sizes.slice(0, 4).map(s => `<span class="text-[9px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">${typeof s === 'object' ? s.size : s}</span>`).join('')}
         </div>`;
       }
 
       card.innerHTML = `
-        <div class="relative w-full aspect-square bg-[#eff0f5] overflow-hidden cursor-pointer" onclick="buyNowDirect('${p.id}', event)">
+        <div class="relative w-full aspect-[3/4] bg-slate-50 overflow-hidden cursor-pointer" onclick="buyNowDirect('${p.id}', event)">
           
-          <!-- Logo Placeholder -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 skeleton-box z-0">
-            <img src="${LOGO_PLACEHOLDER}" alt="Rainbow" class="w-10 h-10 rounded-lg object-cover opacity-25 animate-pulse">
-            <span class="text-[9px] text-gray-400 font-bold tracking-wider mt-1">Rainbow</span>
+          <!-- Logo Skeleton Placeholder -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 skeleton-box z-0">
+            <img src="${LOGO_PLACEHOLDER}" alt="Rainbow" class="w-12 h-12 rounded-xl object-cover opacity-25 animate-pulse">
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">Rainbow</span>
           </div>
 
           <img 
             src="${p.imageUrl}" 
             alt="${p.name}" 
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-10 opacity-0"
+            class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 relative z-10 opacity-0"
             onload="this.classList.remove('opacity-0'); this.previousElementSibling.style.display='none';"
             onerror="this.src='${LOGO_PLACEHOLDER}'; this.classList.remove('opacity-0');"
             loading="lazy"
           >
           
-          <div class="absolute top-1.5 right-1.5 flex flex-col items-end gap-1 z-20">
+          <div class="absolute top-2 right-2 flex flex-col items-end gap-1 z-20">
             ${badgesHtml}
+          </div>
+
+          <div class="absolute inset-x-2 bottom-2 flex flex-col gap-1.5 z-20 opacity-90 group-hover:opacity-100 transition">
+            <button onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')}, event)" class="w-full bg-white/95 hover:bg-white text-black text-xs font-semibold py-1.5 rounded-lg border border-gray-200 shadow transition active:scale-95">
+              Add to Cart
+            </button>
+            <button onclick="buyNowDirect('${p.id}', event)" class="w-full bg-black hover:bg-gray-800 text-white text-xs font-semibold py-1.5 rounded-lg shadow transition active:scale-95">
+              Buy Now
+            </button>
           </div>
         </div>
 
-        <div class="p-2.5 flex flex-col justify-between flex-1 bg-white">
+        <div class="p-3 flex flex-col justify-between flex-1 bg-white">
           <div>
-            <h3 class="text-xs font-semibold text-gray-800 line-clamp-2 leading-tight hover:text-[#f85606] cursor-pointer transition" onclick="buyNowDirect('${p.id}', event)">
+            <h3 class="text-xs font-medium text-gray-900 line-clamp-2 leading-snug hover:text-black cursor-pointer" onclick="buyNowDirect('${p.id}', event)">
               ${p.name}
             </h3>
             ${sizesHtml}
           </div>
-
-          <div class="mt-2 pt-2 border-t border-gray-100">
-            <!-- Daraz Style Price Tag -->
-            <div class="flex items-baseline gap-1.5">
-              <span class="text-sm sm:text-base font-extrabold text-[#f85606]">৳${p.discountPrice || p.regularPrice}</span>
-              ${hasDiscount ? `<span class="text-[11px] text-gray-400 line-through">৳${p.regularPrice}</span>` : ''}
-            </div>
-
-            <!-- Quick Action Buttons -->
-            <div class="grid grid-cols-2 gap-1.5 mt-2">
-              <button onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')}, event)" class="w-full bg-orange-50 hover:bg-orange-100 text-[#f85606] text-[11px] font-bold py-1.5 rounded border border-[#f85606]/30 transition active:scale-95">
-                কার্ট
-              </button>
-              <button onclick="buyNowDirect('${p.id}', event)" class="w-full bg-[#f85606] hover:bg-[#d94700] text-white text-[11px] font-bold py-1.5 rounded shadow transition active:scale-95">
-                অর্ডার
-              </button>
-            </div>
+          <div class="flex items-baseline gap-2 mt-2 pt-2 border-t border-gray-100">
+            <span class="text-xs sm:text-sm font-bold text-black">BDT ${p.discountPrice || p.regularPrice}</span>
+            ${hasDiscount ? `<span class="text-[11px] text-gray-400 line-through">BDT ${p.regularPrice}</span>` : ''}
           </div>
         </div>
       `;
@@ -962,7 +842,7 @@
       sliderWrapper.innerHTML = '';
 
       if (allProducts.length === 0) {
-        sliderWrapper.innerHTML = `<div class="text-xs text-gray-400 py-6 px-4">বর্তমানে কোনো নতুন পণ্য পাওয়া যায়নি।</div>`;
+        sliderWrapper.innerHTML = `<div class="text-xs text-gray-400 py-6 px-4">No new arrivals available.</div>`;
         return;
       }
 
@@ -970,7 +850,7 @@
 
       newItems.forEach(p => {
         const slide = document.createElement('div');
-        slide.className = 'swiper-slide !w-44 sm:!w-56 transition-all duration-300';
+        slide.className = 'swiper-slide !w-56 sm:!w-64 transition-all duration-300';
         slide.appendChild(createProductCard(p));
         sliderWrapper.appendChild(slide);
       });
@@ -980,7 +860,7 @@
       newArrivalsSwiper = new Swiper('.myNewArrivalsSwiper', {
         slidesPerView: 'auto',
         centeredSlides: true,
-        spaceBetween: 14,
+        spaceBetween: 18,
         loop: newItems.length > 2,
         speed: 700,
         autoplay: {
@@ -1006,9 +886,9 @@
         // Middle Banner Ad
         if (allAds[index]) {
           const adBanner = document.createElement('div');
-          adBanner.className = "my-4";
+          adBanner.className = "max-w-7xl mx-auto px-4 my-6";
           adBanner.innerHTML = `
-            <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm relative h-28 sm:h-44 bg-gray-100 flex items-center justify-center">
+            <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm relative h-32 sm:h-56 bg-gray-50 flex items-center justify-center">
               <img src="${LOGO_PLACEHOLDER}" class="w-10 h-10 opacity-20 absolute">
               <img src="${allAds[index].imageUrl}" alt="Promotion" class="w-full h-full object-cover relative z-10" loading="lazy">
             </div>
@@ -1017,38 +897,35 @@
         }
 
         const catSection = document.createElement('div');
-        catSection.className = "bg-white rounded-2xl p-4 border border-gray-100 shadow-sm";
+        catSection.className = "max-w-7xl mx-auto px-4 pt-6";
         catSection.innerHTML = `
-          <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-4 bg-[#f85606] rounded-full"></span>
-              <h2 class="text-base sm:text-lg font-bold text-gray-900">${cat.name}</h2>
-            </div>
-            <button onclick="navigateTo('category', '${cat.name}')" class="text-xs font-bold text-[#f85606] hover:underline flex items-center gap-0.5">
-              <span>সব দেখুন</span>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg sm:text-2xl font-bold tracking-tight text-black">${cat.name}</h2>
+            <button onclick="navigateTo('category', '${cat.name}')" class="text-xs sm:text-sm font-semibold text-gray-600 hover:text-black flex items-center gap-1">
+              <span>View All</span>
               <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </button>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3" id="catGrid-${index}"></div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" id="catGrid-${index}"></div>
         `;
         container.appendChild(catSection);
         const catGrid = catSection.querySelector(`#catGrid-${index}`);
-        catProducts.slice(0, 5).forEach(p => catGrid.appendChild(createProductCard(p)));
+        catProducts.slice(0, 4).forEach(p => catGrid.appendChild(createProductCard(p)));
       });
 
       lucide.createIcons();
     }
 
     // Dedicated Catalog View
-    function renderCatalogView(title = "সব প্রোডাক্ট") {
+    function renderCatalogView(title = "All Products") {
       document.getElementById('catalogViewTitle').innerText = title;
-      document.getElementById('catalogViewSubtitle').innerText = `মোট ${allProducts.length} টি পণ্য পাওয়া গেছে`;
+      document.getElementById('catalogViewSubtitle').innerText = `Showing ${allProducts.length} items`;
       
       const grid = document.getElementById('catalogProductGrid');
       grid.innerHTML = '';
 
       if (allProducts.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs bg-white rounded-xl">কোনো পণ্য পাওয়া যায়নি।</div>';
+        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs">No products available.</div>';
         return;
       }
 
@@ -1060,13 +937,13 @@
     function renderCategoryView(catName) {
       document.getElementById('categoryViewTitle').innerText = catName;
       const catProducts = allProducts.filter(p => p.category === catName);
-      document.getElementById('categoryViewSubtitle').innerText = `মোট ${catProducts.length} টি পণ্য পাওয়া গেছে`;
+      document.getElementById('categoryViewSubtitle').innerText = `Showing ${catProducts.length} items`;
       
       const grid = document.getElementById('categoryProductGrid');
       grid.innerHTML = '';
 
       if (catProducts.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs bg-white rounded-xl">এই ক্যাটাগরিতে কোনো পণ্য নেই।</div>';
+        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs">No products found in this category.</div>';
         return;
       }
 
@@ -1103,13 +980,13 @@
         });
       }
 
-      document.getElementById('searchResultSummary').innerText = clean === '' ? 'সব পণ্য' : `"${keyword}" এর অনুসন্ধান ফলাফল`;
-      document.getElementById('searchResultCount').innerText = `${matched.length} টি আইটেম`;
+      document.getElementById('searchResultSummary').innerText = clean === '' ? 'All Products' : `Results for "${keyword}"`;
+      document.getElementById('searchResultCount').innerText = `${matched.length} items`;
 
       const grid = document.getElementById('searchProductGrid');
       grid.innerHTML = '';
       if (matched.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs bg-white rounded-xl">কোনো পণ্য খুঁজে পাওয়া যায়নি।</div>';
+        grid.innerHTML = '<div class="col-span-full text-center text-gray-400 py-16 text-xs">No matching products found.</div>';
         return;
       }
       matched.forEach(p => grid.appendChild(createProductCard(p)));
