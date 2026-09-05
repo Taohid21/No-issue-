@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Rainbow - রংধনু | প্রোডাক্ট বিবরণ ও চেকআউট</title>
+  <title>Checkout | Rainbow</title>
   
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg">
   
-  <!-- Google Fonts: Hind Siliguri & Inter -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,16 +28,8 @@
     tailwind.config = {
       theme: {
         extend: {
-          colors: {
-            daraz: {
-              DEFAULT: '#f85606',
-              hover: '#d94700',
-              light: '#fff1eb',
-              bg: '#eff0f5'
-            }
-          },
           fontFamily: {
-            sans: ['"Hind Siliguri"', '"Inter"', 'sans-serif'],
+            sans: ['"Inter"', 'sans-serif'],
           }
         }
       }
@@ -46,320 +38,259 @@
 
   <style>
     body { 
-      font-family: 'Hind Siliguri', 'Inter', sans-serif; 
-      background-color: #eff0f5;
-      color: #212121;
+      font-family: 'Inter', sans-serif; 
+      background-color: #ffffff;
+      color: #0f172a;
     }
     .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
-    
-    /* Image Fullscreen Zoom Box */
-    .img-zoom-wrapper {
-      transition: transform 0.3s ease;
-    }
-    .img-zoom-wrapper:active {
-      transform: scale(0.98);
-    }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 999px; }
   </style>
 </head>
-<body class="antialiased selection:bg-[#f85606] selection:text-white min-h-screen flex flex-col">
+<body class="antialiased selection:bg-black selection:text-white min-h-screen flex flex-col bg-gray-50">
 
-  <!-- Top Header -->
-  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-    <div class="max-w-3xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-      <button onclick="handleHeaderBack()" class="flex items-center gap-1.5 text-gray-700 hover:text-[#f85606] transition text-xs sm:text-sm font-bold">
+  <!-- ==================== MINIMAL CLEAN HEADER ==================== -->
+  <header class="bg-white border-b border-gray-100 sticky top-0 z-40">
+    <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
+      <!-- Only Back Icon -->
+      <button onclick="handleHeaderBack()" class="w-9 h-9 -ml-2 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-800 transition active:scale-95">
         <i data-lucide="arrow-left" class="w-5 h-5"></i>
-        <span>পেছনে যান</span>
       </button>
       
+      <!-- Only Rainbow Logo & Name -->
       <a href="index.html" class="flex items-center gap-2">
-        <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow রংধনু" class="w-8 h-8 rounded-lg object-cover shadow-sm">
-        <span class="font-black text-lg tracking-tight text-gray-900">Rainbow <span class="text-[#f85606]">রংধনু</span></span>
+        <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow" class="w-7 h-7 rounded-lg object-cover">
+        <span class="font-black text-lg tracking-wider text-black">Rainbow</span>
       </a>
 
-      <div class="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
-        <span>১০০% নিরাপদ</span>
-      </div>
+      <!-- Empty spacer for perfect center alignment -->
+      <div class="w-9"></div>
     </div>
   </header>
 
-  <!-- ==================== SCREEN 1: PRODUCT SHOWCASE & DETAILS ==================== -->
-  <main id="screen-product" class="flex-1 max-w-xl mx-auto w-full px-3 sm:px-4 py-4 pb-28">
+  <!-- ==================== SCREEN 1: PRODUCT SHOWCASE ==================== -->
+  <main id="screen-product" class="flex-1 max-w-xl mx-auto w-full px-4 py-4 pb-28">
     
-    <div id="productLoadingBox" class="bg-white rounded-2xl p-12 text-center text-xs text-gray-400 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-2">
-      <div class="w-8 h-8 border-3 border-orange-200 border-t-[#f85606] rounded-full animate-spin"></div>
-      <span>প্রোডাক্ট লোড হচ্ছে...</span>
+    <div id="productLoadingBox" class="py-20 text-center text-xs text-gray-400">
+      Loading product details...
     </div>
 
     <div id="productMainContent" class="hidden space-y-4">
       
-      <!-- Big Product Image with Click to Zoom Indicator -->
-      <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group cursor-pointer img-zoom-wrapper" onclick="openLightbox()">
-        <div class="relative w-full aspect-square sm:aspect-[4/3] bg-gray-100 flex items-center justify-center overflow-hidden">
-          <img id="pShowcaseImage" src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Product Image" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+      <!-- Product Image (Click to View Fullscreen) -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group cursor-pointer" onclick="openLightbox()">
+        <div class="relative w-full aspect-[4/4] bg-neutral-100 flex items-center justify-center">
+          <img id="pShowcaseImage" src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Product" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
           
-          <!-- Tap to Zoom Badge -->
-          <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg pointer-events-none">
+          <div class="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm text-white text-[11px] font-medium px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow">
             <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
-            <span>বড় করে দেখতে ক্লিক করুন</span>
+            <span>Zoom</span>
           </div>
 
-          <!-- Free Delivery / Discount Badge -->
-          <div class="absolute top-3 left-3 flex flex-col gap-1.5" id="pBadgesWrapper"></div>
+          <div class="absolute top-3 left-3" id="pBadgesWrapper"></div>
         </div>
       </div>
 
-      <!-- Multiple Gallery Images (If available) -->
+      <!-- Multiple Gallery Photos -->
       <div id="galleryThumbnailsContainer" class="hidden flex gap-2 overflow-x-auto pb-1 custom-scroll"></div>
 
-      <!-- Title & Pricing Card -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-3">
+      <!-- Details Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm space-y-3">
         <div>
-          <span id="pCategoryBadge" class="text-[11px] font-bold text-[#f85606] uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded">Category</span>
-          <h1 id="pShowcaseTitle" class="text-base sm:text-xl font-bold text-gray-900 mt-1.5 leading-snug">Product Title</h1>
+          <span id="pCategoryBadge" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Category</span>
+          <h1 id="pShowcaseTitle" class="text-base sm:text-lg font-bold text-black mt-1 leading-snug">Product Title</h1>
         </div>
 
-        <!-- Daraz Style Price -->
         <div class="flex items-baseline gap-2 pt-1 border-t border-gray-100">
-          <span id="pShowcasePrice" class="text-2xl font-black text-[#f85606]">৳ 0</span>
-          <span id="pShowcaseOldPrice" class="text-sm text-gray-400 line-through"></span>
-          <span id="pDiscountPercent" class="text-xs bg-[#f85606] text-white px-2 py-0.5 rounded font-extrabold hidden"></span>
-        </div>
-
-        <!-- Cash on Delivery Promise -->
-        <div class="flex items-center gap-2 p-2.5 bg-orange-50/70 border border-orange-100 rounded-xl text-xs text-orange-950 font-medium">
-          <i data-lucide="truck" class="w-4 h-4 text-[#f85606] shrink-0"></i>
-          <span>ক্যাশ অন ডেলিভারি: পণ্য হাতে পেয়ে টাকা পরিশোধ করার সুবিধা!</span>
+          <span id="pShowcasePrice" class="text-xl sm:text-2xl font-black text-black">BDT 0</span>
+          <span id="pShowcaseOldPrice" class="text-xs text-gray-400 line-through"></span>
         </div>
       </div>
 
-      <!-- Variants (Colors, Sizes, Quantity) -->
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-4">
+      <!-- Variants Selection -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm space-y-4">
         
-        <!-- Color Selector -->
+        <!-- Colors -->
         <div id="colorsWrap" class="hidden space-y-2">
-          <label class="block text-xs font-bold text-gray-700">কালার নির্বাচন করুন:</label>
+          <label class="block text-xs font-bold text-gray-700">Select Color:</label>
           <div id="colorsList" class="flex flex-wrap gap-2"></div>
         </div>
 
-        <!-- Size Selector -->
+        <!-- Sizes -->
         <div id="sizesWrap" class="hidden space-y-2">
-          <label class="block text-xs font-bold text-gray-700">সাইজ নির্বাচন করুন:</label>
+          <label class="block text-xs font-bold text-gray-700">Select Size:</label>
           <div id="sizesList" class="flex flex-wrap gap-2"></div>
         </div>
 
-        <!-- Quantity Selector -->
+        <!-- Quantity -->
         <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-          <div>
-            <span class="text-xs font-bold text-gray-800 block">পরিমাণ (Quantity):</span>
-            <span class="text-[11px] text-gray-400" id="stockNoticeText">স্টক এভেলেবল</span>
-          </div>
-          <div class="flex items-center border-2 border-orange-200 rounded-xl bg-orange-50/50 overflow-hidden shadow-sm">
-            <button type="button" onclick="changeQty(-1)" class="w-9 h-9 flex items-center justify-center font-bold text-base text-gray-700 hover:bg-orange-100 transition active:scale-95">-</button>
-            <span id="qtyCount" class="w-10 text-center text-sm font-extrabold text-gray-900 bg-white py-1.5">1</span>
-            <button type="button" onclick="changeQty(1)" class="w-9 h-9 flex items-center justify-center font-bold text-base text-gray-700 hover:bg-orange-100 transition active:scale-95">+</button>
+          <span class="text-xs font-bold text-gray-700">Quantity:</span>
+          <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50">
+            <button type="button" onclick="changeQty(-1)" class="w-8 h-8 flex items-center justify-center font-bold text-sm text-gray-600 hover:bg-gray-200 transition active:scale-95">-</button>
+            <span id="qtyCount" class="w-9 text-center text-xs font-bold text-black bg-white py-1.5">1</span>
+            <button type="button" onclick="changeQty(1)" class="w-8 h-8 flex items-center justify-center font-bold text-sm text-gray-600 hover:bg-gray-200 transition active:scale-95">+</button>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- STICKY BOTTOM BAR (Order Now Button) -->
-    <div id="stickyOrderBar" class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 p-3 sm:p-4 shadow-2xl">
+    <!-- Sticky Bottom Bar -->
+    <div id="stickyOrderBar" class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-100 p-3 sm:p-4 shadow-lg">
       <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
         <div>
-          <span class="text-[10px] text-gray-400 font-bold block">মোট মূল্য:</span>
-          <span id="stickyBottomPrice" class="text-lg font-black text-[#f85606]">৳ 0</span>
+          <span class="text-[10px] text-gray-400 font-semibold block uppercase tracking-wider">Total</span>
+          <span id="stickyBottomPrice" class="text-base sm:text-lg font-black text-black">BDT 0</span>
         </div>
         <button 
           onclick="proceedToCheckoutScreen()" 
-          class="flex-1 bg-[#f85606] hover:bg-[#d94700] text-white py-3 sm:py-3.5 px-6 rounded-xl font-bold text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30"
+          class="flex-1 bg-black hover:bg-neutral-800 text-white py-3 px-6 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow"
         >
-          <span>অর্ডার করুন (Order Now)</span>
+          <span>Order Now</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
   </main>
 
-  <!-- ==================== SCREEN 2: STEP-BY-STEP CHECKOUT & DELIVERY FORM ==================== -->
-  <main id="screen-checkout" class="hidden flex-1 max-w-xl mx-auto w-full px-3 sm:px-4 py-5 space-y-4">
+  <!-- ==================== SCREEN 2: CLEAN CHECKOUT FORM ==================== -->
+  <main id="screen-checkout" class="hidden flex-1 max-w-xl mx-auto w-full px-4 py-4 space-y-4">
     
-    <!-- Step Indicator Progress Bar -->
-    <div class="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-      <div class="flex items-center justify-between text-xs font-bold text-gray-400">
-        <div class="flex items-center gap-1.5 text-[#f85606]">
-          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">১</span>
-          <span>পণ্য</span>
-        </div>
-        <div class="w-8 sm:w-12 h-[2px] bg-[#f85606]"></div>
-        <div class="flex items-center gap-1.5 text-[#f85606]">
-          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">২</span>
-          <span>ঠিকানা</span>
-        </div>
-        <div class="w-8 sm:w-12 h-[2px] bg-[#f85606]"></div>
-        <div class="flex items-center gap-1.5 text-[#f85606]">
-          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">৩</span>
-          <span>কনফার্ম</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Selected Order Summary Box -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
+    <!-- Order Summary -->
+    <div class="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm space-y-3">
       <div class="flex items-center justify-between pb-2 border-b border-gray-100">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">আপনার নির্বাচিত পণ্য</h3>
-        <button onclick="goToProductScreen()" class="text-xs text-[#f85606] font-bold hover:underline">পরিবর্তন করুন</button>
+        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Selected Item</h3>
+        <button onclick="goToProductScreen()" class="text-xs text-black font-semibold hover:underline">Change</button>
       </div>
-
-      <div id="checkoutSummaryList" class="space-y-2.5"></div>
+      <div id="checkoutSummaryList" class="space-y-2"></div>
     </div>
 
-    <!-- Delivery Form -->
+    <!-- Form -->
     <form id="orderForm" onsubmit="handleOrderSubmit(event)" class="space-y-4">
-      <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
-        <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
-          <i data-lucide="map-pin" class="w-4 h-4 text-[#f85606]"></i>
-          <h3 class="text-sm font-bold text-gray-900">ডেলিভারির ঠিকানা প্রদান করুন</h3>
-        </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 pb-2 border-b border-gray-100">Delivery Information</h3>
 
-        <!-- Name -->
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">আপনার পূর্ণ নাম *</label>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name *</label>
           <input 
             type="text" 
             id="custName" 
             required 
-            placeholder="যেমন: তানভীর আহমেদ" 
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+            placeholder="Your name" 
+            class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white text-black rounded-xl p-3 text-xs outline-none transition"
           >
         </div>
 
-        <!-- Phone -->
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">সচল মোবাইল নম্বর (কল করা হবে) *</label>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Phone Number *</label>
           <input 
             type="tel" 
             id="custPhone" 
             required 
-            placeholder="যেমন: 017XXXXXXXX" 
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+            placeholder="01XXXXXXXXX" 
+            class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white text-black rounded-xl p-3 text-xs outline-none transition"
           >
         </div>
 
-        <!-- District -->
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">আপনার জেলা নির্বাচন করুন *</label>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">District *</label>
           <select 
             id="custDistrict" 
             required 
             onchange="handleDistrictChange(this.value)" 
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition font-medium cursor-pointer"
+            class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white text-black rounded-xl p-3 text-xs outline-none transition cursor-pointer"
           >
-            <option value="">-- জেলা পছন্দ করুন --</option>
+            <option value="">Select District</option>
           </select>
         </div>
 
-        <!-- Full Address -->
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">পূর্ণাঙ্গ ঠিকানা (থানা, এলাকা, বাসা নং) *</label>
+          <label class="block text-xs font-semibold text-gray-700 mb-1">Delivery Address *</label>
           <textarea 
             id="custAddress" 
             required 
             rows="2" 
-            placeholder="যেমন: বাসা নং ১২, রোড নং ৪, সেক্টর ৭, উত্তরা" 
-            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+            placeholder="House, road, area details..." 
+            class="w-full bg-gray-50 border border-gray-200 focus:border-black focus:bg-white text-black rounded-xl p-3 text-xs outline-none transition"
           ></textarea>
         </div>
 
-        <!-- Delivery Area Selection -->
         <div class="pt-1">
-          <label class="block text-xs font-bold text-gray-700 mb-2">ডেলিভারি এরিয়া *</label>
+          <label class="block text-xs font-semibold text-gray-700 mb-2">Delivery Area *</label>
           <div class="grid grid-cols-2 gap-3">
-            <label class="flex items-center gap-2 p-3 border-2 border-transparent has-[:checked]:border-[#f85606] has-[:checked]:bg-orange-50 rounded-xl cursor-pointer bg-[#eff0f5] transition">
-              <input type="radio" name="deliveryZone" value="inside" checked onchange="updateSummaryPricing()" class="accent-[#f85606] w-4 h-4">
+            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50 transition bg-white">
+              <input type="radio" name="deliveryZone" value="inside" checked onchange="updateSummaryPricing()" class="accent-black w-4 h-4">
               <div class="text-xs">
-                <span class="font-bold text-gray-900 block">ঢাকার ভিতরে</span>
-                <span class="text-gray-500 font-semibold" id="insideChargeText">৳ 60</span>
+                <span class="font-bold text-black block">Inside Dhaka</span>
+                <span class="text-gray-400" id="insideChargeText">BDT 60</span>
               </div>
             </label>
 
-            <label class="flex items-center gap-2 p-3 border-2 border-transparent has-[:checked]:border-[#f85606] has-[:checked]:bg-orange-50 rounded-xl cursor-pointer bg-[#eff0f5] transition">
-              <input type="radio" name="deliveryZone" value="outside" onchange="updateSummaryPricing()" class="accent-[#f85606] w-4 h-4">
+            <label class="flex items-center gap-2 p-3 border border-gray-200 rounded-xl cursor-pointer has-[:checked]:border-black has-[:checked]:bg-gray-50 transition bg-white">
+              <input type="radio" name="deliveryZone" value="outside" onchange="updateSummaryPricing()" class="accent-black w-4 h-4">
               <div class="text-xs">
-                <span class="font-bold text-gray-900 block">ঢাকার বাইরে</span>
-                <span class="text-gray-500 font-semibold" id="outsideChargeText">৳ 130</span>
+                <span class="font-bold text-black block">Outside Dhaka</span>
+                <span class="text-gray-400" id="outsideChargeText">BDT 130</span>
               </div>
             </label>
           </div>
         </div>
       </div>
 
-      <!-- Payment & Bill Breakdown Card -->
-      <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
-        <div class="flex items-center justify-between text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl">
-          <div class="flex items-center gap-2">
-            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
-            <span>ক্যাশ অন ডেলিভারি (Cash on Delivery)</span>
+      <!-- Summary & Confirm -->
+      <div class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <div class="bg-gray-50 rounded-xl p-3.5 space-y-2 text-xs">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal:</span>
+            <span id="sumSubtotal" class="font-bold text-black">BDT 0</span>
           </div>
-          <span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded">হাতে পেয়ে পেমেন্ট</span>
-        </div>
-
-        <div class="bg-[#eff0f5] rounded-xl p-3.5 space-y-2 text-xs">
-          <div class="flex justify-between text-gray-600 font-medium">
-            <span>পণ্যের মূল্য (Subtotal):</span>
-            <span id="sumSubtotal" class="font-bold text-gray-900">৳ 0</span>
+          <div class="flex justify-between text-gray-600">
+            <span>Delivery Fee:</span>
+            <span id="sumDelivery" class="font-bold text-black">BDT 0</span>
           </div>
-          <div class="flex justify-between text-gray-600 font-medium">
-            <span>ডেলিভারি চার্জ:</span>
-            <span id="sumDelivery" class="font-bold text-gray-900">৳ 0</span>
-          </div>
-          <div class="flex justify-between text-base font-extrabold text-gray-900 border-t border-gray-200 pt-2.5">
-            <span>সর্বমোট পরিশোধযোগ্য:</span>
-            <span id="sumGrandTotal" class="text-[#f85606]">৳ 0</span>
+          <div class="flex justify-between text-sm sm:text-base font-extrabold text-black border-t border-gray-200 pt-2.5">
+            <span>Grand Total:</span>
+            <span id="sumGrandTotal">BDT 0</span>
           </div>
         </div>
 
         <button 
           type="submit" 
           id="submitOrderBtn" 
-          class="w-full bg-[#f85606] hover:bg-[#d94700] text-white py-3.5 rounded-xl font-bold text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-orange-500/20 cursor-pointer"
+          class="w-full bg-black hover:bg-neutral-800 text-white py-3.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow cursor-pointer"
         >
-          <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> 
-          <span>অর্ডার কনফার্ম করুন (Confirm Order)</span>
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i> 
+          <span>Confirm Order</span>
         </button>
 
         <p class="text-[11px] text-center text-gray-400">
-          অর্ডার করার পর আমাদের প্রতিনিধি আপনাকে কল করে অর্ডারটি কনফার্ম করবেন।
+          Payment method: Cash on Delivery (Pay upon receiving item)
         </p>
       </div>
     </form>
   </main>
 
-  <!-- ==================== FULLSCREEN IMAGE LIGHTBOX MODAL ==================== -->
-  <div id="imageLightboxModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center p-3" onclick="closeLightbox()">
-    <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white bg-white/20 hover:bg-white/40 p-2.5 rounded-full transition z-10">
-      <i data-lucide="x" class="w-6 h-6"></i>
+  <!-- ==================== LIGHTBOX MODAL ==================== -->
+  <div id="imageLightboxModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden flex-col items-center justify-center p-4" onclick="closeLightbox()">
+    <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition">
+      <i data-lucide="x" class="w-5 h-5"></i>
     </button>
-    <div class="max-w-3xl max-h-[85vh] w-full flex items-center justify-center overflow-hidden" onclick="event.stopPropagation()">
-      <img id="lightboxImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl transition-transform duration-300">
+    <div class="max-w-xl max-h-[85vh] w-full flex items-center justify-center" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl">
     </div>
-    <span class="text-xs text-neutral-400 mt-3 font-medium">বন্ধ করতে যেকোনো জায়গায় ট্যাপ করুন</span>
   </div>
 
-  <!-- ==================== ORDER SUCCESS MODAL ==================== -->
-  <div id="successModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
-      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-        <i data-lucide="check-circle" class="w-8 h-8"></i>
+  <!-- ==================== SUCCESS MODAL ==================== -->
+  <div id="successModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-gray-100">
+      <div class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="check" class="w-7 h-7"></i>
       </div>
-      <h3 class="text-lg font-black text-gray-900 mb-1">অর্ডার সফল হয়েছে!</h3>
+      <h3 class="text-base font-bold text-black mb-1">Order Placed Successfully!</h3>
       <p class="text-xs text-gray-500 leading-relaxed mb-5">
-        Rainbow - রংধনু-তে অর্ডার করার জন্য ধন্যবাদ। কিছুক্ষণের মধ্যে আমাদের প্রতিনিধি কল করে আপনার অর্ডারটি নিশ্চিত করবেন।
+        Thank you for ordering with Rainbow. Our representative will contact you shortly to confirm your delivery details.
       </p>
-      <a href="index.html" class="inline-block w-full bg-[#f85606] hover:bg-[#d94700] text-white py-3.5 rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-lg shadow-orange-500/20">
-        দোকানে ফিরে যান
+      <a href="index.html" class="inline-block w-full bg-black hover:bg-neutral-800 text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition">
+        Return to Store
       </a>
     </div>
   </div>
@@ -400,7 +331,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Isolated Rainbow Database Paths
     const PATHS = {
       orders: 'rainbow_orders',
       products: 'rainbow_products',
@@ -422,15 +352,13 @@
     db.ref(`${PATHS.settings}/delivery`).on('value', snap => {
       if (snap.val()) {
         deliverySettings = snap.val();
-        document.getElementById('insideChargeText').innerText = `৳ ${deliverySettings.insideDhaka}`;
-        document.getElementById('outsideChargeText').innerText = `৳ ${deliverySettings.outsideDhaka}`;
+        document.getElementById('insideChargeText').innerText = `BDT ${deliverySettings.insideDhaka}`;
+        document.getElementById('outsideChargeText').innerText = `BDT ${deliverySettings.outsideDhaka}`;
         updateSummaryPricing();
       }
     });
 
-    // Handle Init
     if (fromCart) {
-      // Cart users directly go to checkout screen
       currentOrderItems = JSON.parse(localStorage.getItem('rainbow_cart') || '[]');
       if (currentOrderItems.length === 0) window.location.href = 'index.html';
       proceedToCheckoutScreen();
@@ -439,7 +367,7 @@
         document.getElementById('productLoadingBox').style.display = 'none';
         singleProductData = snap.val();
         if (!singleProductData) {
-          alert('পণ্যটি খুঁজে পাওয়া যায়নি!');
+          alert('Product not found!');
           window.location.href = 'index.html';
           return;
         }
@@ -449,7 +377,6 @@
       window.location.href = 'index.html';
     }
 
-    // Render Product Details Screen
     function renderProductShowcase(p) {
       document.getElementById('productMainContent').classList.remove('hidden');
 
@@ -460,25 +387,19 @@
       document.getElementById('pCategoryBadge').innerText = p.category || 'General';
       
       const price = Number(p.discountPrice || p.regularPrice);
-      document.getElementById('pShowcasePrice').innerText = `৳ ${price}`;
+      document.getElementById('pShowcasePrice').innerText = `BDT ${price}`;
 
-      // Price & Discount Tag
       if (p.discountPrice && Number(p.discountPrice) < Number(p.regularPrice)) {
-        document.getElementById('pShowcaseOldPrice').innerText = `৳ ${p.regularPrice}`;
-        const discountPercent = Math.round(((p.regularPrice - p.discountPrice) / p.regularPrice) * 100);
-        const disTag = document.getElementById('pDiscountPercent');
-        disTag.innerText = `-${discountPercent}%`;
-        disTag.classList.remove('hidden');
+        document.getElementById('pShowcaseOldPrice').innerText = `BDT ${p.regularPrice}`;
       }
 
-      // Badges
       const badgeWrap = document.getElementById('pBadgesWrapper');
       badgeWrap.innerHTML = '';
       if (p.isFreeDelivery) {
-        badgeWrap.innerHTML += `<span class="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow">ফ্রি ডেলিভারি</span>`;
+        badgeWrap.innerHTML += `<span class="bg-black text-white text-[9px] font-semibold px-2 py-0.5 rounded shadow">Free Delivery</span>`;
       }
 
-      // Multiple Image Gallery Thumbnails
+      // Multiple Images
       if (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 1) {
         const thumbCont = document.getElementById('galleryThumbnailsContainer');
         thumbCont.classList.remove('hidden');
@@ -486,15 +407,13 @@
         p.gallery.forEach(url => {
           const t = document.createElement('img');
           t.src = url;
-          t.className = "w-14 h-14 object-cover rounded-lg border-2 border-transparent hover:border-[#f85606] cursor-pointer bg-white shrink-0 transition";
-          t.onclick = () => {
-            imgEl.src = url;
-          };
+          t.className = "w-12 h-12 object-cover rounded-lg border border-gray-200 hover:border-black cursor-pointer bg-white shrink-0 transition";
+          t.onclick = () => { imgEl.src = url; };
           thumbCont.appendChild(t);
         });
       }
 
-      // Colors Selection
+      // Colors
       if (p.colors && p.colors.length > 0) {
         document.getElementById('colorsWrap').classList.remove('hidden');
         const cList = document.getElementById('colorsList');
@@ -503,16 +422,15 @@
           if (idx === 0) selectedColor = c;
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold transition ${idx === 0 ? 'bg-[#f85606] text-white border-[#f85606] shadow' : 'bg-white border-gray-200 text-gray-700'}`;
+          btn.className = `px-3 py-1.5 rounded-lg border text-xs font-medium transition ${idx === 0 ? 'bg-black text-white border-black' : 'bg-white border-gray-200 text-gray-700'}`;
           btn.innerText = c;
           btn.onclick = () => {
             selectedColor = c;
             cList.querySelectorAll('button').forEach(b => {
-              b.className = 'px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition';
+              b.className = 'px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-xs font-medium transition';
             });
-            btn.className = 'px-3.5 py-1.5 rounded-xl border bg-[#f85606] text-white border-[#f85606] text-xs font-bold transition shadow';
+            btn.className = 'px-3 py-1.5 rounded-lg border bg-black text-white border-black text-xs font-medium transition';
 
-            // Change image if color gallery is assigned
             if (p.colorImages && p.colorImages[c] && p.colorImages[c].length > 0) {
               imgEl.src = p.colorImages[c][0];
             }
@@ -522,7 +440,7 @@
         });
       }
 
-      // Sizes Selection
+      // Sizes
       if (p.sizes && p.sizes.length > 0) {
         document.getElementById('sizesWrap').classList.remove('hidden');
         const sList = document.getElementById('sizesList');
@@ -532,14 +450,14 @@
           if (idx === 0) selectedSize = val;
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold transition ${idx === 0 ? 'bg-[#f85606] text-white border-[#f85606] shadow' : 'bg-white border-gray-200 text-gray-700'}`;
+          btn.className = `px-3 py-1.5 rounded-lg border text-xs font-medium transition ${idx === 0 ? 'bg-black text-white border-black' : 'bg-white border-gray-200 text-gray-700'}`;
           btn.innerText = val;
           btn.onclick = () => {
             selectedSize = val;
             sList.querySelectorAll('button').forEach(b => {
-              b.className = 'px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition';
+              b.className = 'px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 text-xs font-medium transition';
             });
-            btn.className = 'px-3.5 py-1.5 rounded-xl border bg-[#f85606] text-white border-[#f85606] text-xs font-bold transition shadow';
+            btn.className = 'px-3 py-1.5 rounded-lg border bg-black text-white border-black text-xs font-medium transition';
             syncProductOrderState();
           };
           sList.appendChild(btn);
@@ -573,11 +491,10 @@
         quantity: singleQty
       }];
 
-      document.getElementById('stickyBottomPrice').innerText = `৳ ${unitPrice * singleQty}`;
+      document.getElementById('stickyBottomPrice').innerText = `BDT ${unitPrice * singleQty}`;
       updateSummaryPricing();
     }
 
-    // Switch between Screen 1 (Product) and Screen 2 (Checkout)
     function proceedToCheckoutScreen() {
       document.getElementById('screen-product').classList.add('hidden');
       document.getElementById('stickyOrderBar')?.classList.add('hidden');
@@ -585,17 +502,16 @@
       const chkScreen = document.getElementById('screen-checkout');
       chkScreen.classList.remove('hidden');
 
-      // Populate Checkout Order Summary Cards
       const summaryCont = document.getElementById('checkoutSummaryList');
       summaryCont.innerHTML = '';
       currentOrderItems.forEach(it => {
         summaryCont.innerHTML += `
-          <div class="flex items-center gap-3 bg-[#eff0f5] p-2.5 rounded-xl border border-gray-100">
+          <div class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
             <img src="${it.imageUrl || LOGO_PLACEHOLDER}" class="w-12 h-12 object-cover rounded-lg border bg-white shrink-0">
             <div class="flex-1 min-w-0 text-xs">
-              <span class="font-bold text-gray-900 block truncate">${it.name}</span>
-              <span class="text-gray-500 text-[11px] block">${it.selectedSize ? 'সাইজ: ' + it.selectedSize : ''} ${it.selectedColor ? '| কালার: ' + it.selectedColor : ''} | Qty: ${it.quantity}</span>
-              <span class="font-extrabold text-[#f85606]">৳ ${it.price * it.quantity}</span>
+              <span class="font-bold text-black block truncate">${it.name}</span>
+              <span class="text-gray-400 text-[11px] block">${it.selectedSize ? 'Size: ' + it.selectedSize : ''} ${it.selectedColor ? '| Color: ' + it.selectedColor : ''} | Qty: ${it.quantity}</span>
+              <span class="font-bold text-black">BDT ${it.price * it.quantity}</span>
             </div>
           </div>
         `;
@@ -626,7 +542,6 @@
       }
     }
 
-    // Image Fullscreen Lightbox
     function openLightbox() {
       const currentSrc = document.getElementById('pShowcaseImage').src;
       const lb = document.getElementById('imageLightboxModal');
@@ -642,7 +557,6 @@
       lb.classList.remove('flex');
     }
 
-    // District & Delivery Calculation
     function handleDistrictChange(dist) {
       const radioInside = document.querySelector('input[name="deliveryZone"][value="inside"]');
       const radioOutside = document.querySelector('input[name="deliveryZone"][value="outside"]');
@@ -668,21 +582,20 @@
 
       if (allFreeDelivery) {
         deliveryFee = 0;
-        document.getElementById('sumDelivery').innerHTML = `<span class="text-emerald-600 font-bold">ফ্রি (Free)</span>`;
+        document.getElementById('sumDelivery').innerHTML = `<span class="text-black font-bold">Free</span>`;
       } else {
-        document.getElementById('sumDelivery').innerText = `৳ ${deliveryFee}`;
+        document.getElementById('sumDelivery').innerText = `BDT ${deliveryFee}`;
       }
 
-      document.getElementById('sumSubtotal').innerText = `৳ ${subtotal}`;
-      document.getElementById('sumGrandTotal').innerText = `৳ ${subtotal + deliveryFee}`;
+      document.getElementById('sumSubtotal').innerText = `BDT ${subtotal}`;
+      document.getElementById('sumGrandTotal').innerText = `BDT ${subtotal + deliveryFee}`;
     }
 
-    // Handle Order Submit
     function handleOrderSubmit(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submitOrderBtn');
       submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>অর্ডার প্রসেস হচ্ছে...</span>`;
+      submitBtn.innerHTML = `<span>Processing order...</span>`;
 
       const zone = document.querySelector('input[name="deliveryZone"]:checked').value;
       const allFreeDelivery = currentOrderItems.every(item => item.isFreeDelivery);
@@ -708,8 +621,8 @@
           if (fromCart) localStorage.removeItem('rainbow_cart');
 
           confetti({
-            particleCount: 130,
-            spread: 85,
+            particleCount: 100,
+            spread: 70,
             origin: { y: 0.6 }
           });
 
@@ -719,7 +632,7 @@
         .catch(err => {
           alert('Error: ' + err.message);
           submitBtn.disabled = false;
-          submitBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> <span>অর্ডার কনফার্ম করুন (Confirm Order)</span>`;
+          submitBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> <span>Confirm Order</span>`;
           lucide.createIcons();
         });
     }
