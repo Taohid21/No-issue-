@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rainbow - রংধনু | প্রোডাক্ট বিবরণ ও চেকআউট</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg">
+  
+  <!-- Google Fonts: Hind Siliguri & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            daraz: {
+              DEFAULT: '#f85606',
+              hover: '#d94700',
+              light: '#fff1eb',
+              bg: '#eff0f5'
+            }
+          },
+          fontFamily: {
+            sans: ['"Hind Siliguri"', '"Inter"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { 
+      font-family: 'Hind Siliguri', 'Inter', sans-serif; 
+      background-color: #eff0f5;
+      color: #212121;
+    }
+    .custom-scroll::-webkit-scrollbar { width: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    
+    /* Image Fullscreen Zoom Box */
+    .img-zoom-wrapper {
+      transition: transform 0.3s ease;
+    }
+    .img-zoom-wrapper:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-[#f85606] selection:text-white min-h-screen flex flex-col">
+
+  <!-- Top Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-3xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
+      <button onclick="handleHeaderBack()" class="flex items-center gap-1.5 text-gray-700 hover:text-[#f85606] transition text-xs sm:text-sm font-bold">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        <span>পেছনে যান</span>
+      </button>
+      
+      <a href="index.html" class="flex items-center gap-2">
+        <img src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Rainbow রংধনু" class="w-8 h-8 rounded-lg object-cover shadow-sm">
+        <span class="font-black text-lg tracking-tight text-gray-900">Rainbow <span class="text-[#f85606]">রংধনু</span></span>
+      </a>
+
+      <div class="flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+        <span>১০০% নিরাপদ</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== SCREEN 1: PRODUCT SHOWCASE & DETAILS ==================== -->
+  <main id="screen-product" class="flex-1 max-w-xl mx-auto w-full px-3 sm:px-4 py-4 pb-28">
+    
+    <div id="productLoadingBox" class="bg-white rounded-2xl p-12 text-center text-xs text-gray-400 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-2">
+      <div class="w-8 h-8 border-3 border-orange-200 border-t-[#f85606] rounded-full animate-spin"></div>
+      <span>প্রোডাক্ট লোড হচ্ছে...</span>
+    </div>
+
+    <div id="productMainContent" class="hidden space-y-4">
+      
+      <!-- Big Product Image with Click to Zoom Indicator -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 shadow-sm relative group cursor-pointer img-zoom-wrapper" onclick="openLightbox()">
+        <div class="relative w-full aspect-square sm:aspect-[4/3] bg-gray-100 flex items-center justify-center overflow-hidden">
+          <img id="pShowcaseImage" src="https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg" alt="Product Image" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500">
+          
+          <!-- Tap to Zoom Badge -->
+          <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg pointer-events-none">
+            <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+            <span>বড় করে দেখতে ক্লিক করুন</span>
+          </div>
+
+          <!-- Free Delivery / Discount Badge -->
+          <div class="absolute top-3 left-3 flex flex-col gap-1.5" id="pBadgesWrapper"></div>
+        </div>
+      </div>
+
+      <!-- Multiple Gallery Images (If available) -->
+      <div id="galleryThumbnailsContainer" class="hidden flex gap-2 overflow-x-auto pb-1 custom-scroll"></div>
+
+      <!-- Title & Pricing Card -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-3">
+        <div>
+          <span id="pCategoryBadge" class="text-[11px] font-bold text-[#f85606] uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded">Category</span>
+          <h1 id="pShowcaseTitle" class="text-base sm:text-xl font-bold text-gray-900 mt-1.5 leading-snug">Product Title</h1>
+        </div>
+
+        <!-- Daraz Style Price -->
+        <div class="flex items-baseline gap-2 pt-1 border-t border-gray-100">
+          <span id="pShowcasePrice" class="text-2xl font-black text-[#f85606]">৳ 0</span>
+          <span id="pShowcaseOldPrice" class="text-sm text-gray-400 line-through"></span>
+          <span id="pDiscountPercent" class="text-xs bg-[#f85606] text-white px-2 py-0.5 rounded font-extrabold hidden"></span>
+        </div>
+
+        <!-- Cash on Delivery Promise -->
+        <div class="flex items-center gap-2 p-2.5 bg-orange-50/70 border border-orange-100 rounded-xl text-xs text-orange-950 font-medium">
+          <i data-lucide="truck" class="w-4 h-4 text-[#f85606] shrink-0"></i>
+          <span>ক্যাশ অন ডেলিভারি: পণ্য হাতে পেয়ে টাকা পরিশোধ করার সুবিধা!</span>
+        </div>
+      </div>
+
+      <!-- Variants (Colors, Sizes, Quantity) -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-4">
+        
+        <!-- Color Selector -->
+        <div id="colorsWrap" class="hidden space-y-2">
+          <label class="block text-xs font-bold text-gray-700">কালার নির্বাচন করুন:</label>
+          <div id="colorsList" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Size Selector -->
+        <div id="sizesWrap" class="hidden space-y-2">
+          <label class="block text-xs font-bold text-gray-700">সাইজ নির্বাচন করুন:</label>
+          <div id="sizesList" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Quantity Selector -->
+        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+          <div>
+            <span class="text-xs font-bold text-gray-800 block">পরিমাণ (Quantity):</span>
+            <span class="text-[11px] text-gray-400" id="stockNoticeText">স্টক এভেলেবল</span>
+          </div>
+          <div class="flex items-center border-2 border-orange-200 rounded-xl bg-orange-50/50 overflow-hidden shadow-sm">
+            <button type="button" onclick="changeQty(-1)" class="w-9 h-9 flex items-center justify-center font-bold text-base text-gray-700 hover:bg-orange-100 transition active:scale-95">-</button>
+            <span id="qtyCount" class="w-10 text-center text-sm font-extrabold text-gray-900 bg-white py-1.5">1</span>
+            <button type="button" onclick="changeQty(1)" class="w-9 h-9 flex items-center justify-center font-bold text-base text-gray-700 hover:bg-orange-100 transition active:scale-95">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STICKY BOTTOM BAR (Order Now Button) -->
+    <div id="stickyOrderBar" class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200 p-3 sm:p-4 shadow-2xl">
+      <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
+        <div>
+          <span class="text-[10px] text-gray-400 font-bold block">মোট মূল্য:</span>
+          <span id="stickyBottomPrice" class="text-lg font-black text-[#f85606]">৳ 0</span>
+        </div>
+        <button 
+          onclick="proceedToCheckoutScreen()" 
+          class="flex-1 bg-[#f85606] hover:bg-[#d94700] text-white py-3 sm:py-3.5 px-6 rounded-xl font-bold text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/30"
+        >
+          <span>অর্ডার করুন (Order Now)</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== SCREEN 2: STEP-BY-STEP CHECKOUT & DELIVERY FORM ==================== -->
+  <main id="screen-checkout" class="hidden flex-1 max-w-xl mx-auto w-full px-3 sm:px-4 py-5 space-y-4">
+    
+    <!-- Step Indicator Progress Bar -->
+    <div class="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+      <div class="flex items-center justify-between text-xs font-bold text-gray-400">
+        <div class="flex items-center gap-1.5 text-[#f85606]">
+          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">১</span>
+          <span>পণ্য</span>
+        </div>
+        <div class="w-8 sm:w-12 h-[2px] bg-[#f85606]"></div>
+        <div class="flex items-center gap-1.5 text-[#f85606]">
+          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">২</span>
+          <span>ঠিকানা</span>
+        </div>
+        <div class="w-8 sm:w-12 h-[2px] bg-[#f85606]"></div>
+        <div class="flex items-center gap-1.5 text-[#f85606]">
+          <span class="w-5 h-5 rounded-full bg-[#f85606] text-white flex items-center justify-center text-[10px]">৩</span>
+          <span>কনফার্ম</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Order Summary Box -->
+    <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
+      <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">আপনার নির্বাচিত পণ্য</h3>
+        <button onclick="goToProductScreen()" class="text-xs text-[#f85606] font-bold hover:underline">পরিবর্তন করুন</button>
+      </div>
+
+      <div id="checkoutSummaryList" class="space-y-2.5"></div>
+    </div>
+
+    <!-- Delivery Form -->
+    <form id="orderForm" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+      <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+          <i data-lucide="map-pin" class="w-4 h-4 text-[#f85606]"></i>
+          <h3 class="text-sm font-bold text-gray-900">ডেলিভারির ঠিকানা প্রদান করুন</h3>
+        </div>
+
+        <!-- Name -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">আপনার পূর্ণ নাম *</label>
+          <input 
+            type="text" 
+            id="custName" 
+            required 
+            placeholder="যেমন: তানভীর আহমেদ" 
+            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+          >
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">সচল মোবাইল নম্বর (কল করা হবে) *</label>
+          <input 
+            type="tel" 
+            id="custPhone" 
+            required 
+            placeholder="যেমন: 017XXXXXXXX" 
+            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+          >
+        </div>
+
+        <!-- District -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">আপনার জেলা নির্বাচন করুন *</label>
+          <select 
+            id="custDistrict" 
+            required 
+            onchange="handleDistrictChange(this.value)" 
+            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition font-medium cursor-pointer"
+          >
+            <option value="">-- জেলা পছন্দ করুন --</option>
+          </select>
+        </div>
+
+        <!-- Full Address -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">পূর্ণাঙ্গ ঠিকানা (থানা, এলাকা, বাসা নং) *</label>
+          <textarea 
+            id="custAddress" 
+            required 
+            rows="2" 
+            placeholder="যেমন: বাসা নং ১২, রোড নং ৪, সেক্টর ৭, উত্তরা" 
+            class="w-full bg-[#eff0f5] border border-transparent focus:border-[#f85606] focus:bg-white text-gray-900 rounded-xl p-3 text-xs sm:text-sm outline-none transition"
+          ></textarea>
+        </div>
+
+        <!-- Delivery Area Selection -->
+        <div class="pt-1">
+          <label class="block text-xs font-bold text-gray-700 mb-2">ডেলিভারি এরিয়া *</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center gap-2 p-3 border-2 border-transparent has-[:checked]:border-[#f85606] has-[:checked]:bg-orange-50 rounded-xl cursor-pointer bg-[#eff0f5] transition">
+              <input type="radio" name="deliveryZone" value="inside" checked onchange="updateSummaryPricing()" class="accent-[#f85606] w-4 h-4">
+              <div class="text-xs">
+                <span class="font-bold text-gray-900 block">ঢাকার ভিতরে</span>
+                <span class="text-gray-500 font-semibold" id="insideChargeText">৳ 60</span>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2 p-3 border-2 border-transparent has-[:checked]:border-[#f85606] has-[:checked]:bg-orange-50 rounded-xl cursor-pointer bg-[#eff0f5] transition">
+              <input type="radio" name="deliveryZone" value="outside" onchange="updateSummaryPricing()" class="accent-[#f85606] w-4 h-4">
+              <div class="text-xs">
+                <span class="font-bold text-gray-900 block">ঢাকার বাইরে</span>
+                <span class="text-gray-500 font-semibold" id="outsideChargeText">৳ 130</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment & Bill Breakdown Card -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+        <div class="flex items-center justify-between text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+            <span>ক্যাশ অন ডেলিভারি (Cash on Delivery)</span>
+          </div>
+          <span class="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded">হাতে পেয়ে পেমেন্ট</span>
+        </div>
+
+        <div class="bg-[#eff0f5] rounded-xl p-3.5 space-y-2 text-xs">
+          <div class="flex justify-between text-gray-600 font-medium">
+            <span>পণ্যের মূল্য (Subtotal):</span>
+            <span id="sumSubtotal" class="font-bold text-gray-900">৳ 0</span>
+          </div>
+          <div class="flex justify-between text-gray-600 font-medium">
+            <span>ডেলিভারি চার্জ:</span>
+            <span id="sumDelivery" class="font-bold text-gray-900">৳ 0</span>
+          </div>
+          <div class="flex justify-between text-base font-extrabold text-gray-900 border-t border-gray-200 pt-2.5">
+            <span>সর্বমোট পরিশোধযোগ্য:</span>
+            <span id="sumGrandTotal" class="text-[#f85606]">৳ 0</span>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          id="submitOrderBtn" 
+          class="w-full bg-[#f85606] hover:bg-[#d94700] text-white py-3.5 rounded-xl font-bold text-sm tracking-wide transition active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-orange-500/20 cursor-pointer"
+        >
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> 
+          <span>অর্ডার কনফার্ম করুন (Confirm Order)</span>
+        </button>
+
+        <p class="text-[11px] text-center text-gray-400">
+          অর্ডার করার পর আমাদের প্রতিনিধি আপনাকে কল করে অর্ডারটি কনফার্ম করবেন।
+        </p>
+      </div>
+    </form>
+  </main>
+
+  <!-- ==================== FULLSCREEN IMAGE LIGHTBOX MODAL ==================== -->
+  <div id="imageLightboxModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center p-3" onclick="closeLightbox()">
+    <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white bg-white/20 hover:bg-white/40 p-2.5 rounded-full transition z-10">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="max-w-3xl max-h-[85vh] w-full flex items-center justify-center overflow-hidden" onclick="event.stopPropagation()">
+      <img id="lightboxImg" src="" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl transition-transform duration-300">
+    </div>
+    <span class="text-xs text-neutral-400 mt-3 font-medium">বন্ধ করতে যেকোনো জায়গায় ট্যাপ করুন</span>
+  </div>
+
+  <!-- ==================== ORDER SUCCESS MODAL ==================== -->
+  <div id="successModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-200">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+        <i data-lucide="check-circle" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-lg font-black text-gray-900 mb-1">অর্ডার সফল হয়েছে!</h3>
+      <p class="text-xs text-gray-500 leading-relaxed mb-5">
+        Rainbow - রংধনু-তে অর্ডার করার জন্য ধন্যবাদ। কিছুক্ষণের মধ্যে আমাদের প্রতিনিধি কল করে আপনার অর্ডারটি নিশ্চিত করবেন।
+      </p>
+      <a href="index.html" class="inline-block w-full bg-[#f85606] hover:bg-[#d94700] text-white py-3.5 rounded-xl text-xs font-bold tracking-wider uppercase transition shadow-lg shadow-orange-500/20">
+        দোকানে ফিরে যান
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const LOGO_PLACEHOLDER = "https://i.postimg.cc/j2v9rTjd/FB-IMG-1788631082138.jpg";
+
+    // 64 Bangladesh Districts
+    const BD_DISTRICTS = [
+      "Dhaka", "Chattogram", "Patuakhali", "Barishal", "Gazipur", "Narayanganj", "Cumilla", "Sylhet", "Rajshahi", "Bogura", 
+      "Khulna", "Mymensingh", "Rangpur", "Dinajpur", "Jashore", "Cox's Bazar", "Brahmanbaria", "Noakhali", "Feni", "Lakshmipur", 
+      "Chandpur", "Habiganj", "Moulvibazar", "Sunamganj", "Narsingdi", "Munshiganj", "Manikganj", "Tangail", "Kishoreganj", 
+      "Netrokona", "Jamalpur", "Sherpur", "Faridpur", "Gopalganj", "Madaripur", "Shariatpur", "Rajbari", "Pabna", "Sirajganj", 
+      "Natore", "Naogaon", "Chapainawabganj", "Joypurhat", "Gaibandha", "Kurigram", "Lalmonirhat", "Nilphamari", "Thakurgaon", 
+      "Panchagarh", "Kushtia", "Meherpur", "Chuadanga", "Jhenaidah", "Magura", "Narail", "Bagerhat", "Satkhira", "Bhola", 
+      "Jhalokathi", "Pirojpur", "Barguna", "Bandarban", "Rangamati", "Khagrachhari"
+    ];
+
+    const distSelect = document.getElementById('custDistrict');
+    BD_DISTRICTS.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.innerText = d;
+      distSelect.appendChild(opt);
+    });
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_HBGuQSh_GzqrHqHbgdaoBikLZsK3Qqs",
+      authDomain: "new-all-f99f7.firebaseapp.com",
+      databaseURL: "https://new-all-f99f7-default-rtdb.firebaseio.com",
+      projectId: "new-all-f99f7",
+      storageBucket: "new-all-f99f7.firebasestorage.app",
+      messagingSenderId: "1069748173900",
+      appId: "1:1069748173900:web:158d6336c0f4628133c8e9"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Isolated Rainbow Database Paths
+    const PATHS = {
+      orders: 'rainbow_orders',
+      products: 'rainbow_products',
+      settings: 'rainbow_settings'
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    const fromCart = urlParams.get('fromCart') === 'true';
+
+    let currentOrderItems = [];
+    let deliverySettings = { insideDhaka: 60, outsideDhaka: 130 };
+    let singleProductData = null;
+    let selectedSize = '';
+    let selectedColor = '';
+    let singleQty = 1;
+
+    // Load Live Delivery Charge
+    db.ref(`${PATHS.settings}/delivery`).on('value', snap => {
+      if (snap.val()) {
+        deliverySettings = snap.val();
+        document.getElementById('insideChargeText').innerText = `৳ ${deliverySettings.insideDhaka}`;
+        document.getElementById('outsideChargeText').innerText = `৳ ${deliverySettings.outsideDhaka}`;
+        updateSummaryPricing();
+      }
+    });
+
+    // Handle Init
+    if (fromCart) {
+      // Cart users directly go to checkout screen
+      currentOrderItems = JSON.parse(localStorage.getItem('rainbow_cart') || '[]');
+      if (currentOrderItems.length === 0) window.location.href = 'index.html';
+      proceedToCheckoutScreen();
+    } else if (productId) {
+      db.ref(`${PATHS.products}/${productId}`).once('value', snap => {
+        document.getElementById('productLoadingBox').style.display = 'none';
+        singleProductData = snap.val();
+        if (!singleProductData) {
+          alert('পণ্যটি খুঁজে পাওয়া যায়নি!');
+          window.location.href = 'index.html';
+          return;
+        }
+        renderProductShowcase(singleProductData);
+      });
+    } else {
+      window.location.href = 'index.html';
+    }
+
+    // Render Product Details Screen
+    function renderProductShowcase(p) {
+      document.getElementById('productMainContent').classList.remove('hidden');
+
+      const imgEl = document.getElementById('pShowcaseImage');
+      imgEl.src = p.imageUrl || LOGO_PLACEHOLDER;
+
+      document.getElementById('pShowcaseTitle').innerText = p.name;
+      document.getElementById('pCategoryBadge').innerText = p.category || 'General';
+      
+      const price = Number(p.discountPrice || p.regularPrice);
+      document.getElementById('pShowcasePrice').innerText = `৳ ${price}`;
+
+      // Price & Discount Tag
+      if (p.discountPrice && Number(p.discountPrice) < Number(p.regularPrice)) {
+        document.getElementById('pShowcaseOldPrice').innerText = `৳ ${p.regularPrice}`;
+        const discountPercent = Math.round(((p.regularPrice - p.discountPrice) / p.regularPrice) * 100);
+        const disTag = document.getElementById('pDiscountPercent');
+        disTag.innerText = `-${discountPercent}%`;
+        disTag.classList.remove('hidden');
+      }
+
+      // Badges
+      const badgeWrap = document.getElementById('pBadgesWrapper');
+      badgeWrap.innerHTML = '';
+      if (p.isFreeDelivery) {
+        badgeWrap.innerHTML += `<span class="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow">ফ্রি ডেলিভারি</span>`;
+      }
+
+      // Multiple Image Gallery Thumbnails
+      if (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 1) {
+        const thumbCont = document.getElementById('galleryThumbnailsContainer');
+        thumbCont.classList.remove('hidden');
+        thumbCont.innerHTML = '';
+        p.gallery.forEach(url => {
+          const t = document.createElement('img');
+          t.src = url;
+          t.className = "w-14 h-14 object-cover rounded-lg border-2 border-transparent hover:border-[#f85606] cursor-pointer bg-white shrink-0 transition";
+          t.onclick = () => {
+            imgEl.src = url;
+          };
+          thumbCont.appendChild(t);
+        });
+      }
+
+      // Colors Selection
+      if (p.colors && p.colors.length > 0) {
+        document.getElementById('colorsWrap').classList.remove('hidden');
+        const cList = document.getElementById('colorsList');
+        cList.innerHTML = '';
+        p.colors.forEach((c, idx) => {
+          if (idx === 0) selectedColor = c;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold transition ${idx === 0 ? 'bg-[#f85606] text-white border-[#f85606] shadow' : 'bg-white border-gray-200 text-gray-700'}`;
+          btn.innerText = c;
+          btn.onclick = () => {
+            selectedColor = c;
+            cList.querySelectorAll('button').forEach(b => {
+              b.className = 'px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition';
+            });
+            btn.className = 'px-3.5 py-1.5 rounded-xl border bg-[#f85606] text-white border-[#f85606] text-xs font-bold transition shadow';
+
+            // Change image if color gallery is assigned
+            if (p.colorImages && p.colorImages[c] && p.colorImages[c].length > 0) {
+              imgEl.src = p.colorImages[c][0];
+            }
+            syncProductOrderState();
+          };
+          cList.appendChild(btn);
+        });
+      }
+
+      // Sizes Selection
+      if (p.sizes && p.sizes.length > 0) {
+        document.getElementById('sizesWrap').classList.remove('hidden');
+        const sList = document.getElementById('sizesList');
+        sList.innerHTML = '';
+        p.sizes.forEach((s, idx) => {
+          const val = typeof s === 'object' ? s.size : s;
+          if (idx === 0) selectedSize = val;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `px-3.5 py-1.5 rounded-xl border text-xs font-bold transition ${idx === 0 ? 'bg-[#f85606] text-white border-[#f85606] shadow' : 'bg-white border-gray-200 text-gray-700'}`;
+          btn.innerText = val;
+          btn.onclick = () => {
+            selectedSize = val;
+            sList.querySelectorAll('button').forEach(b => {
+              b.className = 'px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold transition';
+            });
+            btn.className = 'px-3.5 py-1.5 rounded-xl border bg-[#f85606] text-white border-[#f85606] text-xs font-bold transition shadow';
+            syncProductOrderState();
+          };
+          sList.appendChild(btn);
+        });
+      }
+
+      syncProductOrderState();
+      lucide.createIcons();
+    }
+
+    function changeQty(delta) {
+      singleQty += delta;
+      if (singleQty < 1) singleQty = 1;
+      document.getElementById('qtyCount').innerText = singleQty;
+      syncProductOrderState();
+    }
+
+    function syncProductOrderState() {
+      if (!singleProductData) return;
+      const currentImg = document.getElementById('pShowcaseImage').src;
+      const unitPrice = Number(singleProductData.discountPrice || singleProductData.regularPrice);
+      
+      currentOrderItems = [{
+        id: productId,
+        name: singleProductData.name,
+        price: unitPrice,
+        imageUrl: currentImg || singleProductData.imageUrl,
+        isFreeDelivery: !!singleProductData.isFreeDelivery,
+        selectedSize: selectedSize,
+        selectedColor: selectedColor,
+        quantity: singleQty
+      }];
+
+      document.getElementById('stickyBottomPrice').innerText = `৳ ${unitPrice * singleQty}`;
+      updateSummaryPricing();
+    }
+
+    // Switch between Screen 1 (Product) and Screen 2 (Checkout)
+    function proceedToCheckoutScreen() {
+      document.getElementById('screen-product').classList.add('hidden');
+      document.getElementById('stickyOrderBar')?.classList.add('hidden');
+      
+      const chkScreen = document.getElementById('screen-checkout');
+      chkScreen.classList.remove('hidden');
+
+      // Populate Checkout Order Summary Cards
+      const summaryCont = document.getElementById('checkoutSummaryList');
+      summaryCont.innerHTML = '';
+      currentOrderItems.forEach(it => {
+        summaryCont.innerHTML += `
+          <div class="flex items-center gap-3 bg-[#eff0f5] p-2.5 rounded-xl border border-gray-100">
+            <img src="${it.imageUrl || LOGO_PLACEHOLDER}" class="w-12 h-12 object-cover rounded-lg border bg-white shrink-0">
+            <div class="flex-1 min-w-0 text-xs">
+              <span class="font-bold text-gray-900 block truncate">${it.name}</span>
+              <span class="text-gray-500 text-[11px] block">${it.selectedSize ? 'সাইজ: ' + it.selectedSize : ''} ${it.selectedColor ? '| কালার: ' + it.selectedColor : ''} | Qty: ${it.quantity}</span>
+              <span class="font-extrabold text-[#f85606]">৳ ${it.price * it.quantity}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      updateSummaryPricing();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    function goToProductScreen() {
+      if (fromCart) {
+        window.location.href = 'cart.html';
+        return;
+      }
+      document.getElementById('screen-checkout').classList.add('hidden');
+      document.getElementById('screen-product').classList.remove('hidden');
+      document.getElementById('stickyOrderBar')?.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleHeaderBack() {
+      const isCheckoutActive = !document.getElementById('screen-checkout').classList.contains('hidden');
+      if (isCheckoutActive && !fromCart) {
+        goToProductScreen();
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Image Fullscreen Lightbox
+    function openLightbox() {
+      const currentSrc = document.getElementById('pShowcaseImage').src;
+      const lb = document.getElementById('imageLightboxModal');
+      const lbImg = document.getElementById('lightboxImg');
+      lbImg.src = currentSrc;
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('imageLightboxModal');
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+    }
+
+    // District & Delivery Calculation
+    function handleDistrictChange(dist) {
+      const radioInside = document.querySelector('input[name="deliveryZone"][value="inside"]');
+      const radioOutside = document.querySelector('input[name="deliveryZone"][value="outside"]');
+      if (dist === "Dhaka") {
+        radioInside.checked = true;
+      } else if (dist !== "") {
+        radioOutside.checked = true;
+      }
+      updateSummaryPricing();
+    }
+
+    function updateSummaryPricing() {
+      let subtotal = 0;
+      let allFreeDelivery = currentOrderItems.length > 0 && currentOrderItems.every(item => item.isFreeDelivery);
+
+      currentOrderItems.forEach(item => {
+        subtotal += item.price * item.quantity;
+      });
+
+      const zoneRadio = document.querySelector('input[name="deliveryZone"]:checked');
+      const zone = zoneRadio ? zoneRadio.value : 'inside';
+      let deliveryFee = zone === 'inside' ? Number(deliverySettings.insideDhaka) : Number(deliverySettings.outsideDhaka);
+
+      if (allFreeDelivery) {
+        deliveryFee = 0;
+        document.getElementById('sumDelivery').innerHTML = `<span class="text-emerald-600 font-bold">ফ্রি (Free)</span>`;
+      } else {
+        document.getElementById('sumDelivery').innerText = `৳ ${deliveryFee}`;
+      }
+
+      document.getElementById('sumSubtotal').innerText = `৳ ${subtotal}`;
+      document.getElementById('sumGrandTotal').innerText = `৳ ${subtotal + deliveryFee}`;
+    }
+
+    // Handle Order Submit
+    function handleOrderSubmit(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitOrderBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>অর্ডার প্রসেস হচ্ছে...</span>`;
+
+      const zone = document.querySelector('input[name="deliveryZone"]:checked').value;
+      const allFreeDelivery = currentOrderItems.every(item => item.isFreeDelivery);
+      const deliveryFee = allFreeDelivery ? 0 : (zone === 'inside' ? Number(deliverySettings.insideDhaka) : Number(deliverySettings.outsideDhaka));
+      const subtotal = currentOrderItems.reduce((acc, it) => acc + (it.price * it.quantity), 0);
+
+      const orderData = {
+        customerName: document.getElementById('custName').value.trim(),
+        phone: document.getElementById('custPhone').value.trim(),
+        district: document.getElementById('custDistrict').value,
+        address: document.getElementById('custAddress').value.trim(),
+        deliveryZone: zone,
+        deliveryFee: deliveryFee,
+        subtotal: subtotal,
+        totalAmount: subtotal + deliveryFee,
+        items: currentOrderItems,
+        status: 'Pending',
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      db.ref(PATHS.orders).push(orderData)
+        .then(() => {
+          if (fromCart) localStorage.removeItem('rainbow_cart');
+
+          confetti({
+            particleCount: 130,
+            spread: 85,
+            origin: { y: 0.6 }
+          });
+
+          document.getElementById('successModal').classList.remove('hidden');
+          document.getElementById('successModal').classList.add('flex');
+        })
+        .catch(err => {
+          alert('Error: ' + err.message);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> <span>অর্ডার কনফার্ম করুন (Confirm Order)</span>`;
+          lucide.createIcons();
+        });
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
