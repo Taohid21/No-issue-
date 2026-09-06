@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tioDisk | Software, Web & Digital Solutions</title>
+
+  <!-- Favicon & Meta Tags -->
+  <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/6p30LJtB/FB-IMG-1788677435559.jpg">
+  <meta property="og:title" content="tioDisk | Technology & Digital Solutions">
+  <meta property="og:description" content="Building next-generation digital experiences, modern websites, and e-commerce platforms.">
+  <meta property="og:image" content="https://i.postimg.cc/6p30LJtB/FB-IMG-1788677435559.jpg">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', 'sans-serif'],
+            display: ['"Outfit"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#06b6d4',
+              blue: '#3b82f6',
+              dark: '#070b14',
+              card: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #0f172a 0%, #060913 100%);
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .glow-effect {
+      box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(6, 182, 212, 0.3);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-black">
+
+  <!-- Top Announcement / Live Status -->
+  <div class="border-b border-white/5 bg-black/40 backdrop-blur-md py-2 px-4 text-center">
+    <div class="max-w-4xl mx-auto flex items-center justify-center gap-2 text-[11px] sm:text-xs font-semibold text-cyan-400">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>Available for New Projects & Web Development</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="max-w-4xl mx-auto px-4 py-5 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl overflow-hidden border border-cyan-500/30 p-0.5 glow-effect">
+        <img src="https://i.postimg.cc/6p30LJtB/FB-IMG-1788677435559.jpg" alt="tioDisk" class="w-full h-full object-cover rounded-[10px]">
+      </div>
+      <span class="font-display font-black text-xl tracking-wider text-white">tio<span class="text-cyan-400">Disk</span></span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <a href="https://wa.me/8801704609401" target="_blank" class="px-3.5 py-1.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-semibold transition flex items-center gap-1.5">
+        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+        <span>Chat Now</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Showcase Container -->
+  <main class="max-w-3xl mx-auto px-4 py-4 sm:py-6 space-y-6">
+
+    <!-- 1. TOP COMPLETE IMAGE SHOWCASE (Full & Crisp Image) -->
+    <div class="glass-card rounded-3xl p-3 sm:p-5 glow-effect relative overflow-hidden group">
+      <div class="absolute -top-24 -right-24 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <!-- Full Image Container (No Cut-off) -->
+      <div class="w-full rounded-2xl overflow-hidden bg-black/60 border border-white/10 flex items-center justify-center relative">
+        <img 
+          src="https://i.postimg.cc/6p30LJtB/FB-IMG-1788677435559.jpg" 
+          alt="tioDisk Showcase" 
+          class="w-full h-auto max-h-[580px] object-contain rounded-2xl transition-transform duration-700 group-hover:scale-[1.01]"
+        >
+        
+        <!-- Live Verified Badge -->
+        <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-1.5 shadow-lg">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span class="text-[11px] font-bold tracking-wide text-white">Official tioDisk</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BRAND PROFILE & INTRO -->
+    <div class="glass-card rounded-3xl p-6 sm:p-8 text-center space-y-3 relative">
+      <h1 class="font-display font-black text-2xl sm:text-4xl text-white tracking-tight">
+        Innovate with <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">tioDisk</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">
+        Next-gen Web Development, Ultra-Fast E-Commerce Platforms, and Scalable Digital Solutions crafted for modern businesses.
+      </p>
+
+      <!-- Quick Action Connect Buttons -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 max-w-md mx-auto">
+        <!-- WhatsApp -->
+        <a 
+          href="https://wa.me/8801704609401?text=Hello%20tioDisk,%20I%20want%20to%20discuss%20a%20project" 
+          target="_blank" 
+          class="flex items-center justify-center gap-2 py-3.5 px-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-2xl font-bold text-xs sm:text-sm tracking-wide shadow-lg shadow-emerald-500/20 transition active:scale-95"
+        >
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>WhatsApp Message</span>
+        </a>
+
+        <!-- Facebook Page -->
+        <a 
+          href="https://www.facebook.com/profile.php?id=61593314383662&mibextid=ZbWKwL" 
+          target="_blank" 
+          class="flex items-center justify-center gap-2 py-3.5 px-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-bold text-xs sm:text-sm tracking-wide shadow-lg shadow-blue-500/20 transition active:scale-95"
+        >
+          <i data-lucide="facebook" class="w-4 h-4"></i>
+          <span>Facebook Page</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. DIRECT WHATSAPP MESSAGE SENDER SYSTEM -->
+    <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-4">
+      <div class="flex items-center gap-2.5 pb-3 border-b border-white/5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h2 class="text-sm sm:text-base font-bold text-white">Direct WhatsApp Connect System</h2>
+          <p class="text-[11px] text-slate-400">Type your message and click send to connect instantly with tioDisk.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+          <input 
+            type="text" 
+            id="clientName" 
+            placeholder="Enter your name" 
+            class="w-full bg-black/40 border border-white/10 focus:border-cyan-400 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Your Message or Project Query</label>
+          <textarea 
+            id="clientMessage" 
+            rows="3" 
+            placeholder="Write what website or software you need..." 
+            class="w-full bg-black/40 border border-white/10 focus:border-cyan-400 text-white rounded-xl px-4 py-2.5 text-xs outline-none transition"
+          ></textarea>
+        </div>
+
+        <button 
+          onclick="sendWhatsAppDirect()" 
+          class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm rounded-xl transition active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+        >
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Send via WhatsApp (+8801704609401)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. SERVICES & CAPABILITIES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="glass-card rounded-2xl p-5 space-y-2">
+        <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        </div>
+        <h3 class="font-bold text-sm text-white">Full E-Commerce Platforms</h3>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Complete high-speed stores with admin console, live order tracking, Cloudinary media and automated checkout.
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 space-y-2">
+        <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-3">
+          <i data-lucide="code" class="w-4 h-4"></i>
+        </div>
+        <h3 class="font-bold text-sm text-white">Custom Web Architecture</h3>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Clean SPA design, lightweight code, zero slowdowns, and Firebase real-time database integrations.
+        </p>
+      </div>
+    </div>
+
+    <!-- 5. CONTACT & SOCIAL INFO CARD -->
+    <div class="glass-card rounded-3xl p-6 sm:p-7 space-y-4">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Get in Touch Directly</h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <a href="tel:01704609401" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition text-slate-200">
+          <i data-lucide="phone" class="w-4 h-4 text-cyan-400"></i>
+          <span>+880 1704-609401</span>
+        </a>
+
+        <a href="mailto:tiodisk7890@gmail.com" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition text-slate-200">
+          <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
+          <span>tiodisk7890@gmail.com</span>
+        </a>
+
+        <a href="https://www.facebook.com/profile.php?id=61593314383662&mibextid=ZbWKwL" target="_blank" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition text-slate-200">
+          <i data-lucide="facebook" class="w-4 h-4 text-blue-400"></i>
+          <span>Official Facebook Page</span>
+        </a>
+
+        <a href="https://tiodisk.top" target="_blank" class="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition text-slate-200">
+          <i data-lucide="globe" class="w-4 h-4 text-cyan-400"></i>
+          <span>Website: tiodisk.top</span>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 mt-12 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>© 2026 tioDisk. All rights reserved.</div>
+      <div class="flex items-center gap-4">
+        <a href="https://wa.me/8801704609401" target="_blank" class="hover:text-cyan-400 transition">WhatsApp</a>
+        <a href="https://www.facebook.com/profile.php?id=61593314383662&mibextid=ZbWKwL" target="_blank" class="hover:text-cyan-400 transition">Facebook</a>
+        <a href="https://tiodisk.top" target="_blank" class="hover:text-cyan-400 transition">tiodisk.top</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Script -->
+  <script>
+    function sendWhatsAppDirect() {
+      const name = document.getElementById('clientName').value.trim();
+      const message = document.getElementById('clientMessage').value.trim();
+
+      let text = "Hello tioDisk,";
+      if (name) {
+        text += ` My name is ${name}.`;
+      }
+      if (message) {
+        text += `\n\nMessage: ${message}`;
+      } else {
+        text += " I want to discuss a project with you.";
+      }
+
+      const wpUrl = `https://wa.me/8801704609401?text=${encodeURIComponent(text)}`;
+      window.open(wpUrl, '_blank');
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
